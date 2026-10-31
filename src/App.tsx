@@ -243,63 +243,63 @@ function SuperAdminLogin({ onAuth }: { onAuth: (role: Role) => void }) {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-[#0B0F19] p-6 text-slate-100"
+      className="flex min-h-screen items-center justify-center bg-[#F8FAFC] p-6 text-slate-900"
       data-route-visibility="Unlisted URL; never linked from public or staff pages"
       data-security-indexing="noindex, nofollow, noarchive"
       data-security-audit="Every login attempt is security-logged with IP and timestamp (§3.6.3)"
       data-ip-allowlist="Optional"
     >
-      <div className="w-full max-w-[440px] rounded-xl border border-[#1E293B] bg-[#111827] p-8 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)]">
+      <div className="w-full max-w-[440px] rounded-2xl border border-slate-200/90 bg-white p-8 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.08)]">
         <div className="mb-7">
-          <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-lg bg-indigo-500 text-white">
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-100">
             <ShieldIco s={22}/>
           </div>
-          <p className="text-[10px] font-bold tracking-[0.14em] text-indigo-300">NEXTTURN PLATFORM</p>
-          <h1 className="mt-2 text-2xl font-bold leading-relaxed text-white">Đăng nhập quản trị nền tảng</h1>
-          <p className="mt-1 text-sm leading-relaxed text-slate-400">Cổng quản trị nền tảng độc lập với mọi cấu hình tenant.</p>
+          <p className="text-[10px] font-bold tracking-[0.14em] text-indigo-600 uppercase">NEXTTURN PLATFORM</p>
+          <h1 className="mt-2 text-2xl font-bold leading-relaxed text-slate-900">Đăng nhập quản trị nền tảng</h1>
+          <p className="mt-1 text-sm leading-relaxed text-slate-500">Cổng quản trị nền tảng độc lập với mọi cấu hình tenant.</p>
         </div>
 
         <div className="space-y-4">
           <label className="block">
-            <span className="mb-1.5 block text-xs font-semibold text-slate-300">Tên đăng nhập hoặc Email</span>
+            <span className="mb-1.5 block text-xs font-semibold text-slate-700">Tên đăng nhập hoặc Email</span>
             <input value={username} onChange={event => { setUsername(event.target.value); if (error !== 'lockout') setError(null) }}
               onKeyDown={event => event.key === 'Enter' && signIn()}
               placeholder="superadmin@nextturn.vn"
-              className="h-12 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"/>
+              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all"/>
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-xs font-semibold text-slate-300">Mật khẩu</span>
+            <span className="mb-1.5 block text-xs font-semibold text-slate-700">Mật khẩu</span>
             <div className="relative">
               <input type={showPassword ? 'text' : 'password'} value={password}
                 onChange={event => { setPassword(event.target.value); if (error !== 'lockout') setError(null) }}
                 onKeyDown={event => event.key === 'Enter' && signIn()}
                 placeholder="••••••••"
-                className="h-12 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 pr-11 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"/>
+                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 pr-11 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition-all"/>
               <button type="button" onClick={() => setShowPassword(value => !value)} aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-                className="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300">
+                className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600">
                 {showPassword ? <EyeOffIco s={17}/> : <EyeIco s={17}/>}
               </button>
             </div>
-            <span className="mt-1.5 block text-[10px] leading-relaxed text-slate-500">Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.</span>
+            <span className="mt-1.5 block text-[10px] leading-relaxed text-slate-400">Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.</span>
           </label>
 
           {error && (
-            <div className={`flex items-start gap-2.5 rounded-lg border p-3 text-xs leading-relaxed ${error === 'lockout' ? 'border-amber-800/60 bg-amber-950/30 text-amber-300' : 'border-red-900/60 bg-red-950/30 text-red-300'}`}>
+            <div className={`flex items-start gap-2.5 rounded-xl border p-3.5 text-xs leading-relaxed ${error === 'lockout' ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-red-200 bg-red-50 text-red-700'}`}>
               <AlertIco s={16}/>
               <span>{error === 'lockout' ? 'Tài khoản tạm khóa 15 phút do đăng nhập sai quá 5 lần. Vui lòng thử lại sau.' : 'Thông tin đăng nhập hoặc mật khẩu không chính xác.'}</span>
             </div>
           )}
 
           <button type="button" onClick={signIn} disabled={loading || error === 'lockout'}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 text-sm font-bold text-white transition-colors hover:bg-indigo-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-500">
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 text-sm font-bold text-white shadow-sm shadow-indigo-100 transition-all hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none">
             {loading ? <span className="animate-spin"><RefreshIco s={16}/></span> : <ShieldIco s={16}/>}
             {loading ? 'Đang xác thực...' : 'Đăng nhập quản trị nền tảng'}
           </button>
         </div>
 
-        <div className="mt-6 border-t border-slate-800 pt-5 text-center">
+        <div className="mt-6 border-t border-slate-100 pt-5 text-center">
           <button type="button" onClick={() => window.location.assign('/')}
-            className="text-xs font-medium text-slate-500 transition-colors hover:text-indigo-300">
+            className="text-xs font-medium text-slate-500 transition-colors hover:text-indigo-600">
             Quay lại trang đăng nhập nhân sự
           </button>
         </div>
@@ -4100,7 +4100,7 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
       className={`flex h-screen min-h-[720px] w-screen flex-col overflow-hidden bg-[#090D16] text-slate-50 ${cursorHidden ? 'cursor-none' : ''}`}
       style={{ '--tenant-brand-primary':brandPrimary } as React.CSSProperties}
       data-sse-note="Supports 3–5 concurrent browser instances through independent SSE channels."
-      data-presentation-mode="Standard browser route; fullscreen via F11 or Fullscreen API; no native kiosk hardware."
+      data-presentation-mode="Standard browser route; fullscreen via F11 or Fullscreen API; pure web-based display."
     >
       {showFullscreenHint && (
         <div
@@ -4304,807 +4304,1006 @@ function FullscreenWidgetTicket() {
 }
 
 function BookingWidgetDemo() {
-  const [showMenu, setShowMenu] = useState(false)
-  const [entryState, setEntryState] = useState<'guest' | 'otp' | 'identity' | 'booking' | 'walkin'>('walkin')
-  const [bookingStep, setBookingStep] = useState<1 | 2 | 3 | 'success' | 'ticket'>(1)
-  const [walkInStep, setWalkInStep] = useState<1 | 2 | 'ticket' | 'exhausted'>(1)
+  const [activeMode, setActiveMode] = useState<'booking' | 'checkin' | 'tracker'>('booking')
+  const [primaryColor, setPrimaryColor] = useState('#0891B2')
+  const [borderRadius, setBorderRadius] = useState('8px')
+  const [copiedSnippet, setCopiedSnippet] = useState(false)
+
+  // Booking states
+  const [bookingStep, setBookingStep] = useState<1 | 2 | 3 | 'success'>(1)
+  const [selectedService, setSelectedService] = useState('Khám tổng quát')
+  const [selectedSlot, setSelectedSlot] = useState('10:00')
+  const [holdSeconds, setHoldSeconds] = useState(600)
+  const [bookingForm, setBookingForm] = useState({ name:'Nguyễn Văn An', phone:'0901234567', email:'an@example.com' })
+
+  // Check-in states (100% mobile web-based)
+  const [checkInSubView, setCheckInSubView] = useState<'choice' | 'qr_scan' | 'manual_code' | 'walkin_service' | 'walkin_phone' | 'ticket_issued'>('choice')
+  const [manualCode, setManualCode] = useState('')
   const [walkInService, setWalkInService] = useState('Khám tổng quát')
   const [walkInPhone, setWalkInPhone] = useState('')
-  const [walkInSubmitted, setWalkInSubmitted] = useState(false)
-  const [ticketStatus, setTicketStatus] = useState<'waiting' | 'upcoming' | 'called'>('waiting')
-  const [cameraState, setCameraState] = useState<'camera' | 'denied' | null>(null)
-  const [resendSeconds, setResendSeconds] = useState(60)
-  const [otpDigits, setOtpDigits] = useState(['4','8','2','1','0','7'])
-  const [holdSeconds, setHoldSeconds] = useState(600)
-  const [formSubmitted, setFormSubmitted] = useState(false)
-  const [bookingForm, setBookingForm] = useState({ name:'', phone:'', email:'' })
+  const [issuedTicketNumber, setIssuedTicketNumber] = useState('A-012')
+  const [isPriority, setIsPriority] = useState(true)
+
+  // Tracker states
+  const [trackerStatus, setTrackerStatus] = useState<'waiting' | 'upcoming' | 'called' | 'completed'>('waiting')
+  const [rating, setRating] = useState(5)
+  const [feedbackSent, setFeedbackSent] = useState(false)
+  const [comment, setComment] = useState('')
+
+  // REQ-TICKET-04: Ticket recovery & lookup states
+  const [lookupOpen, setLookupOpen] = useState(false)
+  const [lookupPhone, setLookupPhone] = useState('0901234567')
+  const [lookupResult, setLookupResult] = useState<'active_found' | 'not_found' | null>(null)
 
   useEffect(() => {
-    document.title = 'NextTurn - Booking Widget'
+    document.title = 'NextTurn - Embeddable Modular Widgets'
   }, [])
 
   useEffect(() => {
     if (bookingStep !== 3 || holdSeconds <= 0) return
-    const timer = window.setTimeout(() => setHoldSeconds(value => value - 1), 1000)
+    const timer = window.setTimeout(() => setHoldSeconds(v => v - 1), 1000)
     return () => window.clearTimeout(timer)
   }, [bookingStep, holdSeconds])
 
-  useEffect(() => {
-    if (entryState !== 'otp' || resendSeconds <= 0) return
-    const timer = window.setTimeout(() => setResendSeconds(value => value - 1), 1000)
-    return () => window.clearTimeout(timer)
-  }, [entryState, resendSeconds])
-
   const holdTime = `${String(Math.floor(holdSeconds / 60)).padStart(2, '0')}:${String(holdSeconds % 60).padStart(2, '0')}`
-  const walkInServices = new URLSearchParams(window.location.search).get('walkin') === 'empty'
-    ? []
-    : ['Khám tổng quát', 'Xét nghiệm máu', 'Khám chuyên khoa']
-  const walkInPhoneDisplay = walkInPhone.length > 6
-    ? `${walkInPhone.slice(0, 3)} ${walkInPhone.slice(3, 6)} ${walkInPhone.slice(6)}`
-    : walkInPhone.length > 3
-      ? `${walkInPhone.slice(0, 3)} ${walkInPhone.slice(3)}`
-      : walkInPhone
-  const walkInPhoneError = walkInSubmitted && !/^\d{10}$/.test(walkInPhone)
-  const bookingErrors = {
-    name: formSubmitted && !bookingForm.name.trim(),
-    phone: formSubmitted && !/^\d{10}$/.test(bookingForm.phone),
-    email: formSubmitted && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email),
+
+  const copyEmbed = (text: string) => {
+    navigator.clipboard?.writeText(text)
+    setCopiedSnippet(true)
+    setTimeout(() => setCopiedSnippet(false), 2400)
   }
 
-  const confirmBooking = () => {
-    setFormSubmitted(true)
-    if (bookingForm.name.trim() && /^\d{10}$/.test(bookingForm.phone) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bookingForm.email)) {
-      setBookingStep('success')
+  const handleLookup = () => {
+    const clean = lookupPhone.trim().replace(/\D/g, '')
+    if (clean === '0901234567' || clean.endsWith('4567') || clean === '0912345678') {
+      setLookupResult('active_found')
+    } else {
+      setLookupResult('not_found')
     }
   }
 
+  const restoreFoundTicket = () => {
+    setLookupOpen(false)
+    setActiveMode('tracker')
+    setTrackerStatus('waiting')
+  }
+
+  const embedCodes = {
+    booking: `<iframe\n  src="https://nextturn.vn/widget/st-jude?mode=booking&theme=light&primary=${encodeURIComponent(primaryColor)}&radius=${borderRadius}"\n  width="100%" height="680px" frameborder="0" loading="lazy">\n</iframe>`,
+    checkin: `<iframe\n  src="https://nextturn.vn/widget/st-jude?mode=checkin&theme=light&primary=${encodeURIComponent(primaryColor)}&radius=${borderRadius}"\n  width="100%" height="100vh" frameborder="0" allow="camera">\n</iframe>`,
+    tracker: `<script\n  src="https://nextturn.vn/widget.js"\n  data-tenant="st-jude"\n  data-mode="tracker"\n  data-primary="${primaryColor}">\n</script>`,
+  }
+
+  const QrIcoLocal = ({s=16}:{s?:number}) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2v7h-7v-2"/>
+    </svg>
+  )
+
+  const CodeIcoLocal = ({s=16}:{s?:number}) => (
+    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    </svg>
+  )
+
   const BrandMark = ({ size=32 }: { size?: number }) => (
-    <span className="flex shrink-0 items-center justify-center rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-white" style={{ width:size, height:size }}>
-      <svg width={size * .55} height={size * .55} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <span className="flex shrink-0 items-center justify-center text-white transition-all shadow-xs" style={{ width:size, height:size, borderRadius, backgroundColor:primaryColor }}>
+      <svg width={size * .55} height={size * .55} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/>
       </svg>
     </span>
   )
 
   const PoweredBy = () => (
-    <div className="border-t border-slate-100 px-5 py-3 text-center text-[11px] font-medium leading-relaxed text-slate-400">
-      Bảo mật bởi <span className="font-bold text-slate-500">NextTurn</span>
+    <div className="border-t border-slate-100 bg-white px-5 py-2.5 text-center text-[11px] font-medium leading-relaxed text-slate-400">
+      Bảo mật bởi <span className="font-bold text-slate-600">NextTurn Platform</span>
       <span className="px-1.5">•</span>
-      <button type="button" onClick={() => setEntryState('guest')} className="font-semibold text-slate-500 hover:text-cyan-700">Đăng xuất</button>
+      <button type="button" onClick={() => { setLookupOpen(true); setLookupResult('active_found') }} className="font-semibold text-cyan-700 hover:underline">
+        🔍 Tìm lại vé của tôi (Khôi phục phiên)
+      </button>
     </div>
   )
 
   return (
     <div
-      className="isolate min-h-screen overflow-x-auto bg-slate-100 p-6 text-slate-900"
+      className="isolate min-h-screen bg-slate-100/90 p-5 text-slate-900"
       style={{
-        '--widget-primary':'#0891B2',
-        '--widget-primary-soft':'#ECFEFF',
-        '--widget-radius':'6px',
-        fontFamily:'var(--font-sans)',
+        '--widget-primary': primaryColor,
+        '--widget-radius': borderRadius,
+        fontFamily: 'var(--font-sans)',
       } as React.CSSProperties}
     >
-      <div className="mx-auto mb-5 flex max-w-[1500px] items-center justify-between">
-        <div>
-          <p className="text-xs font-bold leading-relaxed tracking-[0.1em] text-cyan-700">IFRAME WIDGET · CLINICAL PRESET</p>
-          <h1 className="text-xl font-bold leading-relaxed text-slate-900">NextTurn Embeddable Booking</h1>
-        </div>
-        <div className="flex items-center gap-2 rounded-[var(--widget-radius)] border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600">
-          <span className="h-3 w-3 rounded-sm bg-[var(--widget-primary)]"/>
-          Primary <span className="font-tabular">#0891B2</span>
-          <span className="mx-1 h-4 w-px bg-slate-200"/>
-          Radius <span className="font-tabular">6px</span>
+      {/* Top Bar with Mode Switcher & Theming Controls */}
+      <div className="mx-auto mb-5 max-w-[1520px]">
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-md bg-cyan-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-800 border border-cyan-200/80">MODULAR WIDGET SYSTEM</span>
+              <span className="text-[11px] font-medium text-slate-400">1 Codebase · 3 Chế độ chuyên biệt theo ngữ cảnh · 100% Web</span>
+            </div>
+            <h1 className="mt-1 text-lg font-bold text-slate-900">NextTurn Embeddable Widget Suite</h1>
+          </div>
+
+          {/* Mode Switcher Tabs */}
+          <div className="flex items-center rounded-xl border border-slate-200 bg-slate-100/80 p-1">
+            <button
+              type="button"
+              onClick={() => { setActiveMode('booking'); setBookingStep(1) }}
+              className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${activeMode === 'booking' ? 'bg-white text-cyan-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+            >
+              <CalIco s={15}/>
+              <span>Mode 1: Đặt lịch hẹn</span>
+              <span className="rounded bg-cyan-100/70 px-1.5 py-0.2 font-mono text-[9px] text-cyan-800 font-semibold">Web</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setActiveMode('checkin'); setCheckInSubView('choice') }}
+              className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${activeMode === 'checkin' ? 'bg-white text-cyan-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+            >
+              <UsersIco s={15}/>
+              <span>Mode 2: Tiếp nhận sảnh</span>
+              <span className="rounded bg-emerald-100/70 px-1.5 py-0.2 font-mono text-[9px] text-emerald-800 font-semibold">QR Check-in</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setActiveMode('tracker'); setTrackerStatus('waiting') }}
+              className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${activeMode === 'tracker' ? 'bg-white text-cyan-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+            >
+              <TicketIco s={15}/>
+              <span>Mode 3: Vé điện tử thời gian thực</span>
+              <span className="rounded bg-indigo-100/70 px-1.5 py-0.2 font-mono text-[9px] text-indigo-800 font-semibold">Live SSE</span>
+            </button>
+          </div>
+
+          {/* Quick Ticket Recovery & Theme Controls */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
+              className="flex items-center gap-1.5 rounded-xl border border-cyan-300 bg-cyan-50 px-3 py-2 text-xs font-bold text-cyan-800 hover:bg-cyan-100 transition-colors shadow-xs"
+            >
+              <SearchIco s={14}/>
+              <span>Tra cứu vé đã lấy</span>
+            </button>
+
+            <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase">Màu:</span>
+              {[
+                { hex:'#0891B2', name:'Cyan' },
+                { hex:'#2563EB', name:'Blue' },
+                { hex:'#4F46E5', name:'Indigo' },
+                { hex:'#059669', name:'Emerald' },
+              ].map(c => (
+                <button
+                  key={c.hex}
+                  type="button"
+                  title={c.name}
+                  onClick={() => setPrimaryColor(c.hex)}
+                  className={`h-5 w-5 rounded-full transition-transform ${primaryColor === c.hex ? 'ring-2 ring-slate-800 ring-offset-1 scale-110' : 'opacity-70 hover:opacity-100'}`}
+                  style={{ backgroundColor: c.hex }}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => copyEmbed(embedCodes[activeMode])}
+              className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 transition-colors"
+            >
+              <CodeIcoLocal s={14}/>
+              <span>{copiedSnippet ? 'Đã sao chép!' : 'Copy mã Iframe'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto grid min-h-[790px] max-w-[1500px] grid-cols-[300px_420px_1fr] gap-5">
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-5">
-            <h2 className="text-sm font-bold leading-relaxed text-slate-800">Launcher FAB</h2>
-            <p className="text-xs leading-relaxed text-slate-500">Ba trạng thái trên website đối tác</p>
+      {/* Main 3-Column Studio Grid */}
+      <div className="mx-auto grid min-h-[780px] max-w-[1520px] grid-cols-[320px_440px_1fr] gap-5">
+        
+        {/* Left Column: Context Trigger & Launcher Showcase */}
+        <section className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="mb-4">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">ĐIỂM CHẠM KHÁCH HÀNG</span>
+            <h2 className="mt-1 text-sm font-bold text-slate-900">
+              {activeMode === 'booking' ? 'Nút bấm đặt lịch nổi (FAB)' : activeMode === 'checkin' ? 'Bảng in mã QR tại sảnh' : 'Pill thông báo hàng đợi nổi'}
+            </h2>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              {activeMode === 'booking'
+                ? 'Nhúng góc màn hình website đối tác, khách bấm để mở cửa sổ đặt lịch.'
+                : activeMode === 'checkin'
+                  ? 'Bảng mã QR in tĩnh tại cửa ra vào, khách quét bằng camera điện thoại cá nhân.'
+                  : 'Nổi trên website hoặc link SMS/Zalo để khách theo dõi số thứ tự đang gọi.'}
+            </p>
           </div>
-          <div className="space-y-4">
-            {[
-              { label:'Trạng thái nghỉ', type:'idle' },
-              { label:'Đang chờ', type:'active' },
-              { label:'Đang gọi', type:'calling' },
-            ].map(item => (
-              <div key={item.type} className="relative h-44 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                <div className="px-4 py-3 text-[10px] font-bold tracking-[0.08em] text-slate-400">{item.label.toUpperCase()}</div>
-                <div className="absolute bottom-4 right-4 flex items-center justify-end gap-2">
-                  {item.type === 'idle' && (
-                    <>
-                      <span className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-md">Đặt lịch ngay</span>
-                      <button type="button" aria-label="Mở tiện ích đặt lịch" onClick={() => { setEntryState('guest'); setBookingStep(1) }}
-                        className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--widget-primary)] text-white shadow-lg">
-                        <CalIco s={22}/>
-                      </button>
-                    </>
-                  )}
-                  {item.type === 'active' && (
-                    <button type="button" onClick={() => { setEntryState('booking'); setBookingStep('ticket'); setTicketStatus('upcoming') }}
-                      className={`flex min-h-14 items-center gap-3 rounded-full border px-4 ${ticketStatus === 'upcoming' ? 'widget-upcoming-pulse border-amber-300 bg-amber-50 text-amber-900' : 'widget-active-pulse border-blue-200 bg-blue-50 text-blue-900'}`}>
-                      <span className={`h-2.5 w-2.5 rounded-full ${ticketStatus === 'upcoming' ? 'bg-amber-500' : 'bg-blue-500'}`}/>
-                      <span className="font-tabular text-sm font-bold">A-042</span>
-                      <span className={`h-5 w-px ${ticketStatus === 'upcoming' ? 'bg-amber-200' : 'bg-blue-200'}`}/>
-                      <span className="text-xs font-semibold">còn {ticketStatus === 'upcoming' ? '2' : '3'} lượt</span>
+
+          <div className="flex-1 space-y-4">
+            {activeMode === 'booking' && (
+              <div className="space-y-3">
+                <div className="relative h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Trạng thái nghỉ trên website</p>
+                  <p className="mt-1 text-xs text-slate-600">Khách lướt website đối tác</p>
+                  <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
+                      className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-md hover:bg-slate-50 flex items-center gap-1.5"
+                    >
+                      <SearchIco s={12}/>Tìm lại vé
                     </button>
-                  )}
-                  {item.type === 'calling' && (
-                    <button type="button" onClick={() => { setEntryState('booking'); setBookingStep('ticket'); setTicketStatus('called') }}
-                      className="widget-calling-pulse flex min-h-14 items-center gap-3 rounded-full border border-emerald-300 bg-emerald-50 px-4 text-emerald-900">
-                      <ArrowRIco s={20}/>
-                      <span className="text-sm font-bold">Đến Quầy 3!</span>
+                    <button type="button" className="flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg" style={{ backgroundColor: primaryColor }}>
+                      <CalIco s={20}/>
                     </button>
-                  )}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Đặc tính kỹ thuật (SRS Compliance)</p>
+                  <ul className="mt-2 space-y-2 text-xs text-slate-600">
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span>Khóa slot tạm thời trên Valkey (10 phút)</span></li>
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span>Triệt tiêu lỗi đặt trùng lịch tuyệt đối</span></li>
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span>Không cấp vé vào sảnh từ xa (Tránh No-show ảo)</span></li>
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span>Hỗ trợ khôi phục vé bằng số điện thoại</span></li>
+                  </ul>
                 </div>
               </div>
-            ))}
+            )}
+
+            {activeMode === 'checkin' && (
+              <div className="space-y-3">
+                <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-5 text-center">
+                  <div className="rounded-xl border-2 border-slate-800 bg-white p-3 shadow-xs">
+                    <QRCode sz={120}/>
+                  </div>
+                  <p className="mt-3 text-xs font-bold text-slate-900">Bảng QR Check-in tại lối vào</p>
+                  <p className="mt-1 text-[11px] text-slate-500">Khách dùng điện thoại quét mã · Tự làm mới mỗi 60s</p>
+                  <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                    <CheckIco s={12}/>100% Mobile Web trên thiết bị cá nhân
+                  </span>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600">
+                  <p className="font-bold text-slate-800">Quy tắc phân loại vé:</p>
+                  <p className="mt-1.5">▪ <strong>Khách có hẹn trước:</strong> Nhận vé ưu tiên dãy <code>A-xxx</code></p>
+                  <p className="mt-1">▪ <strong>Khách vãng lai:</strong> Nhận vé thường dãy <code>B-xxx</code></p>
+                </div>
+              </div>
+            )}
+
+            {activeMode === 'tracker' && (
+              <div className="space-y-3">
+                <div className="relative h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Pill nổi theo dõi hàng đợi</p>
+                  <div className="absolute bottom-4 right-4 flex flex-col items-end gap-2">
+                    {trackerStatus === 'called' ? (
+                      <div className="widget-calling-pulse flex items-center gap-2.5 rounded-full border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-emerald-900 shadow-md">
+                        <ArrowRIco s={18}/>
+                        <span className="text-xs font-bold">Mời Quầy 3: Số A-042!</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2.5 rounded-full border border-blue-200 bg-white px-3.5 py-2 text-slate-800 shadow-md">
+                        <span className="h-2 w-2 rounded-full bg-cyan-600 animate-pulse"/>
+                        <span className="font-tabular text-xs font-bold">A-042</span>
+                        <span className="h-3 w-px bg-slate-200"/>
+                        <span className="text-[11px] font-medium text-slate-600">còn 2 lượt</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Mô phỏng trạng thái gọi số</p>
+                  <div className="mt-2.5 grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => setTrackerStatus('waiting')} className={`rounded-lg py-1.5 text-xs font-bold transition-colors ${trackerStatus === 'waiting' ? 'bg-blue-600 text-white' : 'bg-white border text-slate-700'}`}>Đang chờ</button>
+                    <button type="button" onClick={() => setTrackerStatus('upcoming')} className={`rounded-lg py-1.5 text-xs font-bold transition-colors ${trackerStatus === 'upcoming' ? 'bg-amber-600 text-white' : 'bg-white border text-slate-700'}`}>Sắp đến</button>
+                    <button type="button" onClick={() => setTrackerStatus('called')} className={`rounded-lg py-1.5 text-xs font-bold transition-colors ${trackerStatus === 'called' ? 'bg-emerald-600 text-white' : 'bg-white border text-slate-700'}`}>Đang gọi số</button>
+                    <button type="button" onClick={() => setTrackerStatus('completed')} className={`rounded-lg py-1.5 text-xs font-bold transition-colors ${trackerStatus === 'completed' ? 'bg-purple-600 text-white' : 'bg-white border text-slate-700'}`}>Đánh giá CSAT</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="flex items-center justify-center rounded-xl border border-slate-200 bg-slate-200/60 p-2">
-          <div className="relative flex max-h-[85vh] w-full max-w-[400px] flex-col overflow-hidden rounded-t-xl bg-slate-50 shadow-[0_20px_25px_-5px_rgba(15,23,42,0.16),0_8px_10px_-6px_rgba(15,23,42,0.10)] md:rounded-[var(--widget-radius)]">
-            <div className="mx-auto mt-2 h-1 w-10 rounded-full bg-slate-300 md:hidden"/>
-            <header className="relative flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3">
+        {/* Center Column: Interactive Widget Viewport (Clean & Context-Specific) */}
+        <section className="flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-200/50 p-3">
+          <div className="relative flex h-[740px] w-full max-w-[410px] flex-col overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200/90">
+            
+            {/* Widget Header */}
+            <header className="flex items-center gap-3 border-b border-slate-100 bg-white px-4 py-3.5">
               <BrandMark size={34}/>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold leading-relaxed text-slate-900">Phòng khám St. Jude</p>
-                <p className="text-[10px] font-semibold leading-relaxed text-emerald-700">{entryState === 'walkin' ? 'Đang nhận khách trực tiếp' : 'Đang nhận lịch hẹn'}</p>
+                <p className="truncate text-sm font-bold text-slate-900">Phòng khám St. Jude</p>
+                <p className="text-[10px] font-semibold text-slate-500">
+                  {activeMode === 'booking' ? 'Cổng đặt lịch hẹn trực tuyến' : activeMode === 'checkin' ? 'Cổng tiếp nhận tại cơ sở' : 'Vé điện tử thời gian thực'}
+                </p>
               </div>
-              <button type="button" onClick={() => setShowMenu(value => !value)} aria-label="Mở menu"
-                className="flex h-9 w-9 items-center justify-center rounded-[var(--widget-radius)] text-slate-500 hover:bg-slate-100">
-                <GripIco s={17}/>
+              <button
+                type="button"
+                onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
+                title="Tra cứu & Khôi phục vé bằng SĐT"
+                className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 hover:text-cyan-800 transition-colors"
+              >
+                <SearchIco s={13}/>
+                <span>Tìm vé</span>
               </button>
-              <button type="button" aria-label="Đóng tiện ích"
-                className="flex h-9 w-9 items-center justify-center rounded-[var(--widget-radius)] text-slate-500 hover:bg-slate-100">
-                <XSmIco s={17}/>
-              </button>
-              {showMenu && (
-                <div className="overlay-enter absolute right-12 top-14 z-30 w-52 rounded-[var(--widget-radius)] border border-slate-200 bg-white p-1.5 shadow-[0_20px_25px_-5px_rgba(15,23,42,0.14),0_8px_10px_-6px_rgba(15,23,42,0.08)]">
-                  <button type="button"
-                    onClick={() => window.open(`${window.location.origin}${window.location.pathname}#widget-ticket-fullscreen`, '_blank', 'noopener,noreferrer')}
-                    className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <MonitorIco s={15}/>Mở toàn màn hình
-                  </button>
-                  <button type="button" onClick={() => { setEntryState('identity'); setShowMenu(false) }}
-                    className="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <CalIco s={15}/>Lịch hẹn của tôi
-                  </button>
-                </div>
-              )}
             </header>
 
-            <div className="flex items-center justify-between gap-3 border-b border-amber-200 bg-amber-50 px-4 py-2 text-amber-900">
-              <span className="flex min-w-0 items-center gap-2 text-[10px] font-semibold leading-relaxed">
-                <span className="shrink-0 animate-spin"><RefreshIco s={13}/></span>
-                <span className="truncate">Mất kết nối thời gian thực — đang thử lại...</span>
+            {/* Quick Recovery Notice Banner for Returning Users */}
+            <div className="flex items-center justify-between border-b border-cyan-100 bg-cyan-50/70 px-4 py-2 text-[11px] text-cyan-900">
+              <span className="flex items-center gap-1.5 truncate">
+                <InfoIco s={13}/>
+                <span>Lỡ đóng web khi đang chờ?</span>
               </span>
-              <span className="shrink-0 font-tabular text-[9px] text-amber-800">Cập nhật lúc 10:42:07</span>
-            </div>
-
-            <div className="grid grid-cols-2 border-b border-slate-200 bg-white p-1.5" role="tablist" aria-label="Hình thức tiếp nhận">
-              <button type="button" role="tab" aria-selected={entryState !== 'walkin'}
-                onClick={() => { setEntryState('booking'); setBookingStep(1) }}
-                className={`min-h-11 rounded-[var(--widget-radius)] px-2 text-[11px] leading-relaxed transition-colors ${entryState !== 'walkin' ? 'bg-[#EFF6FF] font-bold text-[#1E40AF] shadow-sm' : 'font-medium text-slate-500 hover:bg-slate-50'}`}>
-                Đặt lịch hẹn
-              </button>
-              <button type="button" role="tab" aria-selected={entryState === 'walkin'}
-                onClick={() => { setEntryState('walkin'); setWalkInStep(1); setWalkInSubmitted(false) }}
-                className={`min-h-11 rounded-[var(--widget-radius)] px-2 text-[11px] leading-relaxed transition-colors ${entryState === 'walkin' ? 'bg-[#EFF6FF] font-bold text-[#1E40AF] shadow-sm' : 'font-medium text-slate-500 hover:bg-slate-50'}`}>
-                Lấy số ngay tại sảnh
+              <button
+                type="button"
+                onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
+                className="font-bold underline shrink-0 hover:text-cyan-700"
+              >
+                Khôi phục vé ngay
               </button>
             </div>
 
-            {entryState === 'booking' && (
-            <div className="border-b border-slate-200 bg-white px-4 py-3">
-              <div className="flex items-center">
-                {['Chọn dịch vụ','Chọn giờ','Xác nhận'].map((label, index) => {
-                  const stepNumber = index + 1
-                  const currentStep = typeof bookingStep === 'number' ? bookingStep : 4
-                  const isCurrent = currentStep === stepNumber
-                  const isComplete = currentStep > stepNumber
-                  return (
-                    <div key={label} className="flex min-w-0 flex-1 items-center">
-                      <span className={`truncate text-[10px] leading-relaxed ${isCurrent ? 'font-bold text-cyan-800' : isComplete ? 'font-semibold text-emerald-700' : 'font-medium text-slate-400'}`}>
-                        {label}
-                      </span>
-                      {index < 2 && <ArrowRIco s={12}/>}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            )}
+            {/* Content Area Based on Active Mode */}
+            <div className="relative flex-1 overflow-y-auto p-4 bg-slate-50/50">
 
-            {entryState === 'walkin' && (
-              <div className="border-b border-slate-200 bg-white px-4 py-3">
-                <div className="flex items-center">
-                  {['Chọn dịch vụ','Số điện thoại','Nhận vé'].map((label, index) => {
-                    const stepNumber = index + 1
-                    const currentStep = walkInStep === 1 || walkInStep === 'exhausted' ? 1 : walkInStep === 2 ? 2 : 3
-                    const isCurrent = currentStep === stepNumber
-                    const isComplete = currentStep > stepNumber
-                    return (
-                      <div key={label} className="flex min-w-0 flex-1 items-center">
-                        <span className={`truncate text-[10px] leading-relaxed ${isCurrent ? 'font-bold text-cyan-800' : isComplete ? 'font-semibold text-emerald-700' : 'font-medium text-slate-400'}`}>{label}</span>
-                        {index < 2 && <ArrowRIco s={12}/>}
+              {/* ════════════ MODE 1: BOOKING WIDGET ════════════ */}
+              {activeMode === 'booking' && (
+                <div>
+                  {bookingStep !== 'success' && (
+                    <div className="mb-4 flex items-center justify-between border-b border-slate-200/80 bg-white p-2.5 rounded-xl">
+                      {['1. Dịch vụ', '2. Ngày & Giờ', '3. Xác nhận'].map((label, idx) => {
+                        const stepNum = idx + 1
+                        const active = bookingStep === stepNum
+                        const done = (typeof bookingStep === 'number') && bookingStep > stepNum
+                        return (
+                          <div key={label} className="flex items-center gap-1.5">
+                            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${active ? 'bg-cyan-700 text-white' : done ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                              {done ? <CheckIco s={11}/> : stepNum}
+                            </span>
+                            <span className={`text-[11px] ${active ? 'font-bold text-slate-900' : 'text-slate-400 font-medium'}`}>{label}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {/* Step 1: Services */}
+                  {bookingStep === 1 && (
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900">Chọn dịch vụ cần khám</h3>
+                        <p className="mt-0.5 text-xs text-slate-500">Thời gian và bảng giá niêm yết chuẩn</p>
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            <div className="relative min-h-0 flex-1 overflow-y-auto p-4">
-              {entryState === 'guest' && (
-                <div className="dialog-enter flex min-h-[560px] flex-col">
-                  <div className="flex flex-1 flex-col items-center justify-center px-3 text-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 text-cyan-700">
-                      <CalIco s={28}/>
+                      <div className="space-y-2.5">
+                        {[
+                          { name:'Khám tổng quát', time:'15 phút', price:'150.000đ', desc:'Bác sĩ gia đình khám toàn diện' },
+                          { name:'Khám chuyên khoa', time:'30 phút', price:'300.000đ', desc:'Chuyên gia nội/ngoại khoa tư vấn' },
+                          { name:'Xét nghiệm máu', time:'10 phút', price:'220.000đ', desc:'Lấy mẫu xét nghiệm nhanh tại quầy' },
+                          { name:'Tư vấn dinh dưỡng', time:'20 phút', price:'Miễn phí', desc:'Hướng dẫn chế độ ăn lành mạnh' },
+                        ].map(svc => (
+                          <button
+                            key={svc.name}
+                            type="button"
+                            onClick={() => { setSelectedService(svc.name); setBookingStep(2) }}
+                            className={`w-full rounded-xl border p-3.5 text-left transition-all ${selectedService === svc.name ? 'border-cyan-600 bg-white ring-2 ring-cyan-100 shadow-xs' : 'border-slate-200 bg-white hover:border-cyan-300'}`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-slate-900">{svc.name}</span>
+                              <span className="text-xs font-bold text-cyan-800">{svc.price}</span>
+                            </div>
+                            <p className="mt-1 text-[11px] text-slate-500">{svc.desc}</p>
+                            <span className="mt-2 inline-flex rounded bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">{svc.time}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <h3 className="mt-5 text-xl font-bold leading-[1.6] text-slate-900">Đặt lịch nhanh không cần tài khoản</h3>
-                    <p className="mt-2 max-w-xs text-xs leading-[1.6] text-slate-500">Chọn dịch vụ và khung giờ phù hợp. Thông tin lịch hẹn sẽ được gửi trực tiếp đến bạn.</p>
-                    <button type="button" onClick={() => { setEntryState('booking'); setBookingStep(1) }}
-                      className="mt-6 h-[54px] w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                      Đặt lịch ngay
-                    </button>
-                    <button type="button" onClick={() => { setEntryState('otp'); setResendSeconds(60) }}
-                      className="mt-3 h-12 w-full rounded-[var(--widget-radius)] border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:border-cyan-300">
-                      Tra cứu vé của tôi
-                    </button>
-                    <p className="mt-2 text-[10px] leading-relaxed text-slate-400">Tra cứu bằng số điện thoại đã dùng khi đặt lịch.</p>
-                    <div className="mt-5 w-full rounded-[var(--widget-radius)] border border-slate-200 bg-white p-3 text-left shadow-sm">
-                      <div className="flex items-start gap-3">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700"><RefreshIco s={16}/></span>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-bold leading-relaxed text-slate-800">Tiếp tục phiên trước?</p>
-                          <p className="mt-0.5 text-[10px] leading-relaxed text-slate-500">Tra cứu bằng số điện thoại để khôi phục lịch hẹn đang dang dở.</p>
+                  )}
+
+                  {/* Step 2: Date & Slot */}
+                  {bookingStep === 2 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-900">Chọn ngày & khung giờ</h3>
+                          <p className="mt-0.5 text-xs text-slate-500">{selectedService}</p>
                         </div>
+                        <button type="button" onClick={() => setBookingStep(1)} className="text-xs font-semibold text-cyan-700 hover:underline">Đổi dịch vụ</button>
                       </div>
-                      <button type="button" onClick={() => setEntryState('otp')}
-                        className="mt-3 w-full rounded-[var(--widget-radius)] bg-slate-100 py-2 text-[11px] font-bold text-slate-700 hover:bg-slate-200">
-                        Tra cứu bằng số điện thoại
+
+                      {/* Horizontal Date Picker */}
+                      <div className="flex gap-2 overflow-x-auto pb-1">
+                        {[
+                          { day:'T5', date:'01', status:'available' },
+                          { day:'T6', date:'02', status:'selected' },
+                          { day:'T7', date:'03', status:'available' },
+                          { day:'CN', date:'04', status:'full' },
+                          { day:'T2', date:'05', status:'available' },
+                        ].map(d => (
+                          <button
+                            key={d.date}
+                            type="button"
+                            disabled={d.status === 'full'}
+                            className={`min-w-12 rounded-xl border p-2 text-center transition-all ${d.status === 'selected' ? 'border-cyan-600 bg-cyan-50 text-cyan-900 font-bold' : d.status === 'full' ? 'border-slate-100 bg-slate-100 text-slate-300 opacity-50 cursor-not-allowed' : 'border-slate-200 bg-white text-slate-700 hover:border-cyan-300'}`}
+                          >
+                            <span className="block text-[10px] text-slate-400 font-semibold">{d.day}</span>
+                            <span className="block text-sm font-bold">{d.date}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Slots Grid */}
+                      <p className="text-[11px] font-bold text-slate-700 mt-2">Khung giờ khả dụng (Thứ 6, 02/10)</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { time:'08:00', state:'avail' },
+                          { time:'08:30', state:'full' },
+                          { time:'09:00', state:'avail' },
+                          { time:'09:30', state:'avail' },
+                          { time:'10:00', state:'avail' },
+                          { time:'10:30', state:'holding' },
+                          { time:'14:00', state:'avail' },
+                          { time:'14:30', state:'avail' },
+                          { time:'15:00', state:'full' },
+                        ].map(slot => (
+                          <button
+                            key={slot.time}
+                            type="button"
+                            disabled={slot.state === 'full'}
+                            onClick={() => { setSelectedSlot(slot.time); setBookingStep(3) }}
+                            className={`h-10 rounded-xl font-tabular text-xs font-bold transition-all ${slot.time === selectedSlot ? 'border-2 border-cyan-600 bg-cyan-50 text-cyan-900' : slot.state === 'full' ? 'bg-slate-100 text-slate-300 cursor-not-allowed' : slot.state === 'holding' ? 'border border-amber-200 bg-amber-50 text-amber-700' : 'border border-emerald-200 bg-emerald-50/60 text-emerald-800 hover:border-emerald-400'}`}
+                          >
+                            {slot.time}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-3 text-[10px] text-slate-400">
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-emerald-400"/>Còn chỗ</span>
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-amber-400"/>Đang giữ</span>
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-slate-300"/>Đã kín</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: Information & Hold lock */}
+                  {bookingStep === 3 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">
+                        <div>
+                          <p className="text-xs font-bold">Đang giữ chỗ tạm thời</p>
+                          <p className="text-[11px] text-amber-700">{selectedService} · {selectedSlot}, Thứ Sáu</p>
+                        </div>
+                        <span className="font-mono text-sm font-bold bg-white px-2 py-0.5 rounded-lg border border-amber-200">{holdTime}</span>
+                      </div>
+
+                      <div className="space-y-2.5 rounded-xl border border-slate-200 bg-white p-3.5">
+                        <label className="block">
+                          <span className="text-[11px] font-semibold text-slate-600">Họ và tên</span>
+                          <input
+                            value={bookingForm.name}
+                            onChange={e => setBookingForm(f => ({ ...f, name:e.target.value }))}
+                            className="mt-1 h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs outline-none focus:bg-white focus:border-cyan-600"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-[11px] font-semibold text-slate-600">Số điện thoại</span>
+                          <input
+                            value={bookingForm.phone}
+                            onChange={e => setBookingForm(f => ({ ...f, phone:e.target.value }))}
+                            className="mt-1 h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs outline-none font-tabular focus:bg-white focus:border-cyan-600"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-[11px] font-semibold text-slate-600">Email nhận xác nhận</span>
+                          <input
+                            value={bookingForm.email}
+                            onChange={e => setBookingForm(f => ({ ...f, email:e.target.value }))}
+                            className="mt-1 h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs outline-none focus:bg-white focus:border-cyan-600"
+                          />
+                        </label>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setBookingStep('success')}
+                        className="h-11 w-full rounded-xl text-xs font-bold text-white shadow-xs transition-colors"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        Xác nhận đặt hẹn ngay
                       </button>
                     </div>
-                  </div>
-                </div>
-              )}
+                  )}
 
-              {entryState === 'otp' && (
-                <div className="dialog-enter min-h-[560px]">
-                  <button type="button" onClick={() => setEntryState('guest')} className="mb-4 flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-cyan-700">
-                    <span className="rotate-180"><ArrowRIco s={14}/></span>Quay lại
-                  </button>
-                  <h3 className="text-lg font-bold leading-relaxed text-slate-900">Xác thực số điện thoại</h3>
-                  <p className="mt-1 text-xs leading-[1.6] text-slate-500">Nhập số điện thoại để nhận mã xác thực một lần.</p>
-                  <div className="mt-5 flex gap-2">
-                    <input type="tel" inputMode="numeric" placeholder="090 123 4567"
-                      className="min-w-0 flex-1 rounded-[var(--widget-radius)] border border-slate-200 bg-white px-3 text-sm outline-none focus:border-cyan-500"/>
-                    <button type="button" onClick={() => setResendSeconds(60)}
-                      className="h-11 shrink-0 rounded-[var(--widget-radius)] bg-[var(--widget-primary)] px-4 text-xs font-bold text-white">
-                      Gửi mã
-                    </button>
-                  </div>
-                  <div className="mt-6 flex items-center justify-between">
-                    <p className="text-xs font-bold leading-relaxed text-slate-700">Nhập mã gồm 6 chữ số</p>
-                    <span className="font-tabular text-[11px] font-semibold text-slate-500">
-                      Gửi lại sau {String(Math.floor(resendSeconds / 60)).padStart(2, '0')}:{String(resendSeconds % 60).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div className="mt-3 grid grid-cols-6 gap-2">
-                    {otpDigits.map((digit, index) => (
-                      <input key={index} value={digit} inputMode="numeric" maxLength={1}
-                        aria-label={`Chữ số OTP thứ ${index + 1}`}
-                        onChange={event => setOtpDigits(values => values.map((value, valueIndex) => valueIndex === index ? event.target.value.replace(/\D/g, '').slice(-1) : value))}
-                        className="aspect-square min-w-0 rounded-[var(--widget-radius)] border border-red-300 bg-white text-center font-tabular text-lg font-bold text-slate-900 outline-none focus:border-cyan-500"/>
-                    ))}
-                  </div>
-                  <div className="mt-3 rounded-[var(--widget-radius)] border border-red-100 bg-red-50 p-3">
-                    <p className="text-xs font-semibold leading-[1.6] text-red-700">Mã xác thực không chính xác. Vui lòng kiểm tra và thử lại.</p>
-                    <p className="mt-1 text-[10px] leading-relaxed text-red-600">Bạn còn 2 lần thử trước khi mã bị khóa tạm thời.</p>
-                  </div>
-                  <button type="button" onClick={() => setEntryState('identity')}
-                    className="mt-5 h-[54px] w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                    Xác nhận mã
-                  </button>
-                </div>
-              )}
+                  {/* Booking Success Confirmation */}
+                  {bookingStep === 'success' && (
+                    <div className="flex flex-col items-center justify-center p-4 text-center">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50">
+                        <CheckIco s={28}/>
+                      </div>
+                      <h3 className="mt-4 text-base font-bold text-slate-900">Đặt lịch hẹn thành công!</h3>
+                      <p className="mt-1 text-xs text-slate-500">Mã lịch hẹn đã được bảo lưu an toàn</p>
 
-              {entryState === 'identity' && (
-                <div className="dialog-enter min-h-[560px]">
-                  <div className="mb-5 flex items-center gap-3 rounded-[var(--widget-radius)] border border-cyan-100 bg-cyan-50 p-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cyan-700 text-sm font-bold text-white">MA</div>
-                    <div>
-                      <p className="text-sm font-bold leading-relaxed text-slate-900">Xin chào, Minh Anh</p>
-                      <p className="text-[10px] leading-relaxed text-cyan-800">Danh tính đã được kế thừa an toàn</p>
-                    </div>
-                  </div>
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-base font-bold leading-relaxed text-slate-900">Lịch hẹn của tôi</h3>
-                    <button type="button" onClick={() => { setEntryState('booking'); setBookingStep(1) }} className="text-xs font-bold text-cyan-700">Đặt lịch mới</button>
-                  </div>
-                  <div className="space-y-2.5">
-                    {[
-                      { service:'Khám tổng quát', time:'09:30 · 02/10', status:'CONFIRMED', badge:'bg-blue-50 text-blue-800', cancellable:true },
-                      { service:'Xét nghiệm máu', time:'10:15 · Hôm nay', status:'CHECKED_IN', badge:'bg-cyan-50 text-cyan-800' },
-                      { service:'Tư vấn kết quả', time:'14:00 · 26/09', status:'COMPLETED', badge:'bg-slate-100 text-slate-600' },
-                      { service:'Khám chuyên khoa', time:'08:00 · 21/09', status:'NO_SHOW', badge:'bg-red-50 text-red-800' },
-                      { service:'Tiêm phòng', time:'15:30 · 18/09', status:'CANCELLED', badge:'bg-slate-100 text-slate-500' },
-                    ].map(item => (
-                      <div key={`${item.service}-${item.status}`} className="rounded-[var(--widget-radius)] border border-slate-200 bg-white p-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <p className="text-xs font-bold leading-relaxed text-slate-800">{item.service}</p>
-                            <p className="mt-0.5 font-tabular text-[10px] text-slate-500">{item.time}</p>
-                          </div>
-                          <span className={`rounded px-2 py-1 font-tabular text-[9px] font-bold ${item.badge}`}>{item.status}</span>
+                      <div className="mt-4 w-full rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MÃ CUỘC HẸN</p>
+                        <p className="mt-1 font-mono text-lg font-bold text-cyan-800">APT-20261031-0042</p>
+                        <div className="mt-3 border-t border-slate-100 pt-3 text-left text-xs space-y-1 text-slate-600">
+                          <p><strong>Dịch vụ:</strong> {selectedService}</p>
+                          <p><strong>Thời gian:</strong> {selectedSlot} · Thứ Sáu, 02/10</p>
+                          <p><strong>Khách hàng:</strong> {bookingForm.name} ({bookingForm.phone})</p>
                         </div>
-                        {item.cancellable && (
-                          <div className="mt-3 flex gap-2 border-t border-slate-100 pt-2.5">
-                            <button type="button" className="rounded border border-slate-200 px-3 py-1.5 text-[10px] font-semibold text-red-700 hover:bg-red-50">Hủy</button>
-                            <button type="button" className="rounded border border-slate-200 px-3 py-1.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-50">Đổi giờ</button>
-                            <span className="ml-auto self-center text-[9px] text-slate-400">Trước hạn hủy</span>
-                          </div>
-                        )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
-              {entryState === 'walkin' && walkInStep === 1 && (
-                <div className="dialog-enter">
-                  <div className="mb-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-blue-700">Khách vãng lai</p>
-                    <h3 className="mt-1 text-lg font-bold leading-relaxed text-slate-900">Chọn dịch vụ đang hoạt động</h3>
-                    <p className="mt-1 text-xs leading-relaxed text-slate-500">Số lượt còn nhận được cập nhật theo thời gian thực.</p>
-                  </div>
-                  {walkInServices.length ? (
-                    <div className="space-y-2">
-                    {walkInServices.map((service, index) => (
-                      <button key={service} type="button" data-service-state="ACTIVE"
-                        onClick={() => {
-                          setWalkInService(service)
-                          setWalkInStep(index === 2 ? 'exhausted' : 2)
-                        }}
-                        className="group flex min-h-12 w-full items-center rounded-[var(--widget-radius)] border border-slate-200 bg-white px-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-[var(--shadow-hover)] focus:outline-none focus:ring-2 focus:ring-blue-100">
-                        <span className="min-w-0 flex-1 truncate text-[15px] font-medium leading-[1.6] text-[#0F172A]">{service}</span>
-                        <span className="ml-3 inline-flex shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-bold leading-none text-[#065F46]">
-                          Còn nhận khách
-                        </span>
-                        <span className="ml-1.5 flex w-0 translate-x-1 items-center overflow-hidden text-blue-600 opacity-0 transition-all duration-200 group-hover:w-4 group-hover:translate-x-0 group-hover:opacity-100 group-focus:w-4 group-focus:translate-x-0 group-focus:opacity-100">
-                          <ArrowRIco s={14}/>
-                        </span>
-                      </button>
-                    ))}
-                    </div>
-                  ) : (
-                    <div className="flex min-h-[300px] flex-col items-center justify-center rounded-[var(--widget-radius)] border border-dashed border-blue-100 bg-blue-50/30 px-6 text-center">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-blue-100 bg-white text-slate-500">
-                        <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M8 6h13M8 12h13M8 18h8"/><circle cx="3.5" cy="6" r=".7"/><circle cx="3.5" cy="12" r=".7"/><circle cx="3.5" cy="18" r=".7"/>
-                        </svg>
+                      <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/60 p-3 text-left text-xs text-blue-900 leading-relaxed">
+                        <p className="font-bold flex items-center gap-1.5"><InfoIco s={14}/>Hướng dẫn khi đến khám:</p>
+                        <p className="mt-1 text-[11px] text-blue-800">Khi đến cơ sở, bạn chỉ cần mở camera điện thoại quét mã QR tại sảnh hoặc đưa mã số <code>APT-0042</code> cho nhân viên quầy tiếp đón để nhận số thứ tự ưu tiên.</p>
                       </div>
-                      <p className="mt-4 max-w-[260px] text-sm leading-[1.6] text-[#64748B]">Hiện không có dịch vụ nào tiếp nhận khách vãng lai.</p>
+
+                      <button
+                        type="button"
+                        onClick={() => { setActiveMode('tracker'); setTrackerStatus('waiting') }}
+                        className="mt-4 h-10 w-full rounded-xl bg-slate-900 text-xs font-bold text-white hover:bg-slate-800"
+                      >
+                        Chuyển sang xem Vé điện tử
+                      </button>
                     </div>
                   )}
                 </div>
               )}
 
-              {entryState === 'walkin' && walkInStep === 2 && (
-                <div className="dialog-enter">
-                  <button type="button" onClick={() => { setWalkInStep(1); setWalkInSubmitted(false) }}
-                    className="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-700">
-                    <span className="rotate-180"><ArrowRIco s={14}/></span>Chọn lại dịch vụ
-                  </button>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-blue-700">{walkInService}</p>
-                    <h3 className="mt-1 text-lg font-bold leading-relaxed text-[#0F172A]">Nhập số điện thoại để nhận vé</h3>
-                  </div>
-                  <label className="mt-5 block">
-                    <span className="mb-1.5 block text-sm font-semibold leading-relaxed text-[#0F172A]">Số điện thoại</span>
-                    <input type="tel" inputMode="numeric" autoComplete="tel" value={walkInPhoneDisplay}
-                      onChange={event => {
-                        setWalkInPhone(event.target.value.replace(/\D/g, '').slice(0, 10))
-                        setWalkInSubmitted(false)
-                      }}
-                      placeholder="090 123 4567"
-                      aria-invalid={walkInPhoneError}
-                      className={`h-12 w-full rounded-[var(--widget-radius)] border bg-white px-3 font-tabular text-sm outline-none transition-shadow focus:ring-4 focus:ring-blue-50 ${walkInPhoneError ? 'border-red-500 focus:border-red-500' : 'border-[#E2E8F0] focus:border-blue-500'}`}/>
-                    {walkInPhoneError && <span className="mt-1.5 flex items-center gap-1.5 text-[11px] font-semibold leading-relaxed text-red-600"><AlertIco s={12}/>Số điện thoại phải đủ 10 chữ số.</span>}
-                  </label>
-                  <p className="mt-2 text-[11px] leading-[1.6] text-slate-500">Hệ thống sẽ gửi mã số thứ tự qua tin nhắn.</p>
-                  <button type="button"
-                    onClick={() => {
-                      setWalkInSubmitted(true)
-                      if (/^\d{10}$/.test(walkInPhone)) {
-                        setTicketStatus('waiting')
-                        setWalkInStep('ticket')
-                      }
-                    }}
-                    className="mt-6 h-[54px] w-full rounded-[var(--widget-radius)] bg-[#2563EB] text-sm font-bold text-white transition-colors hover:bg-blue-700">
-                    Lấy số ngay
-                  </button>
+              {/* ════════════ MODE 2: LOBBY CHECK-IN & WALKIN ════════════ */}
+              {activeMode === 'checkin' && (
+                <div className="space-y-4">
+                  {checkInSubView === 'choice' && (
+                    <div className="space-y-3 pt-2">
+                      <div className="text-center mb-4">
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200/80">ĐÓN TIẾP TẠI CƠ SỞ</span>
+                        <h3 className="mt-2 text-base font-bold text-slate-900">Chào mừng quý khách đến cơ sở</h3>
+                        <p className="mt-1 text-xs text-slate-500">Vui lòng chọn hình thức tiếp nhận bên dưới</p>
+                      </div>
+
+                      {/* Card 1: Check in existing appointment */}
+                      <div className="rounded-2xl border-2 border-cyan-600/80 bg-white p-4 shadow-sm">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 border border-cyan-200">
+                            <QrIcoLocal s={22}/>
+                          </div>
+                          <div>
+                            <span className="rounded bg-cyan-100 px-2 py-0.5 text-[9px] font-bold text-cyan-800 uppercase">ƯU TIÊN THEO LỊCH</span>
+                            <h4 className="mt-1 text-sm font-bold text-slate-900">Tôi đã đặt lịch hẹn trước</h4>
+                            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">Quét mã QR tại cửa hoặc nhập mã hẹn/SĐT để xác nhận đã có mặt.</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setCheckInSubView('qr_scan')}
+                            className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800 transition-colors"
+                          >
+                            <QrIcoLocal s={14}/>Quét mã QR
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setCheckInSubView('manual_code')}
+                            className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+                          >
+                            Nhập mã hẹn
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Card 2: Walk-in ticket */}
+                      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <TicketIco s={22}/>
+                          </div>
+                          <div>
+                            <span className="rounded bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-800 uppercase">TIẾP NHẬN TRỰC TIẾP</span>
+                            <h4 className="mt-1 text-sm font-bold text-slate-900">Khách vãng lai (Chưa đặt hẹn)</h4>
+                            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">Lấy số thứ tự khám trực tiếp theo lượt tiếp nhận hôm nay.</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setCheckInSubView('walkin_service')}
+                          className="mt-4 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800 transition-colors"
+                        >
+                          Lấy số khám trực tiếp ngay
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* QR Scan Simulation */}
+                  {checkInSubView === 'qr_scan' && (
+                    <div className="dialog-enter rounded-xl border border-slate-200 bg-slate-900 text-white p-5 text-center">
+                      <div className="flex items-center justify-between mb-3 text-left">
+                        <p className="text-xs font-bold">Camera quét mã QR tại quầy đón tiếp</p>
+                        <button type="button" onClick={() => setCheckInSubView('choice')} className="text-slate-400 hover:text-white"><XSmIco s={16}/></button>
+                      </div>
+                      <div className="relative mx-auto my-3 h-48 w-48 rounded-xl border-2 border-dashed border-cyan-400 flex items-center justify-center bg-slate-950">
+                        <span className="absolute inset-x-2 top-1/2 h-0.5 bg-cyan-400 shadow-[0_0_8px_#38BDF8] animate-pulse"/>
+                        <p className="text-[10px] text-slate-400">Đưa mã QR sảnh vào khung hình</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIssuedTicketNumber('A-012')
+                          setIsPriority(true)
+                          setCheckInSubView('ticket_issued')
+                        }}
+                        className="mt-3 h-10 w-full rounded-xl bg-cyan-600 text-xs font-bold text-white hover:bg-cyan-500"
+                      >
+                        [Mô phỏng] Quét thành công
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Manual Code Check-in */}
+                  {checkInSubView === 'manual_code' && (
+                    <div className="dialog-enter rounded-xl border border-slate-200 bg-white p-4">
+                      <button type="button" onClick={() => setCheckInSubView('choice')} className="mb-3 text-xs font-semibold text-slate-500 hover:underline">← Quay lại</button>
+                      <h4 className="text-sm font-bold text-slate-900">Nhập mã cuộc hẹn hoặc SĐT</h4>
+                      <p className="mt-0.5 text-xs text-slate-500">Mã được cấp lúc đặt lịch trước (VD: APT-0042)</p>
+                      <input
+                        value={manualCode}
+                        onChange={e => setManualCode(e.target.value)}
+                        placeholder="APT-20261031-0042 hoặc 0901234567"
+                        className="mt-3 h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-mono outline-none focus:bg-white focus:border-cyan-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIssuedTicketNumber('A-012')
+                          setIsPriority(true)
+                          setCheckInSubView('ticket_issued')
+                        }}
+                        className="mt-3 h-10 w-full rounded-xl bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800"
+                      >
+                        Xác nhận Check-in
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Walk-in Service Selection */}
+                  {checkInSubView === 'walkin_service' && (
+                    <div className="dialog-enter space-y-3">
+                      <button type="button" onClick={() => setCheckInSubView('choice')} className="text-xs font-semibold text-slate-500 hover:underline">← Quay lại</button>
+                      <h4 className="text-sm font-bold text-slate-900">Chọn dịch vụ khám vãng lai</h4>
+                      <div className="space-y-2">
+                        {['Khám tổng quát', 'Xét nghiệm máu', 'Khám chuyên khoa'].map(s => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => { setWalkInService(s); setCheckInSubView('walkin_phone') }}
+                            className="w-full rounded-xl border border-slate-200 bg-white p-3 text-left hover:border-emerald-500 hover:bg-emerald-50/40 flex items-center justify-between"
+                          >
+                            <span className="text-xs font-bold text-slate-900">{s}</span>
+                            <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">Còn nhận</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Walk-in Phone Input */}
+                  {checkInSubView === 'walkin_phone' && (
+                    <div className="dialog-enter space-y-3 rounded-xl border border-slate-200 bg-white p-4">
+                      <button type="button" onClick={() => setCheckInSubView('walkin_service')} className="text-xs font-semibold text-slate-500 hover:underline">← Quay lại</button>
+                      <h4 className="text-sm font-bold text-slate-900">Nhập SĐT nhận vé điện tử ({walkInService})</h4>
+                      <input
+                        type="tel"
+                        value={walkInPhone}
+                        onChange={e => setWalkInPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                        placeholder="090 123 4567"
+                        className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 font-tabular text-sm outline-none focus:bg-white focus:border-emerald-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIssuedTicketNumber('B-015')
+                          setIsPriority(false)
+                          setCheckInSubView('ticket_issued')
+                        }}
+                        className="h-10 w-full rounded-xl bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800"
+                      >
+                        Nhận vé điện tử ngay
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Issued Ticket Display */}
+                  {checkInSubView === 'ticket_issued' && (
+                    <div className="dialog-enter text-center p-3">
+                      <span className={`inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase ${isPriority ? 'bg-cyan-100 text-cyan-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                        {isPriority ? 'VÉ ƯU TIÊN (ĐÃ HẸN TRƯỚC)' : 'VÉ VÃNG LAI HÔM NAY'}
+                      </span>
+                      <p className="mt-3 text-xs text-slate-400">SỐ THỨ TỰ CỦA QUÝ KHÁCH</p>
+                      <p className="font-mono text-4xl font-bold tracking-tight text-slate-900 mt-1">{issuedTicketNumber}</p>
+                      <p className="mt-1 text-xs font-bold text-slate-700">{isPriority ? 'Khám tổng quát (Lịch hẹn 10:00)' : walkInService}</p>
+
+                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600 space-y-1 text-left">
+                        <p>▪ <strong>Vị trí hàng đợi:</strong> Còn 2 người phía trước</p>
+                        <p>▪ <strong>Thời gian chờ ước tính:</strong> ≈ 6 phút</p>
+                        <p>▪ <strong>Quầy tiếp nhận:</strong> Quầy 1 hoặc Quầy 3</p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => { setActiveMode('tracker'); setTrackerStatus('waiting') }}
+                        className="mt-4 h-11 w-full rounded-xl bg-slate-900 text-xs font-bold text-white hover:bg-slate-800"
+                      >
+                        Mở theo dõi vé trực tiếp
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {entryState === 'walkin' && walkInStep === 'ticket' && (
-                <div className="dialog-enter" data-ticket-state="WAITING" data-position-updates="live via SSE">
-                  <div className="mb-4 flex items-start justify-between gap-3">
+              {/* ════════════ MODE 3: LIVE TRACKER & E-TICKET ════════════ */}
+              {activeMode === 'tracker' && (
+                <div className="space-y-4">
+                  {trackerStatus !== 'completed' ? (
                     <div>
-                      <p className="text-[11px] font-bold leading-relaxed tracking-[0.08em] text-blue-700">VÉ ĐIỆN TỬ</p>
-                      <h3 className="text-lg font-bold leading-relaxed text-[#0F172A]">Lấy số thành công</h3>
-                    </div>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-800">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-600"/>WAITING
-                    </span>
-                  </div>
-
-                  <div className="relative overflow-hidden rounded-[10px] border border-[#E2E8F0] bg-white shadow-sm">
-                    <div className="px-5 py-7 text-center">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">SỐ THỨ TỰ</p>
-                      <p className="mt-1 font-tabular text-[40px] font-bold leading-none tracking-tight text-[#0F172A]">B-015</p>
-                      <p className="mt-3 text-sm font-bold leading-[1.6] text-[#0F172A]">{walkInService}</p>
-                    </div>
-                    <div className="relative border-t border-dashed border-[#E2E8F0] px-5 py-5">
-                      <span className="absolute -left-2 top-[-9px] h-4 w-4 rounded-full border-r border-[#E2E8F0] bg-slate-50"/>
-                      <span className="absolute -right-2 top-[-9px] h-4 w-4 rounded-full border-l border-[#E2E8F0] bg-slate-50"/>
-                      <p className="text-[15px] font-semibold leading-[1.6] text-[#0F172A]">còn 4 người phía trước</p>
-                      <p className="mt-1 font-tabular text-[13px] font-medium leading-[1.6] text-[#475569]">≈ 12 phút</p>
-                      <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#EFF6FF]">
-                        <div className="h-full w-[42%] rounded-full bg-[#2563EB]"/>
-                      </div>
-                      <div className="mt-2 flex justify-between text-[9px] leading-relaxed text-slate-400">
-                        <span>Đã nhận vé</span><span>Đến lượt</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" onClick={() => { setEntryState('otp'); setResendSeconds(60) }}
-                    className="mt-4 h-12 w-full rounded-[var(--widget-radius)] border border-blue-200 bg-white text-sm font-bold text-blue-700 transition-colors hover:bg-[#EFF6FF]">
-                    Tra cứu vé của tôi
-                  </button>
-                </div>
-              )}
-
-              {entryState === 'walkin' && walkInStep === 'exhausted' && (
-                <div className="dialog-enter flex min-h-[470px] flex-col items-center justify-center text-center">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#FFFBEB] text-[#F59E0B] ring-8 ring-amber-50/60">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M8 2h8"/>
-                    </svg>
-                  </div>
-                  <h3 className="mt-7 text-[18px] font-bold leading-[1.45] text-[#0F172A]">Ngừng tiếp nhận khách vãng lai</h3>
-                  <p className="mt-3 text-[15px] leading-[1.6] text-[#475569]">Dịch vụ này hiện đã ngưng phát số tiếp nhận trực tiếp cho ca làm việc hôm nay. Quý khách vui lòng đặt lịch hẹn trước vào các ngày tiếp theo trên hệ thống.</p>
-                  <button type="button" onClick={() => { setEntryState('booking'); setBookingStep(1) }}
-                    className="mt-8 flex h-[54px] w-full items-center justify-center gap-2 rounded-[var(--widget-radius)] bg-[#2563EB] text-sm font-bold text-white transition-colors hover:bg-blue-700">
-                    <CalIco s={17}/>Đặt lịch hẹn trước
-                  </button>
-                </div>
-              )}
-
-              {entryState === 'booking' && bookingStep === 1 && (
-                <div className="dialog-enter">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-bold leading-relaxed text-slate-900">Chọn dịch vụ</h3>
-                    <p className="text-xs leading-relaxed text-slate-500">Chọn nội dung bạn muốn đặt lịch tại cơ sở.</p>
-                  </div>
-                  <div className="space-y-2.5">
-                    {[
-                      ['Khám tổng quát','15 phút','150.000đ'],
-                      ['Khám chuyên khoa','30 phút','300.000đ'],
-                      ['Tư vấn kết quả','20 phút','Miễn phí'],
-                    ].map(([name,duration,price], index) => (
-                      <button key={name} type="button"
-                        className={`w-full rounded-[var(--widget-radius)] border bg-white p-4 text-left transition-colors ${index === 0 ? 'border-cyan-600 ring-2 ring-cyan-100' : 'border-slate-200 hover:border-cyan-300'}`}>
-                        <span className="flex items-center justify-between gap-3">
-                          <span className="text-sm font-bold leading-relaxed text-slate-800">{name}</span>
-                          <span className="text-xs font-bold leading-relaxed text-cyan-700">{price}</span>
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">VÉ ĐIỆN TỬ SỐ</span>
+                          <h3 className="text-xs font-bold text-slate-800">Khám tổng quát · Phòng 102</h3>
+                        </div>
+                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${trackerStatus === 'called' ? 'bg-emerald-100 text-emerald-800 widget-calling-pulse' : trackerStatus === 'upcoming' ? 'bg-amber-100 text-amber-800' : 'bg-blue-50 text-blue-800'}`}>
+                          {trackerStatus === 'called' ? 'ĐANG ĐƯỢC GỌI!' : trackerStatus === 'upcoming' ? 'SẮP ĐẾN LƯỢT' : 'ĐANG CHỜ'}
                         </span>
-                        <span className="mt-2 inline-flex rounded bg-slate-100 px-2 py-1 font-tabular text-[11px] font-semibold text-slate-600">{duration}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <button type="button" onClick={() => setBookingStep(2)}
-                    className="mt-5 w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] py-3 text-sm font-bold text-white">
-                    Tiếp tục chọn thời gian
-                  </button>
-                </div>
-              )}
-
-              {entryState === 'booking' && bookingStep === 2 && (
-                <div className="dialog-enter">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-bold leading-relaxed text-slate-900">Chọn ngày và giờ</h3>
-                    <p className="text-xs leading-relaxed text-slate-500">Các ngày ngoài chính sách đặt lịch sẽ bị vô hiệu hóa.</p>
-                  </div>
-                  <div className="-mx-1 mb-5 flex gap-2 overflow-x-auto px-1 pb-2">
-                    {[
-                      ['T4','30','disabled'],
-                      ['T5','01','available'],
-                      ['T6','02','selected'],
-                      ['T7','03','available'],
-                      ['CN','04','available'],
-                      ['T2','30','disabled'],
-                    ].map(([day,date,status]) => (
-                      <button key={`${day}-${date}`} type="button" disabled={status === 'disabled'}
-                        className={`min-w-14 rounded-[var(--widget-radius)] border px-2 py-2 text-center ${status === 'selected' ? 'border-cyan-600 bg-cyan-50 text-cyan-900' : status === 'disabled' ? 'cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300 opacity-50' : 'border-slate-200 bg-white text-slate-600 hover:border-cyan-300'}`}>
-                        <span className="block text-[10px] font-semibold leading-relaxed">{day}</span>
-                        <span className="block font-tabular text-base font-bold">{date}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="text-xs font-bold leading-relaxed text-slate-700">Khung giờ khả dụng</p>
-                    <p className="font-tabular text-[10px] text-slate-400">15 phút / lượt</p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      ['08:00','available'],['08:30','full'],['09:00','available'],
-                      ['09:30','available'],['10:00','holding'],['10:30','full'],
-                      ['11:00','available'],['13:30','available'],['14:00','full'],
-                    ].map(([time,status]) => (
-                      <button key={time} type="button" disabled={status === 'full'}
-                        onClick={() => status !== 'full' && setBookingStep(3)}
-                        className={`flex h-11 items-center justify-center gap-1.5 rounded-[var(--widget-radius)] font-tabular text-xs font-bold ${status === 'full' ? 'cursor-not-allowed bg-slate-100 text-slate-400' : status === 'holding' ? 'border border-amber-200 bg-amber-50 text-amber-800' : 'border border-emerald-200 bg-emerald-50 text-emerald-900 hover:border-emerald-400'}`}>
-                        {status === 'full' && <LockIco s={13}/>}
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-3 text-[10px] font-medium text-slate-500">
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-emerald-100"/>Còn chỗ</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-slate-200"/>Đã đầy</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm bg-amber-100"/>Đang giữ</span>
-                  </div>
-                </div>
-              )}
-
-              {entryState === 'booking' && bookingStep === 3 && (
-                <div className="dialog-enter -m-4 min-h-full bg-slate-200/60 pt-10">
-                  <div className="rounded-t-xl border-t border-slate-200 bg-white px-4 pb-5 pt-2 shadow-[0_-12px_30px_-12px_rgba(15,23,42,0.20)]">
-                    <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300"/>
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <div>
-                        <h3 className="text-base font-bold leading-relaxed text-slate-900">Xác nhận thông tin</h3>
-                        <p className="text-[11px] leading-relaxed text-slate-500">Giữ chỗ 10:00 · Thứ Sáu, 02/10</p>
                       </div>
-                      <div className="rounded-[var(--widget-radius)] bg-amber-50 px-3 py-2 text-center text-amber-800">
-                        <p className="text-[9px] font-bold tracking-wide">GIỮ CHỖ</p>
-                        <p className="font-tabular text-sm font-bold">{holdTime}</p>
+
+                      {/* Main E-Ticket Display Card */}
+                      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div className="p-5 text-center">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">SỐ THỨ TỰ CỦA BẠN</p>
+                          <p className="mt-1 font-mono text-4xl font-bold tracking-tight text-slate-900">A-042</p>
+                          {trackerStatus === 'called' ? (
+                            <div className="mt-3 rounded-xl border border-emerald-300 bg-emerald-50 p-2.5 text-xs font-bold text-emerald-800 animate-bounce">
+                              🔔 Mời bạn đến Quầy số 3 ngay bây giờ!
+                            </div>
+                          ) : (
+                            <p className="mt-2 text-xs font-semibold text-slate-600">
+                              {trackerStatus === 'upcoming' ? 'Chuẩn bị: Còn 1 lượt khám phía trước' : 'Còn 2 người phía trước (≈ 6 phút)'}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="border-t border-dashed border-slate-200 bg-slate-50/70 p-4">
+                          <div className="flex justify-between text-[11px] text-slate-500 font-medium">
+                            <span>Tiến độ hàng đợi</span>
+                            <span className="font-bold text-slate-700">{trackerStatus === 'called' ? '100%' : trackerStatus === 'upcoming' ? '85%' : '60%'}</span>
+                          </div>
+                          <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+                            <div
+                              className={`h-full transition-all duration-500 rounded-full ${trackerStatus === 'called' ? 'bg-emerald-600' : 'bg-cyan-600'}`}
+                              style={{ width: trackerStatus === 'called' ? '100%' : trackerStatus === 'upcoming' ? '85%' : '60%' }}
+                            />
+                          </div>
+
+                          <div className="mt-4 flex items-center justify-between text-[11px] text-slate-600">
+                            <span>Chuông báo âm thanh</span>
+                            <span className="flex items-center gap-1 font-bold text-emerald-700"><CheckIco s={12}/>Bật</span>
+                          </div>
+                        </div>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setTrackerStatus('completed')}
+                        className="mt-4 h-10 w-full rounded-xl border border-purple-200 bg-purple-50 text-xs font-bold text-purple-700 hover:bg-purple-100 transition-colors"
+                      >
+                        [Mô phỏng] Hoàn thành khám → Đánh giá CSAT
+                      </button>
                     </div>
-                    <div className="space-y-3">
-                      <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold leading-relaxed text-slate-600">Họ tên</span>
-                        <input value={bookingForm.name} onChange={event => setBookingForm(form => ({ ...form, name:event.target.value }))}
-                          className={`w-full rounded-[var(--widget-radius)] border bg-white px-3 py-2.5 text-sm outline-none ${bookingErrors.name ? 'border-red-400' : 'border-slate-200 focus:border-cyan-500'}`}/>
-                        {bookingErrors.name && <span className="mt-1 block text-[10px] leading-relaxed text-red-600">Vui lòng nhập họ tên.</span>}
-                      </label>
-                      <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold leading-relaxed text-slate-600">SĐT</span>
-                        <input value={bookingForm.phone} inputMode="numeric" onChange={event => setBookingForm(form => ({ ...form, phone:event.target.value.replace(/\D/g, '').slice(0, 10) }))}
-                          className={`w-full rounded-[var(--widget-radius)] border bg-white px-3 py-2.5 font-tabular text-sm outline-none ${bookingErrors.phone ? 'border-red-400' : 'border-slate-200 focus:border-cyan-500'}`}/>
-                        {bookingErrors.phone && <span className="mt-1 block text-[10px] leading-relaxed text-red-600">Số điện thoại phải gồm 10 chữ số.</span>}
-                      </label>
-                      <label className="block">
-                        <span className="mb-1 block text-[11px] font-semibold leading-relaxed text-slate-600">Email</span>
-                        <input value={bookingForm.email} onChange={event => setBookingForm(form => ({ ...form, email:event.target.value }))}
-                          className={`w-full rounded-[var(--widget-radius)] border bg-white px-3 py-2.5 text-sm outline-none ${bookingErrors.email ? 'border-red-400' : 'border-slate-200 focus:border-cyan-500'}`}/>
-                        {bookingErrors.email && <span className="mt-1 block text-[10px] leading-relaxed text-red-600">Vui lòng nhập địa chỉ email hợp lệ.</span>}
-                      </label>
+                  ) : (
+                    /* CSAT Survey Form */
+                    <div className="dialog-enter rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-xs">
+                      <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-purple-50 text-purple-600">
+                        <StarIco s={24} fill/>
+                      </div>
+                      <h4 className="mt-3 text-sm font-bold text-slate-900">Đánh giá chất lượng dịch vụ</h4>
+                      <p className="mt-1 text-xs text-slate-500">Khám tổng quát · Bác sĩ Trần Thị Bích Ngân</p>
+
+                      <div className="my-4 flex justify-center gap-1.5 text-amber-400">
+                        {[1,2,3,4,5].map(s => (
+                          <button key={s} type="button" onClick={() => setRating(s)} className="p-1 hover:scale-125 transition-transform">
+                            <StarIco s={24} fill={s <= rating}/>
+                          </button>
+                        ))}
+                      </div>
+
+                      <textarea
+                        value={comment}
+                        onChange={e => setComment(e.target.value)}
+                        placeholder="Nhập cảm nhận của bạn để phòng khám cải thiện..."
+                        className="w-full rounded-xl border border-slate-200 p-2.5 text-xs outline-none focus:border-cyan-600 resize-none h-20"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setFeedbackSent(true)}
+                        className="mt-3 h-10 w-full rounded-xl bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800"
+                      >
+                        {feedbackSent ? 'Cảm ơn bạn đã đóng góp ý kiến!' : 'Gửi đánh giá'}
+                      </button>
                     </div>
-                    <button type="button" onClick={confirmBooking}
-                      className="mt-4 h-[54px] w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                      Xác nhận đặt hẹn
-                    </button>
-                  </div>
+                  )}
                 </div>
               )}
 
-              {entryState === 'booking' && bookingStep === 'success' && (
-                <div className="dialog-enter flex min-h-[500px] flex-col items-center justify-center text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
-                    <CheckIco s={30}/>
-                  </div>
-                  <h3 className="mt-4 text-lg font-bold leading-relaxed text-slate-900">Đặt hẹn thành công</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-500">Mã lịch hẹn của bạn</p>
-                  <p className="mt-2 rounded-[var(--widget-radius)] bg-slate-100 px-4 py-2 font-tabular text-sm font-bold text-slate-800">APT-20261031-0042</p>
-                  <button type="button" onClick={() => { setBookingStep('ticket'); setTicketStatus('waiting') }}
-                    className="mt-6 h-[54px] w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                    Xem vé của tôi
-                  </button>
-                </div>
-              )}
-
-              {entryState === 'booking' && bookingStep === 'ticket' && (
-                <div className="dialog-enter">
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-[11px] font-bold leading-relaxed tracking-[0.08em] text-cyan-700">VÉ ĐIỆN TỬ</p>
-                      <h3 className="text-lg font-bold leading-relaxed text-slate-900">Theo dõi lượt khám</h3>
-                    </div>
-                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${ticketStatus === 'upcoming' ? 'bg-amber-100 text-amber-900' : ticketStatus === 'called' ? 'bg-emerald-100 text-emerald-900' : 'bg-blue-50 text-blue-800'}`}>
-                      {ticketStatus === 'upcoming' ? 'SẮP ĐẾN LƯỢT' : ticketStatus === 'called' ? 'ĐANG GỌI' : 'ĐANG CHỜ'}
-                    </span>
-                  </div>
-
-                  <WidgetTicketCard status={ticketStatus}/>
-
-                  <button type="button" onClick={() => setCameraState('camera')}
-                    className="mt-4 flex h-[54px] w-full items-center justify-center gap-2 rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2v7h-7v-2"/>
-                    </svg>
-                    Quét mã QR check-in
-                  </button>
-                  <p className="mt-3 text-center text-[10px] leading-relaxed text-slate-400">Check-in khi bạn đã đến cơ sở để giữ đúng vị trí.</p>
-                </div>
-              )}
             </div>
+
+            {/* Widget Footer */}
             <PoweredBy/>
 
-            {entryState === 'booking' && ticketStatus === 'called' && bookingStep === 'ticket' && (
-              <div className="dialog-enter absolute inset-0 z-50 flex flex-col items-center justify-center bg-white px-6 text-center">
-                <div className="widget-calling-pulse flex h-16 w-16 items-center justify-center rounded-full border border-emerald-300 bg-emerald-50 text-emerald-700">
-                  <ArrowRIco s={30}/>
-                </div>
-                <p className="mt-6 text-sm font-semibold leading-relaxed text-slate-500">MỜI QUÝ KHÁCH</p>
-                <h3 className="mt-2 text-2xl font-bold leading-[1.6] text-slate-900">
-                  Mời quý khách số <span className="font-tabular text-emerald-700">A-042</span> đến Quầy 3
-                </h3>
-                <button type="button" onClick={() => setTicketStatus('waiting')}
-                  className="mt-8 h-[54px] w-full rounded-[var(--widget-radius)] bg-emerald-600 text-sm font-bold text-white">
-                  Tôi đã sẵn sàng
-                </button>
-              </div>
-            )}
-
-            {cameraState === 'camera' && (
-              <div className="dialog-enter absolute inset-0 z-50 flex flex-col bg-slate-950 text-white">
-                <div className="flex items-center justify-between px-4 py-4">
-                  <div>
-                    <p className="text-sm font-bold leading-relaxed">Quét mã QR check-in</p>
-                    <p className="text-[10px] leading-relaxed text-slate-400">Đưa mã QR tại sảnh vào khung hình</p>
-                  </div>
-                  <button type="button" onClick={() => setCameraState(null)} aria-label="Đóng camera"
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white">
-                    <XSmIco s={18}/>
-                  </button>
-                </div>
-                <div className="relative mx-6 flex-1 overflow-hidden rounded-xl bg-slate-900">
-                  <div className="absolute inset-0 opacity-30" style={{ background:'radial-gradient(circle at 50% 45%, #475569 0%, #0F172A 58%, #020617 100%)' }}/>
-                  <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2">
-                    <span className="absolute left-0 top-0 h-10 w-10 border-l-4 border-t-4 border-cyan-300"/>
-                    <span className="absolute right-0 top-0 h-10 w-10 border-r-4 border-t-4 border-cyan-300"/>
-                    <span className="absolute bottom-0 left-0 h-10 w-10 border-b-4 border-l-4 border-cyan-300"/>
-                    <span className="absolute bottom-0 right-0 h-10 w-10 border-b-4 border-r-4 border-cyan-300"/>
-                    <span className="absolute inset-x-3 top-1/2 h-px bg-cyan-300 shadow-[0_0_10px_#67E8F9]"/>
-                  </div>
-                </div>
-                <button type="button" onClick={() => setCameraState('denied')}
-                  className="mx-6 my-5 rounded-[var(--widget-radius)] border border-white/20 py-3 text-xs font-semibold text-slate-200">
-                  Không thể sử dụng camera?
-                </button>
-              </div>
-            )}
-
-            {cameraState === 'denied' && (
-              <div className="dialog-enter absolute inset-0 z-50 flex items-center justify-center bg-slate-900/35 p-5">
-                <div className="w-full rounded-xl bg-white p-5 shadow-[0_20px_25px_-5px_rgba(15,23,42,0.18),0_8px_10px_-6px_rgba(15,23,42,0.12)]">
-                  <div className="flex items-start justify-between gap-3">
+            {/* ════════════ REQ-TICKET-04: TICKET LOOKUP & RECOVERY MODAL ════════════ */}
+            {lookupOpen && (
+              <div className="dialog-enter absolute inset-0 z-50 flex flex-col bg-white">
+                <header className="flex items-center justify-between border-b border-slate-100 px-4 py-3 bg-slate-50">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-700 text-white"><SearchIco s={14}/></span>
                     <div>
-                      <h3 className="text-base font-bold leading-relaxed text-slate-900">Không thể truy cập camera</h3>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-500">Hãy cho phép quyền camera trong trình duyệt hoặc nhập mã cuộc hẹn để check-in thủ công.</p>
+                      <h4 className="text-xs font-bold text-slate-900">Tìm lại vé & Lịch hẹn của tôi</h4>
+                      <p className="text-[10px] text-slate-500">REQ-TICKET-04: Khôi phục phiên làm việc</p>
                     </div>
-                    <button type="button" onClick={() => setCameraState(null)} aria-label="Đóng hướng dẫn"
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
-                      <XSmIco s={16}/>
-                    </button>
                   </div>
-                  <label className="mt-4 block">
-                    <span className="mb-1.5 block text-[11px] font-semibold leading-relaxed text-slate-600">Nhập mã cuộc hẹn</span>
-                    <input placeholder="Ví dụ: APT-20261031-0042"
-                      className="w-full rounded-[var(--widget-radius)] border border-slate-200 px-3 py-3 font-tabular text-xs outline-none focus:border-cyan-500"/>
-                  </label>
-                  <button type="button" className="mt-4 h-[54px] w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-sm font-bold text-white">
-                    Check-in thủ công
+                  <button type="button" onClick={() => setLookupOpen(false)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700">
+                    <XSmIco s={16}/>
                   </button>
+                </header>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700">Nhập số điện thoại đã dùng nhận vé</label>
+                    <div className="mt-1.5 flex gap-2">
+                      <input
+                        type="tel"
+                        value={lookupPhone}
+                        onChange={e => setLookupPhone(e.target.value)}
+                        placeholder="090 123 4567"
+                        className="h-10 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 text-xs font-tabular outline-none focus:bg-white focus:border-cyan-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleLookup}
+                        className="h-10 rounded-xl bg-cyan-700 px-4 text-xs font-bold text-white hover:bg-cyan-800"
+                      >
+                        Tra cứu
+                      </button>
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-[10px] text-slate-400">
+                      <span>Thử nhanh:</span>
+                      <button type="button" onClick={() => { setLookupPhone('0901234567'); setLookupResult('active_found') }} className="font-semibold text-cyan-700 underline">0901234567 (Có vé)</button>
+                      <span>•</span>
+                      <button type="button" onClick={() => { setLookupPhone('0987654321'); setLookupResult('not_found') }} className="font-semibold text-slate-500 underline">0987654321 (Trống)</button>
+                    </div>
+                  </div>
+
+                  {/* Result Found */}
+                  {lookupResult === 'active_found' && (
+                    <div className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50/40 p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[9px] font-bold text-emerald-800">TÌM THẤY VÉ ĐANG HOẠT ĐỘNG HÔM NAY</span>
+                        <span className="font-tabular text-[10px] text-slate-400">Hôm nay</span>
+                      </div>
+
+                      <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-xs">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase">SỐ THỨ TỰ</p>
+                            <p className="font-mono text-2xl font-bold text-slate-900">A-042</p>
+                          </div>
+                          <span className="rounded bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-200">ĐANG CHỜ</span>
+                        </div>
+                        <div className="mt-2 border-t border-slate-100 pt-2 text-xs text-slate-600 space-y-1">
+                          <p><strong>Dịch vụ:</strong> Khám tổng quát (Phòng 102)</p>
+                          <p><strong>Vị trí:</strong> Còn 2 người phía trước (≈ 6 phút)</p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={restoreFoundTicket}
+                          className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800 transition-colors shadow-xs"
+                        >
+                          <TicketIco s={15}/>Khôi phục & Tiếp tục theo dõi vé này
+                        </button>
+                      </div>
+
+                      {/* Also show booked appointment if any */}
+                      <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-xs text-xs text-slate-700">
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold">Lịch hẹn: APT-20261031-0042</p>
+                          <span className="rounded bg-cyan-50 px-1.5 py-0.5 text-[9px] font-bold text-cyan-700">ĐÃ XÁC NHẬN</span>
+                        </div>
+                        <p className="mt-1 text-[11px] text-slate-500">Khám chuyên khoa · 10:00 Thứ Sáu, 02/10</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Result Not Found */}
+                  {lookupResult === 'not_found' && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 leading-relaxed space-y-2">
+                      <div className="flex items-start gap-2">
+                        <AlertIco s={16}/>
+                        <div>
+                          <p className="font-bold">Không tìm thấy vé hàng đợi nào đang chờ phục vụ với số điện thoại này trong hôm nay.</p>
+                          <p className="mt-1 text-[11px] text-red-700">Quý khách vui lòng kiểm tra lại số điện thoại hoặc đặt lịch hẹn mới trực tuyến.</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setLookupOpen(false); setActiveMode('booking'); setBookingStep(1) }}
+                        className="mt-2 h-9 w-full rounded-lg bg-red-700 text-xs font-bold text-white hover:bg-red-800"
+                      >
+                        Đặt lịch hẹn mới ngay
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
+
           </div>
         </section>
 
-        <section className="flex items-center justify-center rounded-xl border border-slate-200 bg-slate-200/60 p-5">
-          <div className="w-full max-w-[520px] overflow-hidden rounded-xl bg-white shadow-[0_20px_25px_-5px_rgba(15,23,42,0.16),0_8px_10px_-6px_rgba(15,23,42,0.10)]">
-            <header className="flex items-center gap-3 border-b border-slate-200 px-5 py-4">
-              <BrandMark size={38}/>
-              <div className="flex-1">
-                <p className="text-sm font-bold leading-relaxed text-slate-900">Phòng khám St. Jude</p>
-                <p className="text-[11px] leading-relaxed text-slate-500">Xác nhận thông tin đặt lịch</p>
-              </div>
-              <button type="button" aria-label="Đóng biểu mẫu" className="flex h-9 w-9 items-center justify-center rounded-[var(--widget-radius)] text-slate-500 hover:bg-slate-100">
-                <XSmIco s={17}/>
-              </button>
-            </header>
-            <div className="bg-slate-50 p-5">
-              <div className="mb-4 rounded-[var(--widget-radius)] border border-cyan-100 bg-cyan-50 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-bold leading-relaxed text-cyan-900">Khám tổng quát</p>
-                    <p className="mt-1 font-tabular text-[11px] text-cyan-800">09:30 · Thứ Sáu, 02/10/2026</p>
-                  </div>
-                  <CalIco s={20}/>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  ['Họ và tên','Nguyễn Văn An'],
-                  ['Số điện thoại','090 123 4567'],
-                  ['Email','an@example.com'],
-                  ['Ngày sinh','12/08/1992'],
-                ].map(([label,value]) => (
-                  <label key={label} className="block">
-                    <span className="mb-1.5 block text-[11px] font-semibold leading-relaxed text-slate-600">{label}</span>
-                    <span className="block rounded-[var(--widget-radius)] border border-slate-200 bg-white px-3 py-2.5 text-xs leading-relaxed text-slate-800">{value}</span>
-                  </label>
-                ))}
-              </div>
-              <label className="mt-3 block">
-                <span className="mb-1.5 block text-[11px] font-semibold leading-relaxed text-slate-600">Ghi chú cho phòng khám</span>
-                <span className="block min-h-20 rounded-[var(--widget-radius)] border border-slate-200 bg-white px-3 py-2.5 text-xs leading-relaxed text-slate-400">Nhập triệu chứng hoặc yêu cầu hỗ trợ...</span>
-              </label>
-              <button type="button" className="mt-4 w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] py-3 text-sm font-bold text-white">
-                Xác nhận đặt lịch
+        {/* Right Column: Developer Integration Hub & Architectural Reasoning */}
+        <section className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="mb-4">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-700">DÀNH CHO LẬP TRÌNH VIÊN DOANH NGHIỆP</span>
+            <h2 className="mt-1 text-sm font-bold text-slate-900">Mã nhúng Iframe & Thông số tích hợp</h2>
+            <p className="mt-1 text-xs text-slate-500">Doanh nghiệp chỉ cần 1 dòng HTML để nhúng widget vào đúng trang của mình.</p>
+          </div>
+
+          {/* Live Code Box */}
+          <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 text-emerald-300 font-mono text-xs shadow-inner">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-[10px] text-slate-400">
+              <span>{activeMode.toUpperCase()}_WIDGET_SNIPPET.HTML</span>
+              <button
+                type="button"
+                onClick={() => copyEmbed(embedCodes[activeMode])}
+                className="text-cyan-400 hover:text-cyan-200 font-sans font-bold"
+              >
+                {copiedSnippet ? '✓ Đã sao chép' : 'Sao chép'}
               </button>
             </div>
-            <PoweredBy/>
+            <pre className="mt-3 whitespace-pre-wrap break-all leading-relaxed">{embedCodes[activeMode]}</pre>
+          </div>
+
+          {/* Operational Benefits Matrix */}
+          <div className="mt-5 flex-1 space-y-3">
+            <p className="text-xs font-bold text-slate-900">Lợi ích của kiến trúc 3 chế độ chuyên biệt:</p>
+            
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
+              <p className="font-bold text-slate-800 flex items-center gap-1.5"><ShieldIco s={14}/>Bảo vệ tính toàn vẹn hàng đợi (Queue Integrity)</p>
+              <p className="text-[11px] text-slate-500">Khách tại nhà không bao giờ bị lấy nhầm vé tại sảnh. Chỉ khách có mặt tại phòng khám quét QR mới được kích hoạt số thứ tự.</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
+              <p className="font-bold text-slate-800 flex items-center gap-1.5"><SearchIco s={14}/>Khôi phục vé tức thời khi lỡ đóng trình duyệt</p>
+              <p className="text-[11px] text-slate-500">Đáp ứng chuẩn REQ-TICKET-04: Khách chỉ cần nhập SĐT là tìm lại ngay vé số thứ tự và thời gian chờ mà không bị mất chỗ.</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
+              <p className="font-bold text-slate-800 flex items-center gap-1.5"><RefreshIco s={14}/>Tái sử dụng 100% logic Backend</p>
+              <p className="text-[11px] text-slate-500">Cùng chung các API REST Spring Boot, phân quyền Keycloak realm và hàng đợi Valkey. Không tốn công bảo trì 3 hệ thống riêng.</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
+              <p className="font-bold text-slate-800 flex items-center gap-1.5"><CheckIco s={14}/>100% Mobile Web trên điện thoại cá nhân</p>
+              <p className="text-[11px] text-slate-500">Toàn bộ quy trình từ đặt chỗ, lấy số thứ tự, nhận thông báo gọi số đều diễn ra mượt mà trên điện thoại cá nhân của khách hàng.</p>
+            </div>
           </div>
         </section>
+
       </div>
-
-      <section className="mx-auto mt-6 max-w-[1500px]">
-        <div className="mb-3">
-          <p className="text-xs font-bold leading-relaxed tracking-[0.1em] text-cyan-700">HOST CONTRAST PROOF</p>
-          <h2 className="text-lg font-bold leading-relaxed text-slate-900">Surface isolation trên website đối tác</h2>
-        </div>
-        <div className="grid grid-cols-2 gap-5">
-          <div className="relative flex min-h-80 items-center justify-end overflow-hidden rounded-xl bg-slate-950 p-6">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(8,145,178,0.28),transparent_42%),linear-gradient(135deg,#020617,#172554)]"/>
-            <div className="absolute left-8 top-8 max-w-xs text-white">
-              <p className="text-xs font-bold tracking-[0.12em] text-cyan-300">DARK HOST HERO</p>
-              <p className="mt-3 text-3xl font-bold leading-tight">Chăm sóc sức khỏe, ngay khi bạn cần.</p>
-            </div>
-            <div className="relative w-[300px] rounded-[var(--widget-radius)] border border-slate-200 bg-white p-4 text-slate-900 shadow-[0_20px_30px_-10px_rgba(0,0,0,0.45)]">
-              <div className="flex items-center gap-3"><BrandMark/><div><p className="text-xs font-bold">Phòng khám St. Jude</p><p className="text-[10px] text-slate-500">Đặt lịch trực tuyến</p></div></div>
-              <button type="button" className="mt-4 h-11 w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-xs font-bold text-white">Đặt lịch ngay</button>
-              <p className="mt-3 text-center text-[10px] text-slate-400">Bảo mật bởi NextTurn</p>
-            </div>
-          </div>
-
-          <div className="relative flex min-h-80 items-center justify-end overflow-hidden rounded-xl p-6" aria-label="Widget trên ảnh nền phòng chờ phòng khám">
-            <img
-              src="https://images.unsplash.com/photo-1759987383760-327efaf5522a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtZWRpY2FsJTIwY2xpbmljJTIwd2FpdGluZyUyMHJvb20lMjBicmlnaHQlMjBpbnRlcmlvcnxlbnwxfHx8fDE3OTM0MTAzNDd8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Phòng chờ phòng khám nhiều chi tiết và ánh sáng"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-slate-900/25"/>
-            <div className="absolute bottom-3 left-4 text-[9px] font-medium text-white/80">Ảnh: Jun Ren · Unsplash</div>
-            <div className="relative w-[300px] rounded-[var(--widget-radius)] border border-slate-200 bg-white p-4 text-slate-900 shadow-[0_20px_30px_-10px_rgba(15,23,42,0.45)]">
-              <div className="flex items-center gap-3"><BrandMark/><div><p className="text-xs font-bold">Phòng khám St. Jude</p><p className="text-[10px] text-slate-500">Bề mặt iframe độc lập</p></div></div>
-              <div className="mt-4 rounded-[var(--widget-radius)] bg-slate-50 p-3">
-                <p className="text-xs font-bold text-slate-800">Tiếp tục phiên trước?</p>
-                <p className="mt-1 text-[10px] leading-relaxed text-slate-500">Tra cứu lịch hẹn bằng số điện thoại.</p>
-              </div>
-              <button type="button" className="mt-3 h-10 w-full rounded-[var(--widget-radius)] bg-[var(--widget-primary)] text-xs font-bold text-white">Tra cứu ngay</button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
+
 
 type TenantDirectoryStatus = 'active' | 'suspended' | 'pending' | 'trial'
 interface TenantDirectoryRow {
@@ -5144,10 +5343,10 @@ function OrganizationsDirectory({ onImpersonate }: { onImpersonate: (tenant: { i
   const [lifecycleTarget, setLifecycleTarget] = useState<TenantDirectoryRow | null>(null)
   const [lifecycleToast, setLifecycleToast] = useState('')
   const statusCfg: Record<TenantDirectoryStatus,{label:string; cls:string}> = {
-    active:{ label:'ĐANG HOẠT ĐỘNG', cls:'bg-[rgba(16,185,129,0.16)] text-[#34D399]' },
-    suspended:{ label:'ĐANG TẠM KHÓA', cls:'bg-[rgba(239,68,68,0.16)] text-[#FCA5A5]' },
-    pending:{ label:'CHỜ PHÊ DUYỆT', cls:'bg-[rgba(245,158,11,0.16)] text-[#FBBF24]' },
-    trial:{ label:'TRIAL', cls:'bg-[rgba(139,92,246,0.16)] text-[#C4B5FD]' },
+    active:{ label:'ĐANG HOẠT ĐỘNG', cls:'bg-emerald-50 text-emerald-700 border border-emerald-200/80' },
+    suspended:{ label:'ĐANG TẠM KHÓA', cls:'bg-red-50 text-red-700 border border-red-200/80' },
+    pending:{ label:'CHỜ PHÊ DUYỆT', cls:'bg-amber-50 text-amber-700 border border-amber-200/80' },
+    trial:{ label:'TRIAL', cls:'bg-purple-50 text-purple-700 border border-purple-200/80' },
   }
   const filtered = rows
     .filter(row => `${row.name} ${row.code}`.toLowerCase().includes(search.toLowerCase()))
@@ -5176,58 +5375,58 @@ function OrganizationsDirectory({ onImpersonate }: { onImpersonate: (tenant: { i
   }
 
   return (
-    <div className="min-h-full bg-[#0B0F19]" data-pinning-rule="REQ-DASHBOARD-06: C_ticket ≥ 100% tenants are pinned first.">
-      {createSuccess && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-start gap-3 border-l-[3px] border-emerald-500 bg-[#111827] p-4 text-slate-100 shadow-2xl"><CheckIco s={17}/><div><p className="text-sm font-semibold">Khởi tạo tổ chức thành công</p><p className="mt-1 text-[9px] text-slate-500">Keycloak realm + email kích hoạt admin dispatched</p></div></div>}
-      {lifecycleToast && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-center gap-3 border-l-[3px] border-emerald-500 bg-[#111827] p-4 text-slate-100 shadow-2xl"><CheckIco s={17}/><p className="text-sm font-semibold">{lifecycleToast}</p></div>}
-      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur">
-        <div><h1 className="text-lg font-bold text-white">Tổ chức</h1><p className="mt-1 text-[10px] text-slate-500">Danh bạ tenant và mức sử dụng tài nguyên nền tảng</p></div>
+    <div className="min-h-full bg-[#F8FAFC]" data-pinning-rule="REQ-DASHBOARD-06: C_ticket ≥ 100% tenants are pinned first.">
+      {createSuccess && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-start gap-3 rounded-xl border border-slate-200 border-l-[4px] border-l-emerald-600 bg-white p-4 text-slate-800 shadow-xl"><CheckIco s={17}/><div><p className="text-sm font-semibold text-slate-900">Khởi tạo tổ chức thành công</p><p className="mt-1 text-[10px] text-slate-500">Keycloak realm + email kích hoạt admin dispatched</p></div></div>}
+      {lifecycleToast && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-center gap-3 rounded-xl border border-slate-200 border-l-[4px] border-l-emerald-600 bg-white p-4 text-slate-800 shadow-xl"><CheckIco s={17}/><p className="text-sm font-semibold text-slate-900">{lifecycleToast}</p></div>}
+      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-slate-200 bg-white/95 px-6 backdrop-blur">
+        <div><h1 className="text-lg font-bold text-slate-900">Tổ chức</h1><p className="mt-0.5 text-[11px] text-slate-500">Danh bạ tenant và mức sử dụng tài nguyên nền tảng</p></div>
       </header>
       <div className="p-6">
-        <div className="mb-4 flex items-center gap-3 rounded-[10px] border border-[#1E293B] bg-[#111827] p-3">
-          <label className="relative w-80"><span className="absolute left-3 top-3 text-slate-500"><SearchIco s={15}/></span><input value={search} onChange={event => { setSearch(event.target.value); setPage(1) }} placeholder="Tìm theo tên hoặc mã..." className="h-10 w-full rounded-lg border border-slate-700 bg-slate-900 pl-9 pr-3 text-xs text-slate-200 outline-none placeholder:text-slate-600 focus:border-indigo-500"/></label>
-          <select value={status} onChange={event => { setStatus(event.target.value as typeof status); setPage(1) }} className="h-10 rounded-lg border border-slate-700 bg-slate-900 px-3 text-xs font-semibold text-slate-300 outline-none"><option value="all">Tất cả trạng thái</option><option value="active">Đang hoạt động</option><option value="suspended">Đang tạm khóa</option><option value="pending">Chờ phê duyệt</option></select>
+        <div className="mb-4 flex items-center gap-3 rounded-xl border border-slate-200/90 bg-white p-3 shadow-xs">
+          <label className="relative w-80"><span className="absolute left-3 top-3 text-slate-400"><SearchIco s={15}/></span><input value={search} onChange={event => { setSearch(event.target.value); setPage(1) }} placeholder="Tìm theo tên hoặc mã..." className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-xs text-slate-800 outline-none placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/></label>
+          <select value={status} onChange={event => { setStatus(event.target.value as typeof status); setPage(1) }} className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-700 outline-none focus:bg-white focus:border-indigo-600"><option value="all">Tất cả trạng thái</option><option value="active">Đang hoạt động</option><option value="suspended">Đang tạm khóa</option><option value="pending">Chờ phê duyệt</option></select>
           <div className="flex-1"/>
-          <button type="button" onClick={() => { setTenantForm({ name:'', code:'', email:'', phone:'' }); setDuplicateError(false); setCreateOpen(true) }} className="h-10 rounded-lg bg-indigo-500 px-4 text-xs font-bold text-white transition-colors hover:bg-indigo-600">+ Thêm tổ chức</button>
+          <button type="button" onClick={() => { setTenantForm({ name:'', code:'', email:'', phone:'' }); setDuplicateError(false); setCreateOpen(true) }} className="h-10 rounded-lg bg-indigo-600 px-4 text-xs font-bold text-white shadow-xs shadow-indigo-100 transition-colors hover:bg-indigo-700">+ Thêm tổ chức</button>
         </div>
-        <div className="overflow-visible rounded-[10px] border border-[#1E293B] bg-[#111827] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.65)]">
+        <div className="overflow-visible rounded-xl border border-slate-200/90 bg-white shadow-xs">
           <table className="w-full border-collapse text-left">
-            <thead><tr className="border-b border-[#1E293B] bg-slate-900/70">{['Tổ chức','Trạng thái','Nhân viên','Vé hôm nay','Mức dùng quota','Ngày khởi tạo',''].map(label => <th key={label || 'actions'} className="px-4 py-3 text-[9px] font-bold tracking-[0.06em] text-slate-500">{label}</th>)}</tr></thead>
+            <thead><tr className="border-b border-slate-200 bg-slate-50/80">{['Tổ chức','Trạng thái','Nhân viên','Vé hôm nay','Mức dùng quota','Ngày khởi tạo',''].map(label => <th key={label || 'actions'} className="px-4 py-3 text-[10px] font-bold tracking-[0.06em] text-slate-500 uppercase">{label}</th>)}</tr></thead>
             <tbody>
               {visibleRows.map(row => {
                 const quotaPercent = row.tickets / row.quota * 100
                 const capped = quotaPercent >= 100
                 const barColor = capped ? '#EF4444' : quotaPercent >= 85 ? '#F59E0B' : '#6366F1'
                 return (
-                  <tr key={row.id} className={`group relative border-b border-[#1E293B] transition-all duration-200 last:border-0 hover:z-30 hover:bg-slate-800/60 hover:shadow-[inset_0_0_0_1px_#334155] ${capped ? 'border-l-[3px] border-l-red-500' : ''}`}>
-                    <td className="relative px-4 py-3"><div className="flex items-center gap-2"><div><p className="text-xs font-semibold text-slate-200">{row.name}</p><p className="mt-1 font-tabular text-[9px] text-slate-500">{row.code}</p></div>{capped && <span className="rounded bg-red-500/15 px-2 py-1 text-[8px] font-bold text-red-300">CHẠM TRẦN</span>}</div>
-                      <div className="pointer-events-none absolute left-4 top-full z-50 mt-1 w-80 translate-y-1 rounded-lg border border-[#334155] bg-[#111827] p-4 opacity-0 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.75)] transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                        <p className="text-[9px] font-bold tracking-[0.05em] text-slate-500">PHÂN BỔ HẠN NGẠCH</p>
-                        <div className="mt-3 space-y-3">{[[`Vé ${row.tickets.toLocaleString('vi-VN')} / ${row.quota.toLocaleString('vi-VN')}`,Math.min(quotaPercent,100),barColor],[`Nhân viên ${row.staff} / ${row.staffMax}`,row.staff/row.staffMax*100,'#10B981']].map(([label,value,color]) => <div key={String(label)}><div className="flex justify-between font-tabular text-[9px] text-slate-400"><span>{label}</span><span>{Math.round(Number(value))}%</span></div><div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full" style={{ width:`${value}%`, background:String(color) }}/></div></div>)}</div>
-                        <div className="mt-3 border-t border-[#1E293B] pt-3 text-[9px] text-slate-500"><p>Admin: <span className="text-slate-300">{row.admin}</span></p><p className="mt-1">Audit mới nhất: <span className="text-slate-300">{row.audit}</span></p></div>
+                  <tr key={row.id} className={`group relative border-b border-slate-100 transition-all duration-200 last:border-0 hover:z-30 hover:bg-slate-50/80 ${capped ? 'border-l-[3px] border-l-red-500' : ''}`}>
+                    <td className="relative px-4 py-3.5"><div className="flex items-center gap-2"><div><p className="text-xs font-semibold text-slate-900">{row.name}</p><p className="mt-0.5 font-tabular text-[10px] text-slate-500">{row.code}</p></div>{capped && <span className="rounded-md border border-red-200 bg-red-50 px-2 py-0.5 text-[9px] font-bold text-red-700">CHẠM TRẦN</span>}</div>
+                      <div className="pointer-events-none absolute left-4 top-full z-50 mt-1 w-80 translate-y-1 rounded-xl border border-slate-200 bg-white p-4 opacity-0 shadow-xl transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                        <p className="text-[10px] font-bold tracking-[0.05em] text-slate-400 uppercase">PHÂN BỔ HẠN NGẠCH</p>
+                        <div className="mt-3 space-y-3">{[[`Vé ${row.tickets.toLocaleString('vi-VN')} / ${row.quota.toLocaleString('vi-VN')}`,Math.min(quotaPercent,100),barColor],[`Nhân viên ${row.staff} / ${row.staffMax}`,row.staff/row.staffMax*100,'#10B981']].map(([label,value,color]) => <div key={String(label)}><div className="flex justify-between font-tabular text-[10px] text-slate-600"><span>{label}</span><span className="font-semibold">{Math.round(Number(value))}%</span></div><div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all" style={{ width:`${value}%`, background:String(color) }}/></div></div>)}</div>
+                        <div className="mt-3 border-t border-slate-100 pt-3 text-[10px] text-slate-500"><p>Admin: <span className="font-medium text-slate-800">{row.admin}</span></p><p className="mt-1">Audit mới nhất: <span className="font-medium text-slate-800">{row.audit}</span></p></div>
                       </div>
                     </td>
-                    <td className="px-4 py-3"><span className={`rounded px-2 py-1 text-[8px] font-bold transition-colors duration-[250ms] ${statusCfg[row.status].cls}`}>{statusCfg[row.status].label}</span></td>
-                    <td className="px-4 py-3 font-tabular text-[11px] font-bold text-slate-300">{row.staff}<span className="text-slate-600">/{row.staffMax}</span></td>
-                    <td className="px-4 py-3 font-tabular text-[11px] font-bold text-slate-300">{row.tickets.toLocaleString('vi-VN')}</td>
-                    <td className="px-4 py-3"><div className="flex items-center gap-2"><div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full" style={{ width:`${Math.min(quotaPercent,100)}%`, background:barColor }}/></div><span className="font-tabular text-[9px] font-bold text-slate-400">{quotaPercent.toFixed(0)}%</span></div></td>
-                    <td className="px-4 py-3 font-tabular text-[9px] text-slate-500">{row.created}</td>
-                    <td className="px-4 py-3"><div className="flex justify-end gap-1"><button title="Xem chi tiết" aria-label={`Xem ${row.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-indigo-500/15 hover:text-indigo-300"><EyeIco s={14}/></button><button type="button" onClick={() => setLifecycleTarget(row)} title={row.status === 'suspended' ? 'Kích hoạt lại' : 'Tạm ngừng'} aria-label={row.status === 'suspended' ? 'Kích hoạt lại' : 'Tạm ngừng'} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-amber-500/10 hover:text-amber-300">{row.status === 'suspended' ? <RefreshIco s={14}/> : <PauseIco s={14}/>}</button><button type="button" onClick={() => onImpersonate({ id:row.id, name:row.name, code:row.code })} title="Impersonate" aria-label={`Impersonate ${row.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-violet-500/15 hover:text-violet-300"><ShieldIco s={14}/></button><span className="group/delete relative"><button type="button" disabled aria-label="Xóa vật lý bị vô hiệu hóa" className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-lg text-slate-700"><TrashIco s={14}/></button><span className="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-56 rounded-lg border border-[#334155] bg-[#0B0F19] p-2 text-[9px] leading-relaxed text-slate-300 opacity-0 shadow-xl transition-opacity group-hover/delete:opacity-100">Dữ liệu lịch sử tồn tại → cấm xóa vật lý</span></span></div></td>
+                    <td className="px-4 py-3.5"><span className={`rounded-md px-2 py-1 text-[9px] font-bold transition-colors duration-[250ms] ${statusCfg[row.status].cls}`}>{statusCfg[row.status].label}</span></td>
+                    <td className="px-4 py-3.5 font-tabular text-xs font-bold text-slate-800">{row.staff}<span className="text-slate-400">/{row.staffMax}</span></td>
+                    <td className="px-4 py-3.5 font-tabular text-xs font-bold text-slate-800">{row.tickets.toLocaleString('vi-VN')}</td>
+                    <td className="px-4 py-3.5"><div className="flex items-center gap-2"><div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all" style={{ width:`${Math.min(quotaPercent,100)}%`, background:barColor }}/></div><span className="font-tabular text-[10px] font-bold text-slate-600">{quotaPercent.toFixed(0)}%</span></div></td>
+                    <td className="px-4 py-3.5 font-tabular text-[10px] text-slate-500">{row.created}</td>
+                    <td className="px-4 py-3.5"><div className="flex justify-end gap-1"><button title="Xem chi tiết" aria-label={`Xem ${row.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"><EyeIco s={14}/></button><button type="button" onClick={() => setLifecycleTarget(row)} title={row.status === 'suspended' ? 'Kích hoạt lại' : 'Tạm ngừng'} aria-label={row.status === 'suspended' ? 'Kích hoạt lại' : 'Tạm ngừng'} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition-colors">{row.status === 'suspended' ? <RefreshIco s={14}/> : <PauseIco s={14}/>}</button><button type="button" onClick={() => onImpersonate({ id:row.id, name:row.name, code:row.code })} title="Impersonate" aria-label={`Impersonate ${row.name}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-purple-50 hover:text-purple-600 transition-colors"><ShieldIco s={14}/></button><span className="group/delete relative"><button type="button" disabled aria-label="Xóa vật lý bị vô hiệu hóa" className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-lg text-slate-300"><TrashIco s={14}/></button><span className="pointer-events-none absolute bottom-full right-0 z-50 mb-2 w-56 rounded-lg border border-slate-700 bg-slate-900 p-2 text-[9px] leading-relaxed text-slate-200 opacity-0 shadow-xl transition-opacity group-hover/delete:opacity-100">Dữ liệu lịch sử tồn tại → cấm xóa vật lý</span></span></div></td>
                   </tr>
                 )
               })}
             </tbody>
           </table>
-          <div className="flex items-center justify-between border-t border-[#1E293B] px-4 py-3"><p className="font-tabular text-[9px] text-slate-500">20 dòng/trang · {filtered.length} tổ chức</p><div className="flex items-center gap-2"><button disabled={page===1} onClick={() => setPage(value => Math.max(1,value-1))} className="rounded border border-slate-700 px-3 py-1.5 text-[9px] text-slate-400 disabled:opacity-30">Trước</button><span className="font-tabular text-[9px] text-slate-400">{page}/{totalPages}</span><button disabled={page===totalPages} onClick={() => setPage(value => Math.min(totalPages,value+1))} className="rounded border border-slate-700 px-3 py-1.5 text-[9px] text-slate-400 disabled:opacity-30">Sau</button></div></div>
+          <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3"><p className="font-tabular text-[10px] text-slate-500">20 dòng/trang · {filtered.length} tổ chức</p><div className="flex items-center gap-2"><button disabled={page===1} onClick={() => setPage(value => Math.max(1,value-1))} className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-colors">Trước</button><span className="font-tabular text-[10px] font-semibold text-slate-600">{page}/{totalPages}</span><button disabled={page===totalPages} onClick={() => setPage(value => Math.min(totalPages,value+1))} className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-colors">Sau</button></div></div>
         </div>
       </div>
 
-      {createOpen && <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-6"><div className="dialog-enter w-full max-w-xl rounded-xl border border-[#1E293B] bg-[#111827] p-6 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.75)]" data-requirement="REQ-TNT-01"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-white">Thêm tổ chức</h2><p className="mt-1 text-[10px] text-slate-500">Khởi tạo tenant và tài khoản quản trị cơ sở</p></div><button type="button" onClick={() => setCreateOpen(false)} className="text-slate-500 hover:text-white"><XSmIco s={18}/></button></div><div className="mt-5 grid grid-cols-2 gap-4">
-        <label className="col-span-2"><span className="mb-1.5 block text-[10px] font-semibold text-slate-400">Tên tổ chức</span><input value={tenantForm.name} maxLength={150} onChange={event => setTenantForm(value => ({ ...value, name:event.target.value }))} className="h-11 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 text-sm text-slate-200 outline-none focus:border-indigo-500"/><span className="mt-1 block text-[9px] text-slate-600">3–150 ký tự</span></label>
-        <label><span className="mb-1.5 block text-[10px] font-semibold text-slate-400">Mã định danh</span><input value={tenantForm.code} maxLength={30} onChange={event => { setTenantForm(value => ({ ...value, code:event.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'') })); setDuplicateError(false) }} placeholder="pk-tam-duc" className={`h-11 w-full rounded-lg border bg-slate-900 px-3 font-tabular text-sm text-slate-200 outline-none ${duplicateError ? 'border-red-500' : 'border-slate-700 focus:border-indigo-500'}`}/><span className="mt-1 block font-tabular text-[9px] text-slate-600">3–30 · lowercase / digits / hyphens → {tenantForm.code || 'tenant-code'}</span></label>
-        <label><span className="mb-1.5 block text-[10px] font-semibold text-slate-400">Email quản trị cơ sở</span><input type="email" value={tenantForm.email} onChange={event => { setTenantForm(value => ({ ...value, email:event.target.value })); setDuplicateError(false) }} className={`h-11 w-full rounded-lg border bg-slate-900 px-3 text-sm text-slate-200 outline-none ${duplicateError ? 'border-red-500' : 'border-slate-700 focus:border-indigo-500'}`}/></label>
-        <label className="col-span-2"><span className="mb-1.5 block text-[10px] font-semibold text-slate-400">SĐT liên hệ</span><input inputMode="numeric" value={tenantForm.phone} onChange={event => setTenantForm(value => ({ ...value, phone:event.target.value.replace(/\D/g,'').slice(0,10) }))} placeholder="0901234567" className="h-11 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-sm text-slate-200 outline-none focus:border-indigo-500"/><span className="mt-1 block text-[9px] text-slate-600">Số điện thoại Việt Nam gồm 10 chữ số</span></label>
-      </div>{duplicateError && <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-900/60 bg-red-950/30 p-3 text-xs leading-relaxed text-red-300"><AlertIco s={15}/><span>Mã định danh tổ chức hoặc email quản trị này đã được đăng ký trong hệ thống. Vui lòng kiểm tra lại.</span></div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setCreateOpen(false)} className="h-10 rounded-lg border border-slate-700 px-4 text-xs font-semibold text-slate-400">Hủy</button><button type="button" onClick={createTenant} className="h-10 rounded-lg bg-indigo-500 px-4 text-xs font-bold text-white hover:bg-indigo-600">Khởi tạo tổ chức</button></div></div></div>}
-      {lifecycleTarget && <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/60 p-6"><div className="dialog-enter w-full max-w-lg rounded-xl border border-[#1E293B] bg-[#111827] p-6 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.75)]">{lifecycleTarget.status === 'suspended' ? <><div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-300"><RefreshIco s={22}/></div><h2 className="mt-4 text-lg font-bold text-white">Kích hoạt lại tổ chức?</h2><p className="mt-2 text-sm leading-relaxed text-slate-400">Tài khoản và các dịch vụ công cộng của tổ chức sẽ hoạt động trở lại.</p><p className="mt-2 text-xs text-emerald-300">Dịch vụ công cộng đã mở lại</p></> : <><div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-300"><AlertIco s={22}/></div><h2 className="mt-4 text-lg font-bold text-white">Tạm ngừng tổ chức?</h2><p className="mt-2 text-sm leading-relaxed text-slate-300">Bạn có chắc muốn tạm ngừng tổ chức này? Toàn bộ tài khoản thuộc tổ chức sẽ bị vô hiệu hóa.</p><p className="mt-2 text-xs text-amber-300">JWT thu hồi, cổng đặt hẹn công cộng tạm dừng</p></>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setLifecycleTarget(null)} className="h-10 rounded-lg border border-slate-700 px-4 text-xs font-semibold text-slate-400">Hủy</button><button type="button" onClick={confirmLifecycle} className={`h-10 rounded-lg px-4 text-xs font-bold text-white ${lifecycleTarget.status === 'suspended' ? 'bg-emerald-600' : 'bg-amber-600'}`}>{lifecycleTarget.status === 'suspended' ? 'Kích hoạt lại' : 'Xác nhận tạm ngừng'}</button></div></div></div>}
+      {createOpen && <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/40 p-6 backdrop-blur-xs"><div className="dialog-enter w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl" data-requirement="REQ-TNT-01"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-slate-900">Thêm tổ chức</h2><p className="mt-1 text-[11px] text-slate-500">Khởi tạo tenant và tài khoản quản trị cơ sở</p></div><button type="button" onClick={() => setCreateOpen(false)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"><XSmIco s={18}/></button></div><div className="mt-5 grid grid-cols-2 gap-4">
+        <label className="col-span-2"><span className="mb-1.5 block text-[10px] font-semibold text-slate-700">Tên tổ chức</span><input value={tenantForm.name} maxLength={150} onChange={event => setTenantForm(value => ({ ...value, name:event.target.value }))} className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/><span className="mt-1 block text-[10px] text-slate-400">3–150 ký tự</span></label>
+        <label><span className="mb-1.5 block text-[10px] font-semibold text-slate-700">Mã định danh</span><input value={tenantForm.code} maxLength={30} onChange={event => { setTenantForm(value => ({ ...value, code:event.target.value.toLowerCase().replace(/[^a-z0-9-]/g,'') })); setDuplicateError(false) }} placeholder="pk-tam-duc" className={`h-11 w-full rounded-lg border bg-slate-50 px-3 font-tabular text-sm text-slate-800 outline-none transition-all ${duplicateError ? 'border-red-500' : 'border-slate-200 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100'}`}/><span className="mt-1 block font-tabular text-[10px] text-slate-400">3–30 · lowercase / digits / hyphens → {tenantForm.code || 'tenant-code'}</span></label>
+        <label><span className="mb-1.5 block text-[10px] font-semibold text-slate-700">Email quản trị cơ sở</span><input type="email" value={tenantForm.email} onChange={event => { setTenantForm(value => ({ ...value, email:event.target.value })); setDuplicateError(false) }} className={`h-11 w-full rounded-lg border bg-slate-50 px-3 text-sm text-slate-800 outline-none transition-all ${duplicateError ? 'border-red-500' : 'border-slate-200 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100'}`}/></label>
+        <label className="col-span-2"><span className="mb-1.5 block text-[10px] font-semibold text-slate-700">SĐT liên hệ</span><input inputMode="numeric" value={tenantForm.phone} onChange={event => setTenantForm(value => ({ ...value, phone:event.target.value.replace(/\D/g,'').slice(0,10) }))} placeholder="0901234567" className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 font-tabular text-sm text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/><span className="mt-1 block text-[10px] text-slate-400">Số điện thoại Việt Nam gồm 10 chữ số</span></label>
+      </div>{duplicateError && <div className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs leading-relaxed text-red-700"><AlertIco s={15}/><span>Mã định danh tổ chức hoặc email quản trị này đã được đăng ký trong hệ thống. Vui lòng kiểm tra lại.</span></div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setCreateOpen(false)} className="h-10 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Hủy</button><button type="button" onClick={createTenant} className="h-10 rounded-lg bg-indigo-600 px-4 text-xs font-bold text-white shadow-xs shadow-indigo-100 hover:bg-indigo-700 transition-colors">Khởi tạo tổ chức</button></div></div></div>}
+      {lifecycleTarget && <div className="fixed inset-0 z-[130] flex items-center justify-center bg-slate-900/40 p-6 backdrop-blur-xs"><div className="dialog-enter w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">{lifecycleTarget.status === 'suspended' ? <><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"><RefreshIco s={22}/></div><h2 className="mt-4 text-lg font-bold text-slate-900">Kích hoạt lại tổ chức?</h2><p className="mt-2 text-sm leading-relaxed text-slate-600">Tài khoản và các dịch vụ công cộng của tổ chức sẽ hoạt động trở lại.</p><p className="mt-2 text-xs font-semibold text-emerald-700">Dịch vụ công cộng đã mở lại</p></> : <><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600"><AlertIco s={22}/></div><h2 className="mt-4 text-lg font-bold text-slate-900">Tạm ngừng tổ chức?</h2><p className="mt-2 text-sm leading-relaxed text-slate-600">Bạn có chắc muốn tạm ngừng tổ chức này? Toàn bộ tài khoản thuộc tổ chức sẽ bị vô hiệu hóa.</p><p className="mt-2 text-xs font-semibold text-amber-700">JWT thu hồi, cổng đặt hẹn công cộng tạm dừng</p></>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setLifecycleTarget(null)} className="h-10 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Hủy</button><button type="button" onClick={confirmLifecycle} className={`h-10 rounded-lg px-4 text-xs font-bold text-white shadow-xs transition-colors ${lifecycleTarget.status === 'suspended' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100' : 'bg-amber-600 hover:bg-amber-700 shadow-amber-100'}`}>{lifecycleTarget.status === 'suspended' ? 'Kích hoạt lại' : 'Xác nhận tạm ngừng'}</button></div></div></div>}
     </div>
   )
 }
@@ -5258,24 +5457,24 @@ function ApprovalQueue() {
   }
 
   return (
-    <div className="min-h-full bg-[#0B0F19] text-slate-100">
-      {success && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-start gap-3 border-l-[3px] border-emerald-500 bg-[#111827] p-4 shadow-2xl"><CheckIco s={17}/><div><p className="text-sm font-semibold">Phê duyệt hoàn tất. Email chúc mừng đã gửi.</p><p className="mt-1 text-[9px] text-slate-500">Tenant và tài khoản Admin đã được kích hoạt.</p></div></div>}
-      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-white">Phê duyệt</h1><p className="mt-1 text-[10px] text-slate-500">Hồ sơ đăng ký tổ chức đang ở trạng thái PENDING_APPROVAL</p></div></header>
+    <div className="min-h-full bg-[#F8FAFC] text-slate-800">
+      {success && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-start gap-3 rounded-xl border border-slate-200 border-l-[4px] border-l-emerald-600 bg-white p-4 text-slate-800 shadow-xl"><CheckIco s={17}/><div><p className="text-sm font-semibold text-slate-900">Phê duyệt hoàn tất. Email chúc mừng đã gửi.</p><p className="mt-1 text-[10px] text-slate-500">Tenant và tài khoản Admin đã được kích hoạt.</p></div></div>}
+      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-slate-200 bg-white/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-slate-900">Phê duyệt</h1><p className="mt-0.5 text-[11px] text-slate-500">Hồ sơ đăng ký tổ chức đang ở trạng thái PENDING_APPROVAL</p></div></header>
       <div className="p-6">
-        <div className="mb-4 flex items-center justify-between"><p className="font-tabular text-xs text-slate-500">{registrations.length} hồ sơ đang hiển thị</p><span className="rounded bg-amber-500/15 px-2 py-1 text-[9px] font-bold text-amber-300">PENDING_APPROVAL</span></div>
+        <div className="mb-4 flex items-center justify-between"><p className="font-tabular text-xs text-slate-500">{registrations.length} hồ sơ đang hiển thị</p><span className="rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-700">PENDING_APPROVAL</span></div>
         <div className="grid grid-cols-2 gap-4">
           {registrations.map(item => (
-            <article key={item.id} className="relative rounded-xl border border-[#1E293B] bg-[#111827] p-5 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.7)]">
-              <div className="flex items-start justify-between gap-3"><div><h2 className="text-sm font-bold text-slate-100">{item.name}</h2><p className="mt-1 font-tabular text-[10px] text-indigo-300">{item.code}</p></div><span className="rounded bg-blue-500/10 px-2 py-1 text-[8px] font-bold text-blue-300">Email xác nhận đã gửi</span></div>
-              <div className="mt-5 grid grid-cols-2 gap-4 border-y border-[#1E293B] py-4"><div><p className="text-[9px] font-bold text-slate-600">EMAIL ADMIN</p><p className="mt-1 text-xs text-slate-300">{item.email}</p></div><div><p className="text-[9px] font-bold text-slate-600">SĐT</p><p className="mt-1 font-tabular text-xs text-slate-300">{item.phone}</p></div><div className="col-span-2"><p className="text-[9px] font-bold text-slate-600">GỬI LÚC</p><p className="mt-1 font-tabular text-xs text-slate-400">{item.submitted}</p></div></div>
-              <div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setDenyTarget(item.id); setDenyReason('') }} className="h-10 rounded-lg border border-red-500/60 px-4 text-xs font-bold text-red-300 hover:bg-red-500/10">Từ chối</button><button type="button" onClick={() => setApproveTarget(approveTarget === item.id ? null : item.id)} className="h-10 rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white hover:bg-emerald-500">Phê duyệt</button></div>
-              {approveTarget === item.id && <div className="overlay-enter absolute bottom-16 right-5 z-40 w-80 rounded-lg border border-[#334155] bg-[#0B0F19] p-4 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.8)]"><p className="text-xs font-bold text-slate-200">Xác nhận phê duyệt?</p><p className="mt-2 text-[10px] leading-relaxed text-slate-400">Kích hoạt tổ chức + kích hoạt tài khoản Admin</p><button type="button" onClick={() => approve(item.id)} className="mt-4 h-9 w-full rounded-lg bg-emerald-600 text-[10px] font-bold text-white">Xác nhận & kích hoạt</button></div>}
+            <article key={item.id} className="relative rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+              <div className="flex items-start justify-between gap-3"><div><h2 className="text-sm font-bold text-slate-900">{item.name}</h2><p className="mt-0.5 font-tabular text-[10px] font-semibold text-indigo-600">{item.code}</p></div><span className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-700">Email xác nhận đã gửi</span></div>
+              <div className="mt-5 grid grid-cols-2 gap-4 border-y border-slate-100 py-4"><div><p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">EMAIL ADMIN</p><p className="mt-1 text-xs font-semibold text-slate-800">{item.email}</p></div><div><p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">SĐT</p><p className="mt-1 font-tabular text-xs font-semibold text-slate-800">{item.phone}</p></div><div className="col-span-2"><p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">GỬI LÚC</p><p className="mt-1 font-tabular text-xs font-semibold text-slate-600">{item.submitted}</p></div></div>
+              <div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setDenyTarget(item.id); setDenyReason('') }} className="h-10 rounded-lg border border-red-200 bg-white px-4 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">Từ chối</button><button type="button" onClick={() => setApproveTarget(approveTarget === item.id ? null : item.id)} className="h-10 rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white shadow-xs shadow-emerald-100 hover:bg-emerald-700 transition-colors">Phê duyệt</button></div>
+              {approveTarget === item.id && <div className="overlay-enter absolute bottom-16 right-5 z-40 w-80 rounded-xl border border-slate-200 bg-white p-4 shadow-xl"><p className="text-xs font-bold text-slate-900">Xác nhận phê duyệt?</p><p className="mt-1.5 text-[11px] leading-relaxed text-slate-500">Kích hoạt tổ chức + kích hoạt tài khoản Admin</p><button type="button" onClick={() => approve(item.id)} className="mt-4 h-9 w-full rounded-lg bg-emerald-600 text-xs font-bold text-white shadow-xs hover:bg-emerald-700 transition-colors">Xác nhận & kích hoạt</button></div>}
             </article>
           ))}
         </div>
       </div>
 
-      {denyTarget && <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-6"><div className="dialog-enter w-full max-w-lg rounded-xl border border-[#1E293B] bg-[#111827] p-6 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.75)]"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-white">Từ chối hồ sơ đăng ký</h2><p className="mt-1 text-[10px] text-slate-500">Hành động này sẽ gửi thông báo đến người đăng ký.</p></div><button type="button" onClick={() => setDenyTarget(null)} className="text-slate-500 hover:text-white"><XSmIco s={18}/></button></div><label className="mt-5 block"><span className="mb-1.5 block text-[10px] font-semibold text-slate-400">Lý do từ chối</span><textarea value={denyReason} onChange={event => setDenyReason(event.target.value)} rows={5} className="w-full resize-none rounded-lg border border-slate-700 bg-slate-900 p-3 text-sm leading-relaxed text-slate-200 outline-none focus:border-red-500"/><span className="mt-1.5 block text-[9px] text-slate-500">Lý do sẽ được gửi qua email cho người đăng ký</span></label><button type="button" disabled={!denyReason.trim()} onClick={deny} className="mt-5 h-11 w-full rounded-lg bg-red-600 text-sm font-bold text-white disabled:bg-slate-700 disabled:text-slate-500">Xác nhận từ chối</button></div></div>}
+      {denyTarget && <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/40 p-6 backdrop-blur-xs"><div className="dialog-enter w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-slate-900">Từ chối hồ sơ đăng ký</h2><p className="mt-1 text-[11px] text-slate-500">Hành động này sẽ gửi thông báo đến người đăng ký.</p></div><button type="button" onClick={() => setDenyTarget(null)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"><XSmIco s={18}/></button></div><label className="mt-5 block"><span className="mb-1.5 block text-[10px] font-semibold text-slate-700">Lý do từ chối</span><textarea value={denyReason} onChange={event => setDenyReason(event.target.value)} rows={5} className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm leading-relaxed text-slate-800 outline-none focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"/><span className="mt-1.5 block text-[10px] text-slate-400">Lý do sẽ được gửi qua email cho người đăng ký</span></label><button type="button" disabled={!denyReason.trim()} onClick={deny} className="mt-5 h-11 w-full rounded-xl bg-red-600 text-sm font-bold text-white shadow-xs hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 transition-colors">Xác nhận từ chối</button></div></div>}
     </div>
   )
 }
@@ -5316,15 +5515,15 @@ function ResourceQuotaDirectory() {
   ]
 
   return (
-    <div className="min-h-full bg-[#0B0F19] text-slate-100">
-      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-white">Hạn ngạch & Tài nguyên</h1><p className="mt-1 text-[10px] text-slate-500">Xếp hạng mức tiêu thụ và kiểm soát giới hạn tenant</p></div></header>
+    <div className="min-h-full bg-[#F8FAFC] text-slate-800">
+      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-slate-200 bg-white/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-slate-900">Hạn ngạch & Tài nguyên</h1><p className="mt-0.5 text-[11px] text-slate-500">Xếp hạng mức tiêu thụ và kiểm soát giới hạn tenant</p></div></header>
       <div className="p-6">
         <div className="mb-4 flex gap-2">
-          {[['all','Tất cả tổ chức'],['ticket','Tổ chức chạm trần vé'],['staff','Tổ chức tiệm cận nhân sự']].map(([value,label]) => <button key={value} type="button" onClick={() => setFilter(value as typeof filter)} className={`rounded-full border px-3 py-2 text-[10px] font-bold ${filter === value ? 'border-indigo-500 bg-indigo-500/15 text-indigo-300' : 'border-slate-700 bg-[#111827] text-slate-500 hover:text-slate-200'}`}>{label}</button>)}
+          {[['all','Tất cả tổ chức'],['ticket','Tổ chức chạm trần vé'],['staff','Tổ chức tiệm cận nhân sự']].map(([value,label]) => <button key={value} type="button" onClick={() => setFilter(value as typeof filter)} className={`rounded-full border px-3.5 py-1.5 text-[10px] font-bold transition-colors ${filter === value ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-xs' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>{label}</button>)}
         </div>
-        <div className="rounded-[10px] border border-[#1E293B] bg-[#111827] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.65)]">
+        <div className="rounded-xl border border-slate-200/90 bg-white shadow-xs">
           <table className="w-full border-collapse text-left">
-            <thead><tr className="border-b border-[#1E293B] bg-slate-900/70">{['Hạng','Tổ chức','Mức dùng vé · C_ticket','Mức dùng nhân sự · C_staff','Ngưỡng',''].map(label => <th key={label || 'actions'} className="px-4 py-3 text-[9px] font-bold tracking-[0.06em] text-slate-500">{label}</th>)}</tr></thead>
+            <thead><tr className="border-b border-slate-200 bg-slate-50/80">{['Hạng','Tổ chức','Mức dùng vé · C_ticket','Mức dùng nhân sự · C_staff','Ngưỡng',''].map(label => <th key={label || 'actions'} className="px-4 py-3 text-[10px] font-bold tracking-[0.06em] text-slate-500 uppercase">{label}</th>)}</tr></thead>
             <tbody>
               {visible.map((tenant,index) => {
                 const ticket = ticketPercent(tenant)
@@ -5333,13 +5532,13 @@ function ResourceQuotaDirectory() {
                 const warning = !exceeded && (ticket >= 85 || staff >= 90)
                 const bar = (percent:number) => percent >= 100 ? '#EF4444' : percent >= 85 ? '#F59E0B' : '#6366F1'
                 return (
-                  <tr key={tenant.id} data-is-quota-exceeded={exceeded} className={`border-b border-[#1E293B] last:border-0 hover:bg-slate-800/40 ${exceeded ? 'border-l-[3px] border-l-red-500' : ''}`}>
-                    <td className="px-4 py-4 font-tabular text-sm font-bold text-slate-500">#{String(index + 1).padStart(2,'0')}</td>
-                    <td className="px-4 py-4"><p className="text-xs font-semibold text-slate-200">{tenant.name}</p><p className="mt-1 font-tabular text-[9px] text-slate-500">{tenant.code}</p></td>
-                    <td className="px-4 py-4">{ticket === -1 ? <span className="rounded bg-indigo-500/15 px-2 py-1 text-[9px] font-bold text-indigo-300">∞ Không giới hạn</span> : <div className="min-w-56"><div className="flex justify-between font-tabular text-[9px] text-slate-400"><span>{tenant.ticketUsed.toLocaleString('vi-VN')} / {tenant.ticketQuota.toLocaleString('vi-VN')}</span><strong>{ticket.toFixed(0)}%</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full" style={{ width:`${Math.min(ticket,100)}%`, background:bar(ticket) }}/></div></div>}</td>
-                    <td className="px-4 py-4">{staff === -1 ? <span className="rounded bg-indigo-500/15 px-2 py-1 text-[9px] font-bold text-indigo-300">∞ Không giới hạn</span> : <div className="min-w-48"><div className="flex justify-between font-tabular text-[9px] text-slate-400"><span>{tenant.staffUsed} / {tenant.staffMax}</span><strong>{staff.toFixed(0)}%</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full" style={{ width:`${Math.min(staff,100)}%`, background:staff >= 90 ? '#F59E0B' : '#6366F1' }}/></div></div>}</td>
-                    <td className="px-4 py-4">{exceeded ? <span className="rounded bg-red-500/15 px-2 py-1 text-[9px] font-bold text-red-300">CHẠM TRẦN</span> : warning ? <span className="rounded bg-amber-500/15 px-2 py-1 text-[9px] font-bold text-amber-300">CẢNH BÁO</span> : <span className="text-[9px] font-semibold text-emerald-400">BÌNH THƯỜNG</span>}</td>
-                    <td className="px-4 py-4 text-right"><button type="button" onClick={() => openConfig(tenant)} className="rounded-lg border border-slate-700 px-3 py-2 text-[9px] font-bold text-slate-300 hover:border-indigo-500 hover:text-indigo-300">Xem chi tiết</button></td>
+                  <tr key={tenant.id} data-is-quota-exceeded={exceeded} className={`border-b border-slate-100 last:border-0 hover:bg-slate-50/80 transition-colors ${exceeded ? 'border-l-[3px] border-l-red-500' : ''}`}>
+                    <td className="px-4 py-4 font-tabular text-sm font-bold text-slate-400">#{String(index + 1).padStart(2,'0')}</td>
+                    <td className="px-4 py-4"><p className="text-xs font-semibold text-slate-900">{tenant.name}</p><p className="mt-0.5 font-tabular text-[10px] text-slate-500">{tenant.code}</p></td>
+                    <td className="px-4 py-4">{ticket === -1 ? <span className="rounded-md border border-indigo-200/80 bg-indigo-50 px-2.5 py-1 text-[10px] font-bold text-indigo-700">∞ Không giới hạn</span> : <div className="min-w-56"><div className="flex justify-between font-tabular text-[10px] text-slate-600"><span>{tenant.ticketUsed.toLocaleString('vi-VN')} / {tenant.ticketQuota.toLocaleString('vi-VN')}</span><strong className="text-slate-900">{ticket.toFixed(0)}%</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all" style={{ width:`${Math.min(ticket,100)}%`, background:bar(ticket) }}/></div></div>}</td>
+                    <td className="px-4 py-4">{staff === -1 ? <span className="rounded-md border border-indigo-200/80 bg-indigo-50 px-2.5 py-1 text-[10px] font-bold text-indigo-700">∞ Không giới hạn</span> : <div className="min-w-48"><div className="flex justify-between font-tabular text-[10px] text-slate-600"><span>{tenant.staffUsed} / {tenant.staffMax}</span><strong className="text-slate-900">{staff.toFixed(0)}%</strong></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full transition-all" style={{ width:`${Math.min(staff,100)}%`, background:staff >= 90 ? '#F59E0B' : '#6366F1' }}/></div></div>}</td>
+                    <td className="px-4 py-4">{exceeded ? <span className="rounded-md border border-red-200 bg-red-50 px-2 py-0.5 text-[9px] font-bold text-red-700">CHẠM TRẦN</span> : warning ? <span className="rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700">CẢNH BÁO</span> : <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">BÌNH THƯỜNG</span>}</td>
+                    <td className="px-4 py-4 text-right"><button type="button" onClick={() => openConfig(tenant)} className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[10px] font-bold text-slate-600 hover:border-indigo-500 hover:text-indigo-600 transition-colors">Xem chi tiết</button></td>
                   </tr>
                 )
               })}
@@ -5348,7 +5547,7 @@ function ResourceQuotaDirectory() {
         </div>
       </div>
 
-      {configTarget && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-6"><div className="dialog-enter w-full max-w-xl rounded-xl border border-[#1E293B] bg-[#111827] p-6 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.7)]"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-white">Cấu hình hạn ngạch</h2><p className="mt-1 text-[10px] text-slate-500">{configTarget.name} · <span className="font-tabular">{configTarget.code}</span></p></div><button type="button" onClick={() => setConfigTarget(null)} className="text-slate-500 hover:text-white"><XSmIco s={18}/></button></div><div className="mt-5 grid grid-cols-2 gap-4">{fields.map(field => { const unlimited=config[field.key] === -1; return <div key={field.key} className="rounded-lg border border-[#1E293B] bg-slate-900/50 p-3"><label className="text-[10px] font-semibold text-slate-400">{field.label}</label><input type="number" min={0} disabled={unlimited} value={unlimited ? '' : config[field.key]} onChange={event => setConfig(value => ({ ...value, [field.key]:Math.max(0,Number(event.target.value)) }))} className="mt-2 h-10 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-sm text-slate-200 outline-none disabled:opacity-30"/><label className="mt-3 flex items-center gap-2 text-[9px] font-semibold text-slate-500"><input type="checkbox" checked={unlimited} onChange={event => setConfig(value => ({ ...value, [field.key]:event.target.checked ? -1 : Math.max(field.current,1) }))}/>Không giới hạn</label></div> })}</div>{staffGuard && <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-900/60 bg-red-950/30 p-3 text-xs leading-relaxed text-red-300"><AlertIco s={15}/><span>Hạn ngạch nhân sự mới không được nhỏ hơn số lượng nhân viên hiện có của cơ sở.</span></div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setConfigTarget(null)} className="h-10 rounded-lg border border-slate-700 px-4 text-xs font-semibold text-slate-400">Hủy</button><button type="button" disabled={staffGuard} className="h-10 rounded-lg bg-indigo-500 px-4 text-xs font-bold text-white hover:bg-indigo-600 disabled:bg-slate-700 disabled:text-slate-500">Lưu hạn ngạch</button></div></div></div>}
+      {configTarget && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-6 backdrop-blur-xs"><div className="dialog-enter w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"><div className="flex items-start justify-between"><div><h2 className="text-lg font-bold text-slate-900">Cấu hình hạn ngạch</h2><p className="mt-1 text-[11px] text-slate-500">{configTarget.name} · <span className="font-tabular font-semibold text-slate-700">{configTarget.code}</span></p></div><button type="button" onClick={() => setConfigTarget(null)} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"><XSmIco s={18}/></button></div><div className="mt-5 grid grid-cols-2 gap-4">{fields.map(field => { const unlimited=config[field.key] === -1; return <div key={field.key} className="rounded-xl border border-slate-200 bg-slate-50/60 p-3.5"><label className="text-[10px] font-semibold text-slate-700">{field.label}</label><input type="number" min={0} disabled={unlimited} value={unlimited ? '' : config[field.key]} onChange={event => setConfig(value => ({ ...value, [field.key]:Math.max(0,Number(event.target.value)) }))} className="mt-2 h-10 w-full rounded-lg border border-slate-200 bg-white px-3 font-tabular text-sm font-semibold text-slate-800 outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 disabled:opacity-40 transition-all"/><label className="mt-2.5 flex items-center gap-2 text-[10px] font-semibold text-slate-500 cursor-pointer"><input type="checkbox" checked={unlimited} onChange={event => setConfig(value => ({ ...value, [field.key]:event.target.checked ? -1 : Math.max(field.current,1) }))} className="rounded text-indigo-600 focus:ring-indigo-500"/>Không giới hạn</label></div> })}</div>{staffGuard && <div className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs leading-relaxed text-red-700"><AlertIco s={15}/><span>Hạn ngạch nhân sự mới không được nhỏ hơn số lượng nhân viên hiện có của cơ sở.</span></div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setConfigTarget(null)} className="h-10 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Hủy</button><button type="button" disabled={staffGuard} className="h-10 rounded-lg bg-indigo-600 px-4 text-xs font-bold text-white shadow-xs shadow-indigo-100 hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 transition-colors">Lưu hạn ngạch</button></div></div></div>}
     </div>
   )
 }
@@ -5366,19 +5565,19 @@ function AuditLogScreen() {
   const [actor, setActor] = useState('all')
   const visible = rows.filter(row => (action === 'all' || row.action === action) && (actor === 'all' || row.actor === actor))
   return (
-    <div className="min-h-full bg-[#0B0F19] text-slate-100">
-      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-white">Nhật ký kiểm toán</h1><p className="mt-1 text-[10px] text-slate-500">Dòng sự kiện bất biến trên toàn nền tảng</p></div></header>
+    <div className="min-h-full bg-[#F8FAFC] text-slate-800">
+      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-slate-200 bg-white/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-slate-900">Nhật ký kiểm toán</h1><p className="mt-0.5 text-[11px] text-slate-500">Dòng sự kiện bất biến trên toàn nền tảng</p></div></header>
       <div className="p-6">
-        <div className="mb-4 flex items-end gap-3 rounded-[10px] border border-[#1E293B] bg-[#111827] p-3">
-          <label><span className="mb-1 block text-[9px] font-bold text-slate-600">ACTION TYPE</span><select value={action} onChange={event => setAction(event.target.value)} className="h-10 rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-[10px] text-slate-300"><option value="all">Tất cả action</option>{[...new Set(rows.map(row => row.action))].map(value => <option key={value}>{value}</option>)}</select></label>
-          <label><span className="mb-1 block text-[9px] font-bold text-slate-600">TỪ NGÀY</span><input type="date" defaultValue="2026-10-01" className="h-10 rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-[10px] text-slate-300"/></label>
-          <label><span className="mb-1 block text-[9px] font-bold text-slate-600">ĐẾN NGÀY</span><input type="date" defaultValue="2026-10-31" className="h-10 rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-[10px] text-slate-300"/></label>
-          <label><span className="mb-1 block text-[9px] font-bold text-slate-600">ACTOR</span><select value={actor} onChange={event => setActor(event.target.value)} className="h-10 rounded-lg border border-slate-700 bg-slate-900 px-3 text-[10px] text-slate-300"><option value="all">Tất cả actor</option><option value="SA">SA</option><option value="admin">admin</option><option value="system">system</option></select></label>
+        <div className="mb-4 flex items-end gap-3 rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-xs">
+          <label><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">ACTION TYPE</span><select value={action} onChange={event => setAction(event.target.value)} className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 font-tabular text-xs font-semibold text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"><option value="all">Tất cả action</option>{[...new Set(rows.map(row => row.action))].map(value => <option key={value}>{value}</option>)}</select></label>
+          <label><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">TỪ NGÀY</span><input type="date" defaultValue="2026-10-01" className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 font-tabular text-xs font-semibold text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/></label>
+          <label><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">ĐẾN NGÀY</span><input type="date" defaultValue="2026-10-31" className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 font-tabular text-xs font-semibold text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/></label>
+          <label><span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-400">ACTOR</span><select value={actor} onChange={event => setActor(event.target.value)} className="h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-700 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"><option value="all">Tất cả actor</option><option value="SA">SA</option><option value="admin">admin</option><option value="system">system</option></select></label>
         </div>
-        <div className="rounded-[10px] border border-[#1E293B] bg-[#111827] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.65)]">
+        <div className="rounded-xl border border-slate-200/90 bg-white shadow-xs">
           <table className="w-full border-collapse text-left">
-            <thead><tr className="border-b border-[#1E293B] bg-slate-900/70">{['Thời gian','Actor','Action','Target','State transition','IP'].map(label => <th key={label} className="px-4 py-3 text-[9px] font-bold tracking-[0.06em] text-slate-500">{label}</th>)}</tr></thead>
-            <tbody>{visible.map(row => <tr key={row.time} className="group relative border-b border-[#1E293B] last:border-0 hover:z-30 hover:bg-slate-800/60"><td className="px-4 py-3 font-tabular text-[9px] text-slate-400">{row.time}</td><td className="px-4 py-3"><span className={`rounded px-2 py-1 text-[8px] font-bold ${row.actor === 'SA' ? 'bg-indigo-500/15 text-indigo-300' : row.actor === 'system' ? 'bg-cyan-500/15 text-cyan-300' : 'bg-emerald-500/15 text-emerald-300'}`}>{row.actor}</span></td><td className="relative px-4 py-3 font-tabular text-[10px] font-bold text-slate-300">{row.action}<div className="pointer-events-none absolute left-0 top-full z-50 mt-1 w-[460px] translate-y-1 rounded-lg border border-[#334155] bg-[#0B0F19] p-4 opacity-0 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.8)] transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"><p className="mb-2 text-[9px] font-bold tracking-[0.06em] text-slate-500">JSON PAYLOAD</p><pre className="whitespace-pre-wrap break-all font-tabular text-[10px] leading-relaxed text-indigo-200">{JSON.stringify(JSON.parse(row.payload),null,2)}</pre></div></td><td className="px-4 py-3 font-tabular text-[10px] text-slate-400">{row.target}</td><td className="px-4 py-3"><span className="rounded bg-slate-800 px-2 py-1 font-tabular text-[8px] text-slate-400">{row.from}</span><span className="px-2 text-slate-600">→</span><span className="rounded bg-indigo-500/15 px-2 py-1 font-tabular text-[8px] text-indigo-300">{row.to}</span></td><td className="px-4 py-3 font-tabular text-[9px] text-slate-500">{row.ip}</td></tr>)}</tbody>
+            <thead><tr className="border-b border-slate-200 bg-slate-50/80">{['Thời gian','Actor','Action','Target','State transition','IP'].map(label => <th key={label} className="px-4 py-3 text-[10px] font-bold tracking-[0.06em] text-slate-500 uppercase">{label}</th>)}</tr></thead>
+            <tbody>{visible.map(row => <tr key={row.time} className="group relative border-b border-slate-100 last:border-0 hover:z-30 hover:bg-slate-50/80 transition-colors"><td className="px-4 py-3.5 font-tabular text-[10px] text-slate-500">{row.time}</td><td className="px-4 py-3.5"><span className={`rounded-md px-2 py-0.5 text-[9px] font-bold border ${row.actor === 'SA' ? 'border-indigo-200/80 bg-indigo-50 text-indigo-700' : row.actor === 'system' ? 'border-cyan-200/80 bg-cyan-50 text-cyan-700' : 'border-emerald-200/80 bg-emerald-50 text-emerald-700'}`}>{row.actor}</span></td><td className="relative px-4 py-3.5 font-tabular text-xs font-bold text-slate-800">{row.action}<div className="pointer-events-none absolute left-0 top-full z-50 mt-1 w-[460px] translate-y-1 rounded-xl border border-slate-800 bg-slate-950 p-4 opacity-0 shadow-2xl transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"><p className="mb-2 text-[10px] font-bold tracking-[0.06em] text-slate-400 uppercase">JSON PAYLOAD</p><pre className="whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed text-emerald-300">{JSON.stringify(JSON.parse(row.payload),null,2)}</pre></div></td><td className="px-4 py-3.5 font-tabular text-xs text-slate-600 font-medium">{row.target}</td><td className="px-4 py-3.5"><span className="rounded-md border border-slate-200 bg-slate-100 px-2 py-0.5 font-tabular text-[9px] font-semibold text-slate-600">{row.from}</span><span className="px-1.5 text-slate-400 font-bold">→</span><span className="rounded-md border border-indigo-200/80 bg-indigo-50 px-2 py-0.5 font-tabular text-[9px] font-bold text-indigo-700">{row.to}</span></td><td className="px-4 py-3.5 font-tabular text-[10px] text-slate-400">{row.ip}</td></tr>)}</tbody>
           </table>
         </div>
       </div>
@@ -5412,12 +5611,12 @@ function SystemConfigurationScreen() {
     window.setTimeout(() => setSavedKey(null), 2400)
   }
   return (
-    <div className="min-h-full bg-[#0B0F19] text-slate-100" data-audit-policy="Every system configuration change is audit-logged with a required reason.">
-      {savedKey && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-center gap-3 border-l-[3px] border-emerald-500 bg-[#111827] p-4 shadow-2xl"><CheckIco s={17}/><p className="text-sm font-semibold">Đã lưu tham số {savedKey}.</p></div>}
-      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-white">Cấu hình hệ thống</h1><p className="mt-1 text-[10px] text-slate-500">Tham số nền tảng dùng chung, miễn nhiễm cấu hình tenant</p></div></header>
+    <div className="min-h-full bg-[#F8FAFC] text-slate-800" data-audit-policy="Every system configuration change is audit-logged with a required reason.">
+      {savedKey && <div role="status" className="overlay-enter fixed right-5 top-5 z-[200] flex items-center gap-3 rounded-xl border border-slate-200 border-l-[4px] border-l-emerald-600 bg-white p-4 text-slate-800 shadow-xl"><CheckIco s={17}/><p className="text-sm font-semibold text-slate-900">Đã lưu tham số {savedKey}.</p></div>}
+      <header className="sticky top-0 z-30 flex h-[72px] items-center border-b border-slate-200 bg-white/95 px-6 backdrop-blur"><div><h1 className="text-lg font-bold text-slate-900">Cấu hình hệ thống</h1><p className="mt-0.5 text-[11px] text-slate-500">Tham số nền tảng dùng chung, miễn nhiễm cấu hình tenant</p></div></header>
       <div className="grid grid-cols-3 gap-4 p-6">
-        {groups.map(group => <section key={group.title} className="rounded-xl border border-[#1E293B] bg-[#111827] shadow-[0_18px_36px_-18px_rgba(0,0,0,0.65)]"><div className="border-b border-[#1E293B] p-5"><h2 className="text-sm font-bold text-slate-100">{group.title}</h2><p className="mt-1 text-[10px] text-slate-500">{group.note}</p></div><div className="divide-y divide-[#1E293B]">{group.fields.map(field => <div key={field.key} className="p-4"><div className="flex items-center justify-between"><label className="text-[10px] font-semibold text-slate-400">{field.label}</label><button type="button" onClick={() => setValues(value => ({ ...value, [field.key]:defaults[field.key] }))} className="rounded bg-slate-800 px-2 py-1 text-[8px] font-bold text-slate-500 hover:text-indigo-300">Mặc định</button></div><div className="mt-3 flex items-center gap-2"><input type="number" min={0} step={field.step ?? 1} value={values[field.key]} onChange={event => setValues(value => ({ ...value, [field.key]:Number(event.target.value) }))} className="h-10 min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 font-tabular text-sm font-bold text-slate-200 outline-none focus:border-indigo-500"/><span className="min-w-20 text-[9px] text-slate-500">{field.suffix}</span><button type="button" onClick={() => save(field.label)} className="h-10 rounded-lg bg-indigo-500 px-3 text-[9px] font-bold text-white hover:bg-indigo-600">Save</button></div></div>)}</div></section>)}
-        <div className="col-span-3 flex items-center justify-between rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-4 py-3"><p className="text-[10px] text-indigo-200">Every change is audit-logged with reason, actor, timestamp, IP and before/after values.</p><span className="font-tabular text-[9px] text-indigo-400">immutable_audit=true</span></div>
+        {groups.map(group => <section key={group.title} className="rounded-2xl border border-slate-200/90 bg-white shadow-xs"><div className="border-b border-slate-100 p-5"><h2 className="text-sm font-bold text-slate-900">{group.title}</h2><p className="mt-0.5 text-[11px] text-slate-500">{group.note}</p></div><div className="divide-y divide-slate-100">{group.fields.map(field => <div key={field.key} className="p-4"><div className="flex items-center justify-between"><label className="text-[10px] font-semibold text-slate-700">{field.label}</label><button type="button" onClick={() => setValues(value => ({ ...value, [field.key]:defaults[field.key] }))} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[9px] font-semibold text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">Mặc định</button></div><div className="mt-2.5 flex items-center gap-2"><input type="number" min={0} step={field.step ?? 1} value={values[field.key]} onChange={event => setValues(value => ({ ...value, [field.key]:Number(event.target.value) }))} className="h-10 min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 font-tabular text-sm font-bold text-slate-800 outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all"/><span className="min-w-20 text-[10px] font-medium text-slate-500">{field.suffix}</span><button type="button" onClick={() => save(field.label)} className="h-10 rounded-lg bg-indigo-600 px-3.5 text-[10px] font-bold text-white shadow-xs shadow-indigo-100 hover:bg-indigo-700 transition-colors">Lưu</button></div></div>)}</div></section>)}
+        <div className="col-span-3 flex items-center justify-between rounded-xl border border-indigo-100 bg-indigo-50/70 px-4 py-3"><p className="text-xs font-medium text-indigo-900">Mọi thay đổi cấu hình đều được ghi log kiểm toán kèm lý do, actor, thời gian, IP và giá trị trước/sau.</p><span className="rounded bg-indigo-100/70 px-2 py-0.5 font-mono text-[10px] font-bold text-indigo-700">immutable_audit=true</span></div>
       </div>
     </div>
   )
@@ -5428,13 +5627,13 @@ function SuperAdminPortal({ onLogout }: { onLogout: () => void }) {
   const [impersonation, setImpersonation] = useState<{ id:number; name:string; code:string } | null>(null)
   const [range, setRange] = useState<'7 ngày' | '30 ngày' | '90 ngày'>('7 ngày')
   const kpis = [
-    { label:'Đang hoạt động', value:'128', delta:'+6.7%', tone:'bg-emerald-500/10 text-emerald-300' },
-    { label:'Tạm khóa', value:'07', delta:'−2', tone:'bg-slate-700 text-slate-300' },
-    { label:'Chờ phê duyệt', value:'12', delta:'+3', tone:'bg-amber-500/10 text-amber-300' },
-    { label:'Vé toàn hệ thống hôm nay', value:'18,492', delta:'+12.4%', tone:'bg-indigo-500/10 text-indigo-300' },
-    { label:'Hoàn tất', value:'16,870', delta:'+11.8%', tone:'bg-emerald-500/10 text-emerald-300' },
-    { label:'Vắng mặt', value:'624', delta:'−0.8%', tone:'bg-red-500/10 text-red-300' },
-    { label:'Người dùng hoạt động', value:'3,842', delta:'+9.2%', tone:'bg-cyan-500/10 text-cyan-300' },
+    { label:'Đang hoạt động', value:'128', delta:'+6.7%', tone:'bg-emerald-50 text-emerald-700 border border-emerald-200/80' },
+    { label:'Tạm khóa', value:'07', delta:'−2', tone:'bg-slate-100 text-slate-700 border border-slate-200' },
+    { label:'Chờ phê duyệt', value:'12', delta:'+3', tone:'bg-amber-50 text-amber-700 border border-amber-200/80' },
+    { label:'Vé toàn hệ thống hôm nay', value:'18,492', delta:'+12.4%', tone:'bg-indigo-50 text-indigo-700 border border-indigo-200/80' },
+    { label:'Hoàn tất', value:'16,870', delta:'+11.8%', tone:'bg-emerald-50 text-emerald-700 border border-emerald-200/80' },
+    { label:'Vắng mặt', value:'624', delta:'−0.8%', tone:'bg-red-50 text-red-700 border border-red-200/80' },
+    { label:'Người dùng hoạt động', value:'3,842', delta:'+9.2%', tone:'bg-cyan-50 text-cyan-700 border border-cyan-200/80' },
   ]
   const chartPoints = range === '7 ngày'
     ? [{x:2,y:68,v:'2,480'},{x:18,y:55,v:'2,910'},{x:34,y:61,v:'2,730'},{x:50,y:38,v:'3,420'},{x:66,y:44,v:'3,180'},{x:82,y:23,v:'3,860'},{x:98,y:29,v:'3,640'}]
@@ -5472,70 +5671,70 @@ function SuperAdminPortal({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div
-      className="flex h-screen min-h-[760px] w-full bg-[#0B0F19] text-slate-100"
+      className="flex h-screen min-h-[760px] w-full bg-[#F8FAFC] text-slate-800"
       data-live-behavior="WebSocket live tick; KPI numbers update without page reload."
       data-load-slo="Overview loads in ≤400ms from pre-aggregated cache."
     >
-      <aside className="flex h-full w-[240px] shrink-0 flex-col border-r border-[#1E293B] bg-[#111827]">
-        <div className="flex h-[72px] items-center gap-3 border-b border-[#1E293B] px-5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500 text-white"><ShieldIco s={18}/></div>
-          <div><p className="text-sm font-bold text-white">NextTurn</p><p className="mt-0.5 text-[9px] font-bold tracking-[0.13em] text-indigo-300">COMMAND PORTAL</p></div>
+      <aside className="flex h-full w-[240px] shrink-0 flex-col border-r border-slate-200 bg-white shadow-xs">
+        <div className="flex h-[72px] items-center gap-3 border-b border-slate-100 px-5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-xs shadow-indigo-100"><ShieldIco s={18}/></div>
+          <div><p className="text-sm font-bold text-slate-900">NextTurn</p><p className="mt-0.5 text-[9px] font-bold tracking-[0.13em] text-indigo-600 uppercase">COMMAND PORTAL</p></div>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-5">
           {nav.map(item => {
             const active = item.page === activePage
-            return <button key={item.label} type="button" onClick={() => (item.page === 'overview' || item.page === 'organizations' || item.page === 'approvals' || item.page === 'resources' || item.page === 'audit' || item.page === 'settings') && setActivePage(item.page)} className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition-colors ${active ? 'bg-indigo-500/15 text-indigo-200' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'}`}><span className={active ? 'text-indigo-400' : 'text-slate-500'}>{item.icon}</span><span className="flex-1">{item.label}</span>{item.count && <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 font-tabular text-[9px] font-bold text-indigo-300">{item.count}</span>}</button>
+            return <button key={item.label} type="button" onClick={() => (item.page === 'overview' || item.page === 'organizations' || item.page === 'approvals' || item.page === 'resources' || item.page === 'audit' || item.page === 'settings') && setActivePage(item.page)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition-all ${active ? 'bg-indigo-50 text-indigo-700 shadow-xs' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}><span className={active ? 'text-indigo-600' : 'text-slate-400'}>{item.icon}</span><span className="flex-1">{item.label}</span>{item.count && <span className="rounded-full bg-indigo-100 px-2 py-0.5 font-tabular text-[9px] font-bold text-indigo-700">{item.count}</span>}</button>
           })}
         </nav>
-        <div className="border-t border-[#1E293B] p-4">
-          <div className="mb-3 flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500 text-xs font-bold">SA</div><div><p className="text-xs font-bold text-slate-200">Vũ Quốc Thắng</p><p className="mt-0.5 text-[9px] text-slate-500">Super Admin</p></div></div>
-          <button type="button" onClick={onLogout} className="flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-700 text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-white"><LogOutIco s={14}/>Đăng xuất</button>
+        <div className="border-t border-slate-100 bg-slate-50/50 p-4">
+          <div className="mb-3 flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-xs shadow-indigo-100">SA</div><div><p className="text-xs font-bold text-slate-900">Vũ Quốc Thắng</p><p className="mt-0.5 text-[10px] text-slate-500">Super Admin</p></div></div>
+          <button type="button" onClick={onLogout} className="flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-600 shadow-xs hover:bg-slate-50 hover:text-slate-900 transition-colors"><LogOutIco s={14}/>Đăng xuất</button>
         </div>
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto">
         {activePage === 'organizations' ? <OrganizationsDirectory onImpersonate={setImpersonation}/> : activePage === 'approvals' ? <ApprovalQueue/> : activePage === 'resources' ? <ResourceQuotaDirectory/> : activePage === 'audit' ? <AuditLogScreen/> : activePage === 'settings' ? <SystemConfigurationScreen/> : (
         <>
-        <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-[#1E293B] bg-[#0B0F19]/95 px-6 backdrop-blur">
-          <div><h1 className="text-lg font-bold text-white">Tổng quan nền tảng</h1><p className="mt-1 text-[10px] text-slate-500">Giám sát tenant, phụ tải và tài nguyên toàn hệ thống</p></div>
-          <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-2 text-[10px] font-bold text-emerald-300"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50"/><span className="relative h-2 w-2 rounded-full bg-emerald-400"/></span>LIVE · WebSocket</div>
+        <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-slate-200 bg-white/95 px-6 backdrop-blur">
+          <div><h1 className="text-lg font-bold text-slate-900">Tổng quan nền tảng</h1><p className="mt-0.5 text-[11px] text-slate-500">Giám sát tenant, phụ tải và tài nguyên toàn hệ thống</p></div>
+          <div className="flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60"/><span className="relative h-2 w-2 rounded-full bg-emerald-600"/></span>LIVE · WebSocket</div>
         </header>
         <div className="p-6">
           <div className="grid grid-cols-7 gap-3">
             {kpis.map((kpi,index) => (
-              <section key={kpi.label} className="group relative z-0 min-w-0 rounded-[10px] border border-[#1E293B] bg-[#111827] p-4 transition-all duration-200 ease-out hover:z-40 hover:-translate-y-0.5 hover:border-indigo-500/50 hover:shadow-[0_16px_30px_-10px_rgba(0,0,0,0.55)]">
-                <p className="min-h-8 text-[10px] font-semibold leading-relaxed text-slate-400">{kpi.label}</p>
-                <p className="mt-2 truncate font-tabular text-[36px] font-bold leading-none tracking-tight text-[#F8FAFC]">{kpi.value}</p>
-                <span className={`mt-3 inline-flex rounded px-2 py-1 font-tabular text-[9px] font-bold ${kpi.tone}`}>{kpi.delta} vs hôm qua</span>
-                <div className="pointer-events-none absolute left-0 right-0 top-full z-50 mt-2 translate-y-1 rounded-[10px] border border-[#1E293B] bg-[#111827] p-3 opacity-0 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.7)] transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-                  <p className="mb-2 text-[9px] font-bold tracking-[0.05em] text-slate-500">XU HƯỚNG 7 NGÀY</p>
+              <section key={kpi.label} className="group relative z-0 min-w-0 rounded-2xl border border-slate-200/90 bg-white p-4 transition-all duration-200 ease-out hover:z-40 hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md">
+                <p className="min-h-8 text-[10px] font-semibold uppercase tracking-wider leading-relaxed text-slate-500">{kpi.label}</p>
+                <p className="mt-2 truncate font-tabular text-[32px] font-bold leading-none tracking-tight text-slate-900">{kpi.value}</p>
+                <span className={`mt-3 inline-flex rounded-md px-2 py-0.5 font-tabular text-[9px] font-bold ${kpi.tone}`}>{kpi.delta} vs hôm qua</span>
+                <div className="pointer-events-none absolute left-0 right-0 top-full z-50 mt-2 translate-y-1 rounded-xl border border-slate-200 bg-white p-3.5 opacity-0 shadow-xl transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+                  <p className="mb-2 text-[9px] font-bold tracking-[0.05em] uppercase text-slate-400">XU HƯỚNG 7 NGÀY</p>
                   <svg viewBox="0 0 160 48" className="h-12 w-full" aria-label={`Sparkline ${kpi.label}`}>
-                    <polyline points={`0,${38-index} 26,${32+index%4} 52,${35-index%3} 80,${22+index} 106,${27-index%2} 132,${15+index} 160,${18-index%3}`} fill="none" stroke="#6366F1" strokeWidth="2.5"/>
-                    <line x1="0" y1="46" x2="160" y2="46" stroke="#1E293B"/>
+                    <polyline points={`0,${38-index} 26,${32+index%4} 52,${35-index%3} 80,${22+index} 106,${27-index%2} 132,${15+index} 160,${18-index%3}`} fill="none" stroke="#4F46E5" strokeWidth="2.5"/>
+                    <line x1="0" y1="46" x2="160" y2="46" stroke="#E2E8F0"/>
                   </svg>
                 </div>
               </section>
             ))}
           </div>
 
-          <section className="mt-5 rounded-xl border border-[#1E293B] bg-[#111827] p-5 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.65)]">
+          <section className="mt-5 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs">
             <div className="flex items-start justify-between">
-              <div><h2 className="text-sm font-bold text-slate-100">Xu hướng phụ tải toàn nền tảng</h2><p className="mt-1 text-[10px] text-slate-500">Số yêu cầu xử lý mỗi phút trên toàn bộ tenant</p></div>
-              <div className="flex rounded-lg bg-slate-900 p-1">{(['7 ngày','30 ngày','90 ngày'] as const).map(item => <button key={item} type="button" onClick={() => setRange(item)} className={`rounded-md px-3 py-1.5 text-[10px] font-bold ${range === item ? 'bg-indigo-500 text-white' : 'text-slate-500 hover:text-slate-200'}`}>{item}</button>)}</div>
+              <div><h2 className="text-sm font-bold text-slate-900">Xu hướng phụ tải toàn nền tảng</h2><p className="mt-0.5 text-[11px] text-slate-500">Số yêu cầu xử lý mỗi phút trên toàn bộ tenant</p></div>
+              <div className="flex rounded-xl bg-slate-100 p-1">{(['7 ngày','30 ngày','90 ngày'] as const).map(item => <button key={item} type="button" onClick={() => setRange(item)} className={`rounded-lg px-3 py-1.5 text-[10px] font-bold transition-all ${range === item ? 'bg-white text-indigo-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{item}</button>)}</div>
             </div>
-            <div className="mt-4 flex items-center gap-2 text-[9px] font-semibold text-slate-400"><span className="h-0.5 w-5 bg-indigo-500"/>Yêu cầu / phút</div>
+            <div className="mt-4 flex items-center gap-2 text-[10px] font-semibold text-slate-500"><span className="h-1 w-5 rounded-full bg-indigo-600"/>Yêu cầu / phút</div>
             <div className="mt-4 flex h-[430px]">
-              <div className="flex w-12 flex-col justify-between pb-8 text-right font-tabular text-[9px] text-slate-600"><span>5K</span><span>4K</span><span>3K</span><span>2K</span><span>1K</span><span>0</span></div>
+              <div className="flex w-12 flex-col justify-between pb-8 text-right font-tabular text-[10px] text-slate-400"><span>5K</span><span>4K</span><span>3K</span><span>2K</span><span>1K</span><span>0</span></div>
               <div className="relative ml-4 flex-1">
-                {[0,20,40,60,80,100].map(top => <span key={top} className="absolute inset-x-0 h-px bg-[#1E293B]" style={{ top:`${top}%` }}/>)}
+                {[0,20,40,60,80,100].map(top => <span key={top} className="absolute inset-x-0 h-px bg-slate-100" style={{ top:`${top}%` }}/>)}
                 <svg className="absolute inset-x-0 top-0 h-[calc(100%_-_32px)] w-full" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-label="Xu hướng phụ tải">
-                  <polyline points={linePoints} fill="none" stroke="#6366F1" strokeWidth="3" vectorEffect="non-scaling-stroke"/>
+                  <polyline points={linePoints} fill="none" stroke="#4F46E5" strokeWidth="3" vectorEffect="non-scaling-stroke"/>
                 </svg>
-                {chartPoints.map((point,index) => <button key={index} type="button" className="group/point absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#111827] bg-indigo-500 shadow-[0_0_0_3px_rgba(99,102,241,0.15)]" style={{ left:`${point.x}%`, top:`${point.y}%` }}><span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-lg border border-[#1E293B] bg-[#0B0F19] px-3 py-2 opacity-0 shadow-xl transition-all duration-200 ease-out group-hover/point:translate-y-0 group-hover/point:opacity-100"><span className="block text-[9px] text-slate-500">Điểm dữ liệu {index + 1}</span><span className="block font-tabular text-xs font-bold text-slate-100">{point.v} req/min</span></span></button>)}
-                <div className="absolute inset-x-0 bottom-0 flex justify-between font-tabular text-[9px] text-slate-600">{(range === '7 ngày' ? ['T2','T3','T4','T5','T6','T7','CN'] : range === '30 ngày' ? ['01','05','10','15','20','25','30'] : ['T1','T2','T3']).map(label => <span key={label}>{label}</span>)}</div>
+                {chartPoints.map((point,index) => <button key={index} type="button" className="group/point absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-indigo-600 shadow-[0_0_0_3px_rgba(79,70,229,0.2)] transition-transform hover:scale-125" style={{ left:`${point.x}%`, top:`${point.y}%` }}><span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 opacity-0 shadow-xl transition-all duration-200 ease-out group-hover/point:translate-y-0 group-hover/point:opacity-100"><span className="block text-[10px] text-slate-400">Điểm dữ liệu {index + 1}</span><span className="block font-tabular text-xs font-bold text-slate-900">{point.v} req/min</span></span></button>)}
+                <div className="absolute inset-x-0 bottom-0 flex justify-between font-tabular text-[10px] text-slate-400">{(range === '7 ngày' ? ['T2','T3','T4','T5','T6','T7','CN'] : range === '30 ngày' ? ['01','05','10','15','20','25','30'] : ['T1','T2','T3']).map(label => <span key={label}>{label}</span>)}</div>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between border-t border-[#1E293B] pt-4"><p className="text-[10px] text-slate-500">Nguồn: pre-aggregated cache · tải mục tiêu ≤400ms</p><p className="font-tabular text-[10px] text-slate-500">Cập nhật 10:42:07</p></div>
+            <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4"><p className="text-[10px] text-slate-400">Nguồn: pre-aggregated cache · tải mục tiêu ≤400ms</p><p className="font-tabular text-[10px] text-slate-400">Cập nhật 10:42:07</p></div>
           </section>
         </div>
         </>
