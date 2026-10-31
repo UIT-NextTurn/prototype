@@ -5974,24 +5974,41 @@ function CsatFeedbackScreen({ ticketCode='A-042', initialState }: { ticketCode?:
 export default function App() {
   const [appState, setAppState] = useState<AppState>('auth')
   const [role, setRole] = useState<Role>('admin')
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash)
+
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   const handleAuth = (r: Role) => { setRole(r); setAppState('app') }
-  const handleLogout = () => setAppState('auth')
+  const handleLogout = () => {
+    if (window.location.hash === '#root-console' || window.location.hash === '#superadmin' || window.location.hash === '#superadmin-portal') {
+      window.location.hash = ''
+    }
+    setAppState('auth')
+  }
 
   const displayRoute = window.location.pathname.match(/^\/([^/]+)\/display\/?$/)
   if (displayRoute) return <LobbyDisplay tenantCode={decodeURIComponent(displayRoute[1])}/>
-  if (window.location.pathname === '/partners/register') return <PartnerRegistration/>
+  if (window.location.pathname === '/partners/register' || currentHash === '#register') return <PartnerRegistration/>
   const feedbackRoute = window.location.pathname.match(/^\/([^/]+)\/feedback\/([^/]+)\/?$/)
   if (feedbackRoute) return <CsatFeedbackScreen ticketCode={decodeURIComponent(feedbackRoute[2])}/>
-  if (window.location.hash === '#lobby-display') return <LobbyDisplay/>
-  if (window.location.hash === '#booking-widget') return <BookingWidgetDemo/>
-  if (window.location.hash === '#widget-ticket-fullscreen') return <FullscreenWidgetTicket/>
-  if (window.location.hash === '#csat-feedback-expired') return <CsatFeedbackScreen initialState="expired"/>
-  if (window.location.hash === '#csat-feedback-already') return <CsatFeedbackScreen initialState="already"/>
-  if (window.location.hash === '#csat-feedback-invalid') return <CsatFeedbackScreen initialState="invalid"/>
-  if (window.location.hash === '#csat-feedback') return <CsatFeedbackScreen/>
+  if (currentHash === '#lobby-display') return <LobbyDisplay/>
+  if (currentHash === '#booking-widget') return <BookingWidgetDemo/>
+  if (currentHash === '#widget-ticket-fullscreen') return <FullscreenWidgetTicket/>
+  if (currentHash === '#csat-feedback-expired') return <CsatFeedbackScreen initialState="expired"/>
+  if (currentHash === '#csat-feedback-already') return <CsatFeedbackScreen initialState="already"/>
+  if (currentHash === '#csat-feedback-invalid') return <CsatFeedbackScreen initialState="invalid"/>
+  if (currentHash === '#csat-feedback') return <CsatFeedbackScreen/>
+
+  if (currentHash === '#superadmin-portal') {
+    return <AppShell role="superadmin" onLogout={handleLogout}/>
+  }
+
   if (appState === 'auth') {
-    const isSuperAdminLogin = window.location.pathname === '/internal/root-console'
+    const isSuperAdminLogin = window.location.pathname === '/internal/root-console' || currentHash === '#root-console' || currentHash === '#superadmin'
     return isSuperAdminLogin ? <SuperAdminLogin onAuth={handleAuth}/> : <AuthScreen onAuth={handleAuth}/>
   }
   return <AppShell role={role} onLogout={handleLogout}/>
