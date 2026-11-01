@@ -112,6 +112,49 @@ const DownloadIco = ({s=16}:{s?:number}) => <svg {...I0(s)}><path d="M21 15v4a2 
 const EditIco    = ({s=16}:{s?:number}) => <svg {...I0(s)}><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
 const TrashIco   = ({s=16}:{s?:number}) => <svg {...I0(s)}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6m3 0V4h8v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
 const SearchIco  = ({s=16}:{s?:number}) => <svg {...I0(s)}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+const QrIco      = ({s=16}:{s?:number}) => <svg {...I0(s)}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2v7h-7v-2"/></svg>
+const CopyIco    = ({s=16}:{s?:number}) => <svg {...I0(s)}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+const ExternalLinkIco = ({s=16}:{s?:number}) => <svg {...I0(s)}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+
+/* ═══════════════════════════════════════════════════════════════════
+   DYNAMIC CHECK-IN QR & ROTATING URL SYNC (ADMIN & COUNTER)
+══════════════════════════════════════════════════════════════════ */
+const QR_ROTATION_INTERVAL = 60 // 60 seconds periodic reset
+
+interface DynamicCheckinState {
+  token: string
+  checkInUrl: string
+  remainingSeconds: number
+  epochWindow: number
+}
+
+function getDynamicCheckinData(): DynamicCheckinState {
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
+  const salt = typeof window !== 'undefined' ? Number(localStorage.getItem('nextturn_qr_salt') || '0') : 0
+  const now = Math.floor(Date.now() / 1000) + salt
+  const epochWindow = Math.floor(now / QR_ROTATION_INTERVAL)
+  const remainder = now % QR_ROTATION_INTERVAL
+  const remainingSeconds = QR_ROTATION_INTERVAL - remainder
+
+  // Deterministic token code per 60-second window
+  const codeVal = ((epochWindow * 7919) % 90000 + 10000).toString(16).toUpperCase()
+  const token = `NT-CHK-${codeVal}`
+  const checkInUrl = `${origin}${pathname}#booking-widget?mode=checkin&token=${token}`
+
+  return { token, checkInUrl, remainingSeconds: Math.max(1, remainingSeconds), epochWindow }
+}
+
+function rotateDynamicCheckinNow() {
+  if (typeof window === 'undefined') return
+  const currentSalt = Number(localStorage.getItem('nextturn_qr_salt') || '0')
+  const now = Math.floor(Date.now() / 1000) + currentSalt
+  const currentRemainder = now % QR_ROTATION_INTERVAL
+  const advance = QR_ROTATION_INTERVAL - currentRemainder + 1
+  const newSalt = currentSalt + advance
+  localStorage.setItem('nextturn_qr_salt', String(newSalt))
+  window.dispatchEvent(new CustomEvent('nextturn_qr_sync'))
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    QR CODE & CHART
@@ -1403,11 +1446,6 @@ function TicketCard({ ticket: t, elapsed, onCallNext, onComplete, onNoShow, onTr
                 style={{ background:'#FFFBEB', color:'#92400E', borderColor:'#FCD34D', minHeight:36 }}>
                 Vắng mặt
               </button>
-              <button onClick={onTransfer}
-                className="py-2 px-3 rounded-lg text-xs font-semibold border transition-all active:scale-95"
-                style={{ background:'#F8FAFC', color:'#475569', borderColor:'#E2E8F0', minHeight:36 }}>
-                Chuyển quầy
-              </button>
             </>
           )}
           {isNoshow && (
@@ -1455,9 +1493,9 @@ function CounterCommandBar({ servedToday }: { servedToday: number }) {
       {/* Counter badge */}
       <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background:'#EFF6FF', border:'1.5px solid #BFDBFE' }}>
         <div className="w-2 h-2 rounded-full bg-blue-500 dot-blink"/>
-        <span className="text-sm font-bold text-blue-800">QUẦY 03</span>
+        <span className="text-sm font-bold text-blue-800">QUẦY TIẾP NHẬN</span>
         <span className="text-slate-300">·</span>
-        <span className="text-xs font-medium text-blue-600">Tư vấn tổng quát</span>
+        <span className="text-xs font-medium text-blue-600">Tư vấn & Phục vụ</span>
       </div>
 
       {/* Service filter */}
@@ -1570,10 +1608,6 @@ function KanbanBoard() {
     showToast({ type:'info', text:`${code} – Đã huỷ và xoá khỏi hàng đợi.` })
   }, [showToast])
 
-  const transfer = useCallback((id: string, code: string) => {
-    showToast({ type:'info', text:`${code} – Chuyển sang Quầy 02.` })
-  }, [showToast])
-
   const onDrop = useCallback((toCol: KanbanCol) => {
     if (!draggingId) return
     moveTicket(draggingId, toCol)
@@ -1629,7 +1663,6 @@ function KanbanBoard() {
                         onCallNext={() => callNext(ticket.id)}
                         onComplete={() => complete(ticket.id, ticket.code)}
                         onNoShow={() => markNoShow(ticket.id, ticket.code)}
-                        onTransfer={() => transfer(ticket.id, ticket.code)}
                         onRecall={() => recall(ticket.id, ticket.code)}
                         onCancel={() => cancel(ticket.id, ticket.code)}
                       />
@@ -1657,7 +1690,7 @@ function AnalyticsDashboard() {
   const runAction = useCallback((action: 'next' | 'recall' | 'absent') => {
     if (action === 'next') {
       setWaitingCount(count => Math.max(0, count - 1))
-      setLastAction('Đã gọi số A-098 đến Quầy 03')
+      setLastAction('Đã gọi số A-098 đến quầy tiếp nhận')
       return
     }
     setLastAction(action === 'recall' ? 'Đã gọi lại số A-097' : 'Đã đánh dấu A-097 vắng mặt')
@@ -1845,6 +1878,41 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false)
   const [showShortcutHelp, setShowShortcutHelp] = useState(false)
   const [ticketAction, setTicketAction] = useState<{ type:'hold' | 'transfer' | 'note'; ticket:OpsTicket } | null>(null)
+  const [draggingTicketId, setDraggingTicketId] = useState<string | null>(null)
+  const [dragOverStage, setDragOverStage] = useState<OpsStage | null>(null)
+  const [dragOverTicketId, setDragOverTicketId] = useState<string | null>(null)
+  const [staffToast, setStaffToast] = useState<string | null>(null)
+  const [dynamicQr, setDynamicQr] = useState<DynamicCheckinState>(() => getDynamicCheckinData())
+  const [showCounterQrModal, setShowCounterQrModal] = useState(false)
+  const [copiedCounterUrl, setCopiedCounterUrl] = useState(false)
+
+  const showStaffToast = useCallback((msg: string) => {
+    setStaffToast(msg)
+    window.setTimeout(() => setStaffToast(null), 2500)
+  }, [])
+
+  useEffect(() => {
+    const update = () => setDynamicQr(getDynamicCheckinData())
+    const timer = window.setInterval(update, 1000)
+    const handleSync = () => update()
+    window.addEventListener('nextturn_qr_sync', handleSync)
+    window.addEventListener('storage', handleSync)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener('nextturn_qr_sync', handleSync)
+      window.removeEventListener('storage', handleSync)
+    }
+  }, [])
+
+  const copyCounterUrl = useCallback(() => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(dynamicQr.checkInUrl).catch(() => {})
+    }
+    setCopiedCounterUrl(true)
+    showStaffToast('Đã sao chép đường dẫn check-in quầy!')
+    window.setTimeout(() => setCopiedCounterUrl(false), 2000)
+  }, [dynamicQr.checkInUrl, showStaffToast])
+
   const [tickets, setTickets] = useState<OpsTicket[]>([
     ...[
       ['A-043','Trần Văn Minh','Xét nghiệm máu','08:48'],
@@ -1879,6 +1947,57 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     })
   }, [])
 
+  const handleCardDrop = useCallback((targetTicketId: string, targetStage: OpsStage) => {
+    if (!draggingTicketId) return
+    const draggedItem = tickets.find(t => t.id === draggingTicketId)
+    if (!draggedItem) return
+
+    setTickets(prev => {
+      const remaining = prev.filter(t => t.id !== draggingTicketId)
+      const targetIndex = remaining.findIndex(t => t.id === targetTicketId)
+      const updatedItem = { ...draggedItem, stage: targetStage }
+      if (targetIndex === -1) {
+        return [...remaining, updatedItem]
+      }
+      const updated = [...remaining]
+      updated.splice(targetIndex, 0, updatedItem)
+      return updated
+    })
+
+    const stageLabels: Record<OpsStage, string> = {
+      waiting: 'Đang chờ',
+      calling: 'Đang gọi',
+      serving: 'Đang phục vụ',
+      completed: 'Hoàn tất',
+    }
+    showStaffToast(`Đã chuyển vé ${draggedItem.code} sang cột ${stageLabels[targetStage]}`)
+    setDraggingTicketId(null)
+    setDragOverStage(null)
+    setDragOverTicketId(null)
+  }, [draggingTicketId, tickets, showStaffToast])
+
+  const handleColumnDrop = useCallback((targetStage: OpsStage) => {
+    if (!draggingTicketId) return
+    const draggedItem = tickets.find(t => t.id === draggingTicketId)
+    if (!draggedItem) return
+
+    setTickets(prev => {
+      const remaining = prev.filter(t => t.id !== draggingTicketId)
+      return [...remaining, { ...draggedItem, stage: targetStage }]
+    })
+
+    const stageLabels: Record<OpsStage, string> = {
+      waiting: 'Đang chờ',
+      calling: 'Đang gọi',
+      serving: 'Đang phục vụ',
+      completed: 'Hoàn tất',
+    }
+    showStaffToast(`Đã chuyển vé ${draggedItem.code} sang cột ${stageLabels[targetStage]}`)
+    setDraggingTicketId(null)
+    setDragOverStage(null)
+    setDragOverTicketId(null)
+  }, [draggingTicketId, tickets, showStaffToast])
+
   useEffect(() => {
     const timer = window.setInterval(() => setClock(new Date()), 1000)
     const handleShortcut = (event: KeyboardEvent) => {
@@ -1910,6 +2029,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-slate-50">
+      {staffToast && (
+        <div role="status" className="overlay-enter fixed top-4 right-6 z-[250] flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white shadow-xl">
+          <CheckIco s={14}/>
+          <span>{staffToast}</span>
+        </div>
+      )}
       {showShortcutHelp && (
         <div
           className="overlay-enter fixed inset-0 z-[200] flex items-center justify-center bg-[rgba(15,23,42,0.32)] p-6"
@@ -1996,6 +2121,104 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           </div>
         </div>
       )}
+      {showCounterQrModal && (
+        <div
+          className="overlay-enter fixed inset-0 z-[220] flex items-center justify-center bg-slate-900/40 p-6 backdrop-blur-xs"
+          role="presentation"
+          onMouseDown={() => setShowCounterQrModal(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="counter-qr-title"
+            className="dialog-enter w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+            onMouseDown={event => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                  QUẦY TIẾP NHẬN CHÍNH · SẢNH CHÍNH
+                </span>
+                <h2 id="counter-qr-title" className="mt-1.5 text-lg font-bold text-slate-900">
+                  Mã QR & Đường dẫn Check-in tại Quầy
+                </h2>
+                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                  Khách hàng quét mã hoặc truy cập đường dẫn để xác nhận lịch hẹn hoặc lấy số thứ tự.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCounterQrModal(false)}
+                aria-label="Đóng bảng mã QR"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+              >
+                <XSmIco s={17}/>
+              </button>
+            </div>
+
+            <div className="mt-5 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-slate-50 to-white p-6 border border-slate-200 text-center">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md">
+                <QRCode sz={180}/>
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <span className="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+                  {dynamicQr.token}
+                </span>
+                <span className="flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 font-tabular text-xs font-bold text-slate-700">
+                  <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse"/>
+                  Tự động làm mới sau: <strong className="text-blue-700">{dynamicQr.remainingSeconds}s</strong>
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <TicketIco s={13}/> Đường dẫn check-in của quầy
+                </span>
+                <span className="text-[10px] font-semibold text-emerald-700 font-mono">
+                  Đồng bộ thời gian thực
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={dynamicQr.checkInUrl}
+                  className="h-10 flex-1 rounded-lg border border-slate-200 bg-white px-3 font-mono text-xs text-slate-700 outline-none select-all focus:border-blue-500"
+                />
+                <button
+                  type="button"
+                  onClick={copyCounterUrl}
+                  className="flex h-10 items-center gap-1.5 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 shrink-0 shadow-xs"
+                >
+                  {copiedCounterUrl ? <><CheckIco s={14}/>Đã chép</> : <><CopyIco s={14}/>Sao chép URL</>}
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-5 flex gap-2.5">
+              <button
+                type="button"
+                onClick={() => window.open(dynamicQr.checkInUrl, '_blank')}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-blue-50 text-xs font-bold text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
+              >
+                <MonitorIco s={16}/>
+                <span>Mở giao diện khách</span>
+                <ExternalLinkIco s={13}/>
+              </button>
+              <button
+                type="button"
+                onClick={rotateDynamicCheckinNow}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <RefreshIco s={15}/>
+                <span>Làm mới URL ngay</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="sticky top-0 z-50 flex h-[72px] shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-6">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-white" title="NextTurn">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-label="NextTurn">
@@ -2054,6 +2277,32 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
         <div className="flex-1"/>
 
+        {/* Dynamic QR Check-in URL for Counter Staff */}
+        <div className="flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 p-1">
+          <button
+            type="button"
+            onClick={() => setShowCounterQrModal(true)}
+            title="Mở bảng mã QR tiếp nhận khách tại quầy"
+            className="flex h-9 items-center gap-2 rounded-md bg-white px-3 text-xs font-bold text-slate-700 shadow-xs transition-colors hover:border-blue-300 hover:text-blue-700"
+          >
+            <QrIco s={15}/>
+            <span>QR Tiếp nhận quầy</span>
+            <span className="flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 font-tabular text-[10px] font-bold text-blue-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse"/>
+              {dynamicQr.remainingSeconds}s
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={copyCounterUrl}
+            title="Sao chép URL check-in động hiện tại"
+            className="flex h-9 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-colors"
+          >
+            {copiedCounterUrl ? <CheckIco s={14}/> : <CopyIco s={14}/>}
+            <span className="hidden xl:inline">{copiedCounterUrl ? 'Đã chép' : 'Sao chép link'}</span>
+          </button>
+        </div>
+
         <div className="flex shrink-0 items-center gap-3 text-slate-600">
           <ClockIco s={16}/>
           <time className="font-tabular text-sm font-semibold" dateTime={clock.toISOString()}>
@@ -2107,10 +2356,24 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         <div className="grid h-full min-h-0 grid-cols-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
           {columns.map((column, columnIndex) => {
             const columnTickets = tickets.filter(ticket => ticket.stage === column.stage)
+            const isDragOverThisStage = dragOverStage === column.stage
             return (
               <section key={column.stage}
-                className={`min-h-0 overflow-y-auto ${columnIndex < columns.length - 1 ? 'border-r border-slate-200' : ''}`}
-                style={{ background:column.tint }}>
+                onDragOver={e => {
+                  e.preventDefault()
+                  e.dataTransfer.dropEffect = 'move'
+                  if (dragOverStage !== column.stage) setDragOverStage(column.stage)
+                }}
+                onDragLeave={e => {
+                  if (e.currentTarget.contains(e.relatedTarget as Node)) return
+                  setDragOverStage(null)
+                }}
+                onDrop={e => {
+                  e.preventDefault()
+                  handleColumnDrop(column.stage)
+                }}
+                className={`min-h-0 flex flex-col overflow-y-auto transition-all duration-150 ${columnIndex < columns.length - 1 ? 'border-r border-slate-200' : ''} ${isDragOverThisStage ? 'bg-blue-50/70 ring-2 ring-inset ring-blue-500/70' : ''}`}
+                style={{ background: isDragOverThisStage ? undefined : column.tint }}>
                 <div className="sticky top-0 z-10 px-4 pb-3 pt-4 backdrop-blur-sm" style={{ background:column.tint }}>
                   <div className="flex items-center justify-between rounded-lg px-3 py-2.5" style={{ background:column.chip, color:column.text }}>
                     <span className="text-xs font-bold tracking-[0.08em]">{column.label}</span>
@@ -2119,9 +2382,35 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     </span>
                   </div>
                 </div>
-                <div className="space-y-3 px-4 pb-4">
+                <div className="space-y-3 px-4 pb-4 flex-1">
                   {columnTickets.map(ticket => (
-                    <div key={ticket.id} className="group/card flex w-full flex-col gap-0 transition-[gap] duration-150 ease-out hover:gap-3 focus-within:gap-3">
+                    <div
+                      key={ticket.id}
+                      draggable
+                      onDragStart={e => {
+                        e.dataTransfer.setData('text/plain', ticket.id)
+                        e.dataTransfer.effectAllowed = 'move'
+                        setDraggingTicketId(ticket.id)
+                      }}
+                      onDragEnd={() => {
+                        setDraggingTicketId(null)
+                        setDragOverStage(null)
+                        setDragOverTicketId(null)
+                      }}
+                      onDragOver={e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        e.dataTransfer.dropEffect = 'move'
+                        if (dragOverTicketId !== ticket.id) setDragOverTicketId(ticket.id)
+                        if (dragOverStage !== column.stage) setDragOverStage(column.stage)
+                      }}
+                      onDrop={e => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleCardDrop(ticket.id, column.stage)
+                      }}
+                      className={`group/card flex w-full flex-col gap-0 transition-[gap,opacity,transform] duration-150 ease-out hover:gap-3 focus-within:gap-3 cursor-grab active:cursor-grabbing ${draggingTicketId === ticket.id ? 'opacity-40 scale-[0.98]' : ''} ${dragOverTicketId === ticket.id && draggingTicketId !== ticket.id ? 'border-t-2 border-blue-500 pt-1' : ''}`}
+                    >
                       <article
                         className={`relative flex min-h-[120px] flex-col justify-center rounded-[10px] border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05),0_1px_1px_rgba(15,23,42,0.02)] transition-all duration-200 ease-out group-hover/card:-translate-y-0.5 group-hover/card:shadow-[0_12px_24px_-8px_rgba(15,23,42,0.18),0_4px_8px_-4px_rgba(15,23,42,0.10)] group-focus-within/card:-translate-y-0.5 ${ticket.stage === 'calling' ? 'calling-timeout' : ticket.id === 'serve-1' ? 'serving-overtime' : 'group-hover/card:border-slate-300 group-focus-within/card:border-slate-300'}`}>
                         <div className="flex items-center justify-between gap-3">
@@ -2143,7 +2432,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                           ) : ticket.id === 'serve-1' ? (
                             <span className="rounded-md bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-800">Vượt T_standard</span>
                           ) : (
-                            <span className="text-slate-400" aria-label="Kéo để sắp xếp"><GripIco s={16}/></span>
+                            <span className="text-slate-400 group-hover/card:text-blue-600 transition-colors cursor-grab" aria-label="Kéo thả để sắp xếp hoặc chuyển trạng thái"><GripIco s={16}/></span>
                           )}
                         </div>
                       </article>
@@ -2192,7 +2481,12 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                     </div>
                   ))}
-                  {columnTickets.length === 0 && (
+                  {isDragOverThisStage && draggingTicketId && (
+                    <div className="rounded-xl border-2 border-dashed border-blue-400 bg-blue-50/80 p-3.5 text-center text-xs font-bold text-blue-700 animate-pulse">
+                      Thả vé vào đây để chuyển sang {column.label}
+                    </div>
+                  )}
+                  {columnTickets.length === 0 && (!isDragOverThisStage || !draggingTicketId) && (
                     <div className="flex min-h-64 flex-col items-center justify-center px-6 text-center">
                       <svg width="72" height="72" viewBox="0 0 72 72" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <rect x="15" y="18" width="42" height="36" rx="6"/>
@@ -2256,7 +2550,7 @@ function CustomerView({ onLogout }: { onLogout: () => void }) {
             <div className="h-full rounded-full transition-all duration-700" style={{ width:`${cfg.progress}%`, background:cfg.dot }}/>
           </div>
           <div className="flex items-center justify-between text-xs">
-            {state==='serving' ? <span className="font-semibold" style={{ color:'#065F46' }}>Vui lòng đến <strong>QUẦY 03</strong></span>
+            {state==='serving' ? <span className="font-semibold" style={{ color:'#065F46' }}>Vui lòng đến <strong>QUẦY TIẾP NHẬN</strong></span>
              : state==='completed' ? <span className="text-slate-400">Dịch vụ hoàn thành — Cảm ơn!</span>
              : <>
                 <span className="text-slate-400">{state==='waiting'?'12 người':'2 người'} phía trước</span>
@@ -2603,10 +2897,10 @@ function OutcomeChart() {
 
 function StaffRanking() {
   const staff = [
-    { name:'Nguyễn Thị Hồng', counter:'Quầy 01', served:42, avg:'11 phút', positive:96 },
-    { name:'Trần Văn Minh', counter:'Quầy 02', served:38, avg:'13 phút', positive:92 },
-    { name:'Lê Hoàng Anh', counter:'Quầy 03', served:35, avg:'14 phút', positive:89 },
-    { name:'Phạm Thu Hương', counter:'Quầy 04', served:29, avg:'24 phút', positive:81, warning:true },
+    { name:'Nguyễn Thị Hồng', role:'Nhân viên quầy', served:42, avg:'11 phút', positive:96 },
+    { name:'Trần Văn Minh', role:'Nhân viên quầy', served:38, avg:'13 phút', positive:92 },
+    { name:'Lê Hoàng Anh', role:'Nhân viên quầy', served:35, avg:'14 phút', positive:89 },
+    { name:'Phạm Thu Hương', role:'Nhân viên quầy', served:29, avg:'24 phút', positive:81, warning:true },
   ]
   return (
     <section className="col-span-8 rounded-[10px] border border-slate-200 bg-white shadow-[var(--shadow-card)]">
@@ -2633,7 +2927,7 @@ function StaffRanking() {
                     </span>
                     <div>
                       <p className="text-xs font-semibold leading-relaxed text-slate-800">{person.name}</p>
-                      <p className="font-tabular text-[10px] text-slate-400">{person.counter}</p>
+                      <p className="font-tabular text-[10px] text-slate-400">{person.role}</p>
                     </div>
                   </div>
                 </td>
@@ -3373,20 +3667,20 @@ function ScheduleScreen() {
 function QueueSettingsScreen() {
   const [policy, setPolicy] = useState({ minLead:2, maxAdvance:5, cancellation:24 })
   const [saved, setSaved] = useState(false)
-  const [rotationSeconds, setRotationSeconds] = useState(47)
-  const [qrGeneration, setQrGeneration] = useState(1)
+  const [dynamicQr, setDynamicQr] = useState<DynamicCheckinState>(() => getDynamicCheckinData())
+  const [copiedUrl, setCopiedUrl] = useState(false)
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setRotationSeconds(value => {
-        if (value <= 1) {
-          setQrGeneration(generation => generation + 1)
-          return 60
-        }
-        return value - 1
-      })
-    }, 1000)
-    return () => window.clearInterval(timer)
+    const update = () => setDynamicQr(getDynamicCheckinData())
+    const timer = window.setInterval(update, 1000)
+    const handleSync = () => update()
+    window.addEventListener('nextturn_qr_sync', handleSync)
+    window.addEventListener('storage', handleSync)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener('nextturn_qr_sync', handleSync)
+      window.removeEventListener('storage', handleSync)
+    }
   }, [])
 
   useEffect(() => {
@@ -3395,15 +3689,19 @@ function QueueSettingsScreen() {
     return () => window.clearTimeout(timer)
   }, [saved])
 
+  const copyUrl = () => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(dynamicQr.checkInUrl).catch(() => {})
+    }
+    setCopiedUrl(true)
+    window.setTimeout(() => setCopiedUrl(false), 2500)
+  }
+
   const previewDays = [
     ['Hôm nay','31/10'],['CN','01/11'],['T2','02/11'],['T3','03/11'],
     ['T4','04/11'],['T5','05/11'],['T6','06/11'],['T7','07/11'],
   ]
-  const qrPoints = [
-    { name:'Quầy lễ tân chính', code:'RECEPTION-01', note:'Sảnh tầng trệt' },
-    { name:'Điểm tiếp nhận xét nghiệm', code:'RECEPTION-02', note:'Khu B · Tầng 2' },
-  ]
-  const ringOffset = 113 - (rotationSeconds / 60) * 113
+  const ringOffset = 113 - (dynamicQr.remainingSeconds / 60) * 113
 
   return (
     <div className="min-h-full bg-slate-50">
@@ -3434,28 +3732,124 @@ function QueueSettingsScreen() {
         </section>
 
         <section data-qr-security="QR rotates every 60s via SSE, HMAC-SHA256 signed, never persisted.">
-          <div className="mb-3"><h2 className="text-sm font-bold text-slate-800">B. Điểm check-in QR</h2><p className="mt-1 text-xs text-slate-500">Mã động cho từng điểm tiếp nhận, tự động xoay vòng mỗi 60 giây.</p></div>
-          <div className="grid grid-cols-2 gap-4">
-            {qrPoints.map((point,index) => (
-              <article key={point.code} className="rounded-[10px] border border-slate-200 bg-white p-5 shadow-[var(--shadow-card)]">
-                <div className="flex items-start justify-between"><div><h3 className="text-sm font-bold text-slate-800">{point.name}</h3><p className="mt-1 text-[10px] text-slate-500">{point.note} · <span className="font-tabular">{point.code}</span></p></div><span className="rounded bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-800">ĐANG HOẠT ĐỘNG</span></div>
-                <div className="mt-5 flex items-center gap-6 rounded-lg bg-slate-50 p-4">
-                  <div key={`${qrGeneration}-${index}`} className="rounded-lg border border-slate-200 bg-white p-2 shadow-sm"><QRCode sz={104}/></div>
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-bold text-slate-800">B. Điểm check-in QR & Đường dẫn tiếp nhận</h2>
+              <p className="mt-1 text-xs text-slate-500">Mã QR động và đường dẫn check-in tại quầy, tự động xoay vòng mỗi 60 giây và đồng bộ trực tiếp tới quầy tiếp nhận.</p>
+            </div>
+            <button
+              type="button"
+              onClick={rotateDynamicCheckinNow}
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors shadow-xs"
+            >
+              <RefreshIco s={13}/>
+              <span>Làm mới mã ngay</span>
+            </button>
+          </div>
+
+          <article className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-[var(--shadow-card)]">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-slate-900">Quầy tiếp nhận chính</h3>
+                  <span className="font-mono text-xs font-semibold text-slate-400">· RECEPTION-01</span>
+                </div>
+                <p className="mt-1 text-xs text-slate-500">Sảnh tầng trệt · Điểm tiếp nhận và check-in duy nhất của cơ sở</p>
+              </div>
+              <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-800">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"/>
+                ĐANG HOẠT ĐỘNG
+              </span>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-12 gap-6 rounded-xl bg-slate-50/80 p-5 border border-slate-200/80">
+              <div className="md:col-span-4 flex flex-col items-center justify-center gap-3">
+                <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                  <QRCode sz={128}/>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[11px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">
+                    {dynamicQr.token}
+                  </span>
+                </div>
+              </div>
+
+              <div className="md:col-span-8 flex flex-col justify-center">
+                <div className="flex items-center gap-4">
+                  <div className="relative h-16 w-16 shrink-0">
+                    <svg viewBox="0 0 44 44" className="-rotate-90">
+                      <circle cx="22" cy="22" r="18" fill="none" stroke="#E2E8F0" strokeWidth="3"/>
+                      <circle cx="22" cy="22" r="18" fill="none" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" strokeDasharray="113" strokeDashoffset={ringOffset}/>
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center font-tabular text-xs font-bold text-slate-700">
+                      {String(Math.floor(dynamicQr.remainingSeconds / 60)).padStart(2, '0')}:{String(dynamicQr.remainingSeconds % 60).padStart(2, '0')}
+                    </span>
+                  </div>
                   <div className="flex-1">
-                    <div className="relative h-20 w-20">
-                      <svg viewBox="0 0 44 44" className="-rotate-90"><circle cx="22" cy="22" r="18" fill="none" stroke="#E2E8F0" strokeWidth="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" strokeDasharray="113" strokeDashoffset={ringOffset}/></svg>
-                      <span className="absolute inset-0 flex items-center justify-center font-tabular text-xs font-bold text-slate-700">
-                        {String(Math.floor(rotationSeconds / 60)).padStart(2, '0')}:{String(rotationSeconds % 60).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-[10px] leading-relaxed text-slate-500">QR tiếp theo được nhận qua SSE và xác thực bằng HMAC-SHA256.</p>
+                    <p className="text-xs font-bold text-slate-800">Cơ chế làm mới URL định kỳ (60 giây)</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+                      Mã xác thực một lần được tạo tự động, chống chụp lại mã cũ và đồng bộ trực tiếp tới màn hình quầy tiếp nhận nhân viên.
+                    </p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-2"><button type="button" className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700"><DownloadIco s={15}/>Tải bản in</button><button type="button" className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700"><MonitorIco s={15}/>Xem màn hình tiếp nhận</button></div>
-              </article>
-            ))}
-          </div>
-          <p className="mt-3 text-right text-[10px] text-slate-400">QR rotates every 60s via SSE, HMAC-SHA256 signed, never persisted.</p>
+
+                {/* Dynamic Check-in URL Box */}
+                <div className="mt-4 rounded-lg border border-slate-200 bg-white p-3 shadow-xs">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                      <TicketIco s={13}/> Đường dẫn check-in động (Dynamic URL)
+                    </label>
+                    <span className="text-[10px] font-semibold text-blue-600 font-mono">
+                      Reset sau {dynamicQr.remainingSeconds}s
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={dynamicQr.checkInUrl}
+                      className="h-10 flex-1 rounded-md border border-slate-200 bg-slate-50 px-3 font-mono text-xs text-slate-700 outline-none select-all focus:border-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={copyUrl}
+                      className="flex h-10 items-center gap-1.5 rounded-md bg-blue-600 px-4 text-xs font-bold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 shrink-0 shadow-xs"
+                    >
+                      {copiedUrl ? <><CheckIco s={14}/>Đã chép</> : <><CopyIco s={14}/>Sao chép URL</>}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <button
+                type="button"
+                onClick={() => window.open(dynamicQr.checkInUrl, '_blank')}
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-blue-50 text-xs font-bold text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
+              >
+                <MonitorIco s={15}/>
+                <span>Xem màn hình tiếp nhận khách</span>
+                <ExternalLinkIco s={13}/>
+              </button>
+              <button
+                type="button"
+                onClick={rotateDynamicCheckinNow}
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <RefreshIco s={15}/>
+                <span>Tạo URL mới ngay</span>
+              </button>
+              <button
+                type="button"
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <DownloadIco s={15}/>
+                <span>Tải bản in mã QR</span>
+              </button>
+            </div>
+          </article>
+          <p className="mt-3 text-right text-[10px] text-slate-400">QR & URL rotate every 60s via SSE, HMAC-SHA256 signed, synchronized across Admin & Counter.</p>
         </section>
       </div>
     </div>
@@ -3480,7 +3874,7 @@ function NotificationSettingsScreen() {
   const [retryToast, setRetryToast] = useState(false)
   const [retryCounts, setRetryCounts] = useState<Record<number, number>>({})
   const logs = [
-    { id:1, time:'31/10/2026 10:42:07', recipient:'Nguyễn Minh Anh · 0901234567', ticket:'A-042', channel:'Email', summary:'Mời vào quầy 03', status:'success' },
+    { id:1, time:'31/10/2026 10:42:07', recipient:'Nguyễn Minh Anh · 0901234567', ticket:'A-042', channel:'Email', summary:'Mời vào quầy tiếp nhận', status:'success' },
     { id:2, time:'31/10/2026 10:40:18', recipient:'Trần Thu Hà · 0912345678', ticket:'A-041', channel:'Push', summary:'Cảnh báo sắp đến lượt', status:'success' },
     { id:3, time:'31/10/2026 10:35:02', recipient:'Lê Quốc Bảo · 0923456789', ticket:'A-039', channel:'Email', summary:'Nhắc lịch hẹn 10:45', status:'failed', error:'SMTP 550: Hộp thư người nhận không tồn tại.' },
     { id:4, time:'31/10/2026 10:31:44', recipient:'Phạm Ngọc Mai · 0934567890', ticket:'APT-0040', channel:'Push', summary:'Xác nhận đặt lịch', status:'success' },
@@ -3491,7 +3885,7 @@ function NotificationSettingsScreen() {
     '{service_name}':'Khám tổng quát',
     '{appointment_time}':'09:30, 02/11/2026',
     '{ticket_code}':'A-042',
-    '{counter_staff_name}':'Nguyễn Thị Hồng · Quầy 03',
+    '{counter_staff_name}':'Nguyễn Thị Hồng (Nhân viên tiếp nhận)',
   }
   const renderSample = (content: string) => Object.entries(sampleValues).reduce((result,[key,value]) => result.replaceAll(key,value), content)
 
@@ -4048,18 +4442,18 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
   }
 
   const Footer = () => (
-    <footer className="flex h-[72px] shrink-0 items-center border-t border-[#1E293B] bg-[#090D16] px-8">
+    <footer className="flex h-[72px] shrink-0 items-center border-t border-slate-200 bg-white px-8">
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tenant-brand-primary)] text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tenant-brand-primary)] text-white shadow-xs">
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/>
           </svg>
         </div>
-        <span className="text-[clamp(18px,1.1vw,24px)] font-bold leading-relaxed text-slate-100">Phòng khám St. Jude</span>
+        <span className="text-[clamp(18px,1.1vw,24px)] font-bold leading-relaxed text-slate-800">Phòng khám St. Jude</span>
       </div>
-      <div className="flex-1 text-center text-[11px] font-medium tracking-[0.08em] text-slate-500">Powered by NextTurn</div>
+      <div className="flex-1 text-center text-[11px] font-semibold tracking-[0.08em] text-slate-400">Powered by NextTurn</div>
       <div className="flex flex-1 justify-end">
-        <time dateTime={clock.toISOString()} className="font-tabular text-[28px] font-bold leading-none text-slate-200">
+        <time dateTime={clock.toISOString()} className="font-tabular text-[28px] font-bold leading-none text-slate-800">
           {clock.toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit', second:'2-digit' })}
         </time>
       </div>
@@ -4069,22 +4463,22 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
   if (isSuspended || isUnknown) {
     return (
       <div
-        className="flex h-screen w-screen flex-col bg-[#090D16] text-slate-50"
+        className="flex h-screen w-screen flex-col bg-slate-50 text-slate-900"
         style={{ '--tenant-brand-primary':brandPrimary } as React.CSSProperties}
       >
         <main className="flex flex-1 items-center justify-center p-8">
-          <div className="w-full max-w-2xl rounded-2xl border border-[#1E293B] bg-[#111827] p-10 text-center shadow-2xl">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-slate-400">
+          <div className="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-xl">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-500">
               {isSuspended ? <PauseIco s={28}/> : <InfoIco s={28}/>}
             </div>
-            <span className="mt-6 inline-flex rounded-full bg-slate-700 px-3 py-1 text-xs font-bold text-slate-300">
+            <span className="mt-6 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
               {isSuspended ? 'TẠM NGƯNG' : 'KHÔNG TÌM THẤY'}
             </span>
-            <h1 className="mt-4 text-[clamp(32px,2.5vw,48px)] font-bold leading-[1.4]">
+            <h1 className="mt-4 text-[clamp(32px,2.5vw,48px)] font-bold leading-[1.4] text-slate-900">
               {isSuspended ? 'Cơ sở đang tạm ngưng tiếp nhận' : 'Không tìm thấy cơ sở'}
             </h1>
-            <p className="mt-3 text-lg leading-relaxed text-slate-400">
-              {isSuspended ? 'Dữ liệu hàng đợi được ẩn theo REQ-TNT-03.' : <>Đường dẫn yêu cầu: <span className="font-tabular text-slate-300">{window.location.pathname}</span></>}
+            <p className="mt-3 text-lg leading-relaxed text-slate-500">
+              {isSuspended ? 'Dữ liệu hàng đợi được ẩn theo REQ-TNT-03.' : <>Đường dẫn yêu cầu: <span className="font-tabular text-slate-700">{window.location.pathname}</span></>}
             </p>
           </div>
         </main>
@@ -4097,7 +4491,7 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
 
   return (
     <div
-      className={`flex h-screen min-h-[720px] w-screen flex-col overflow-hidden bg-[#090D16] text-slate-50 ${cursorHidden ? 'cursor-none' : ''}`}
+      className={`flex h-screen min-h-[720px] w-screen flex-col overflow-hidden bg-slate-100/70 text-slate-900 ${cursorHidden ? 'cursor-none' : ''}`}
       style={{ '--tenant-brand-primary':brandPrimary } as React.CSSProperties}
       data-sse-note="Supports 3–5 concurrent browser instances through independent SSE channels."
       data-presentation-mode="Standard browser route; fullscreen via F11 or Fullscreen API; pure web-based display."
@@ -4105,7 +4499,7 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
       {showFullscreenHint && (
         <div
           role="status"
-          className="lobby-hint-lifecycle fixed bottom-24 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-4 rounded-xl border border-slate-600 bg-[#111827] px-5 py-3 text-sm font-semibold text-slate-100 shadow-2xl"
+          className="lobby-hint-lifecycle fixed bottom-24 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-4 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-2xl"
         >
           <span>Nhấn F11 hoặc nút này để trình chiếu toàn màn hình</span>
           <button type="button" onClick={toggleFullscreen} aria-label="Bật chế độ toàn màn hình"
@@ -4116,38 +4510,38 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
       )}
 
       <div className="flex min-h-0 flex-1">
-        <section className="flex h-full w-[30%] shrink-0 flex-col border-r border-[#1E293B] bg-[#111827]">
+        <section className="flex h-full w-[30%] shrink-0 flex-col border-r border-slate-200 bg-white shadow-sm">
           <div
-            className="flex h-[35%] min-h-0 flex-col border-b border-[#1E293B] p-7"
+            className="flex h-[35%] min-h-0 flex-col border-b border-slate-200 p-7 bg-white"
             aria-live="polite"
             data-hero-handoff="300ms cubic-bezier(0.16,1,0.3,1)"
           >
-            <p className="mb-4 text-[13px] font-bold tracking-[0.04em] text-slate-400">ĐANG PHỤC VỤ</p>
+            <p className="mb-4 text-[13px] font-bold tracking-[0.04em] text-slate-500">ĐANG PHỤC VỤ</p>
             <div className="overflow-hidden">
-              <div className="flex items-center justify-between gap-4 rounded-xl border border-emerald-400/20 bg-[rgba(16,185,129,0.16)] px-5 py-4">
-                <span className="text-[clamp(18px,1.25vw,24px)] font-bold leading-relaxed text-emerald-100">Quầy tiếp nhận</span>
-                <span className="font-tabular text-[clamp(32px,2.08vw,40px)] font-bold leading-none text-[#34D399]">{servingTicket}</span>
+              <div className="flex items-center justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50/80 px-5 py-4 shadow-xs">
+                <span className="text-[clamp(18px,1.25vw,24px)] font-bold leading-relaxed text-emerald-950">Quầy tiếp nhận</span>
+                <span className="font-tabular text-[clamp(32px,2.08vw,40px)] font-black leading-none text-emerald-600">{servingTicket}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col">
-            <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#1E293B] px-7">
-              <p className="text-[13px] font-bold tracking-[0.04em] text-slate-400">DANH SÁCH CHỜ</p>
-              <span className="rounded-full border border-blue-400/30 bg-blue-400/10 px-3 py-1.5 font-tabular text-sm font-bold text-blue-300">
+          <div className="flex min-h-0 flex-1 flex-col bg-white">
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-7">
+              <p className="text-[13px] font-bold tracking-[0.04em] text-slate-500">DANH SÁCH CHỜ</p>
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 font-tabular text-sm font-bold text-blue-700">
                 {String(waitingTickets.length).padStart(2, '0')}
               </span>
             </div>
             {waitingTickets.length === 0 ? (
-              <div className="flex flex-1 flex-col items-center justify-center text-slate-500">
-                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <div className="flex flex-1 flex-col items-center justify-center text-slate-400">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <rect x="17" y="19" width="46" height="42" rx="7"/><path d="M27 32h26M27 40h18M27 48h12"/><path d="M31 19v-4h18v4"/>
                 </svg>
-                <p className="mt-4 text-xl font-semibold">Chưa có khách chờ</p>
+                <p className="mt-4 text-xl font-semibold text-slate-500">Chưa có khách chờ</p>
               </div>
             ) : (
               <div className="relative min-h-0 flex-1 overflow-hidden">
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#111827] to-transparent"/>
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-white to-transparent"/>
                 <div
                   className="lobby-scroll"
                   data-marquee-direction="bottom-to-top"
@@ -4159,14 +4553,14 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
                     const isNext = queueIndex < 3
                     return (
                       <div key={`${ticket.code}-${index}`}
-                        className={`flex h-[88px] items-center border-b border-[#1E293B] px-7 ${isNext ? 'bg-[rgba(37,99,235,0.16)]' : ''}`}>
+                        className={`flex h-[88px] items-center border-b border-slate-100 px-7 transition-colors ${isNext ? 'bg-blue-50/70' : 'bg-white'}`}>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-3">
-                            <span className={`font-tabular text-[clamp(36px,2.5vw,48px)] font-bold leading-none ${isNext ? 'text-[#93C5FD]' : 'text-[#F8FAFC]'}`}>{ticket.code}</span>
-                            {queueIndex === 0 && <span className="rounded bg-blue-500/20 px-2 py-1 text-[9px] font-bold tracking-[0.08em] text-blue-200">SẮP ĐẾN LƯỢT</span>}
+                            <span className={`font-tabular text-[clamp(36px,2.5vw,48px)] font-black leading-none ${isNext ? 'text-blue-700' : 'text-slate-800'}`}>{ticket.code}</span>
+                            {queueIndex === 0 && <span className="rounded bg-blue-600 px-2 py-1 text-[9px] font-bold tracking-[0.08em] text-white shadow-xs">SẮP ĐẾN LƯỢT</span>}
                           </div>
                         </div>
-                        <span className="font-tabular text-[20px] font-medium text-[#64748B]">{ticket.time}</span>
+                        <span className="font-tabular text-[20px] font-semibold text-slate-400">{ticket.time}</span>
                       </div>
                     )
                   })}
@@ -4176,14 +4570,14 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
           </div>
         </section>
 
-        <section className="flex h-full w-[70%] items-center justify-center bg-[#090D16] px-16 text-center">
+        <section className="flex h-full w-[70%] items-center justify-center bg-slate-50/70 px-16 text-center">
           {idle ? (
-            <div className="lobby-crossfade w-full max-w-4xl rounded-3xl border border-[#1E293B] bg-[#111827] p-12">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--tenant-brand-primary)] text-white">
+            <div className="lobby-crossfade w-full max-w-4xl rounded-3xl border border-slate-200 bg-white p-12 shadow-xl">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-[var(--tenant-brand-primary)] text-white shadow-md">
                 <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="12" r="9"/></svg>
               </div>
-              <h2 className="mt-7 text-[clamp(34px,2.7vw,52px)] font-bold leading-[1.4] text-slate-50">Quét mã QR tại quầy lễ tân để check-in</h2>
-              <p className="mt-3 text-[clamp(18px,1.25vw,24px)] leading-relaxed text-slate-400">Xác nhận lịch hẹn nhanh chóng và theo dõi lượt phục vụ theo thời gian thực.</p>
+              <h2 className="mt-7 text-[clamp(34px,2.7vw,52px)] font-bold leading-[1.4] text-slate-900">Quét mã QR tại quầy tiếp nhận để check-in</h2>
+              <p className="mt-3 text-[clamp(18px,1.25vw,24px)] leading-relaxed text-slate-600">Xác nhận lịch hẹn nhanh chóng và theo dõi lượt phục vụ theo thời gian thực.</p>
               <div className="mt-8 flex justify-center gap-3">
                 {['Khám tổng quát','Xét nghiệm','Tư vấn kết quả'].map(service => (
                   <span key={service} className="rounded-full border px-5 py-2 text-lg font-semibold"
@@ -4196,32 +4590,32 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
                   </span>
                 ))}
               </div>
-              <p className="mt-7 text-xs font-bold tracking-[0.12em] text-slate-500">
+              <p className="mt-7 text-xs font-bold tracking-[0.12em] text-slate-400">
                 WHITE-LABEL · {tenantCode === 'wellness' ? 'WELLNESS ROSE #BE185D' : 'CLINICAL CYAN #0891B2'}
               </p>
             </div>
           ) : callPhase !== 'served' ? (
             <div>
-              <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-emerald-400/30 bg-[rgba(16,185,129,0.16)] px-6 py-3 text-[#34D399]">
-                <span className="h-4 w-4 rounded-full bg-emerald-400"/>
+              <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-emerald-300 bg-emerald-50 px-6 py-3 text-emerald-800 shadow-sm">
+                <span className="h-4 w-4 rounded-full bg-emerald-500 animate-pulse"/>
                 <span className="text-[clamp(18px,1.05vw,22px)] font-bold tracking-[0.14em]">KÍNH MỜI — NOW SERVING</span>
               </div>
               <div
-                className={`lobby-new-call rounded-3xl border-2 border-transparent px-12 py-5 ${callPhase === 'settling' ? 'lobby-call-settle-to-left' : ''}`}
+                className={`lobby-new-call rounded-3xl border-2 border-emerald-400/50 bg-white px-14 py-8 shadow-2xl ${callPhase === 'settling' ? 'lobby-call-settle-to-left' : ''}`}
                 data-attention-state="5-second soft emerald --glow-active pulse; reduced motion uses a static 2px emerald border"
                 data-audio-announcement="One non-looping 440→880Hz sine chime; optional vi-VN speechSynthesis"
               >
-                <div className="font-tabular text-[clamp(180px,11.45vw,240px)] font-bold leading-none tracking-[-0.06em] text-[#F8FAFC]">A-042</div>
+                <div className="font-tabular text-[clamp(180px,11.45vw,240px)] font-black leading-none tracking-[-0.06em] text-slate-900 drop-shadow-sm">A-042</div>
                 <div className="mt-10 flex items-center justify-center gap-10">
-                  <span className="text-[clamp(36px,2.5vw,48px)] font-bold leading-[1.45] text-slate-50">QUẦY TIẾP NHẬN</span>
-                  <svg width="150" height="96" viewBox="0 0 150 96" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Đi về phía bên phải">
+                  <span className="text-[clamp(36px,2.5vw,48px)] font-extrabold leading-[1.45] text-slate-800">QUẦY TIẾP NHẬN</span>
+                  <svg width="150" height="96" viewBox="0 0 150 96" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Đi về phía bên phải">
                     <path d="M8 48h126"/><path d="m96 10 38 38-38 38"/>
                   </svg>
                 </div>
               </div>
             </div>
           ) : (
-            <p className="text-[clamp(24px,1.8vw,36px)] font-semibold leading-relaxed text-slate-500">Đang chờ lượt gọi tiếp theo</p>
+            <p className="text-[clamp(24px,1.8vw,36px)] font-semibold leading-relaxed text-slate-400">Đang chờ lượt gọi tiếp theo</p>
           )}
         </section>
       </div>
@@ -4229,12 +4623,12 @@ function LobbyDisplay({ tenantCode='st-jude' }: { tenantCode?: string }) {
       <Footer/>
 
       {reconnecting && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[rgba(9,13,22,0.85)]">
-          <div className="text-center">
-            <span className="mx-auto block w-fit animate-spin text-blue-300"><RefreshIco s={42}/></span>
-            <p className="mt-6 text-[28px] font-bold leading-relaxed text-slate-100">Đang kết nối lại...</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-400">SSE auto-reconnect ≤ 5s, no page reload</p>
-            <p className="mt-4 font-tabular text-sm text-slate-500">Dữ liệu lúc 10:42:07</p>
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/40 backdrop-blur-xs">
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-2xl">
+            <span className="mx-auto block w-fit animate-spin text-blue-600"><RefreshIco s={42}/></span>
+            <p className="mt-6 text-[28px] font-bold leading-relaxed text-slate-900">Đang kết nối lại...</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">SSE auto-reconnect ≤ 5s, no page reload</p>
+            <p className="mt-4 font-tabular text-sm text-slate-400">Dữ liệu lúc 10:42:07</p>
           </div>
         </div>
       )}
@@ -4304,10 +4698,34 @@ function FullscreenWidgetTicket() {
 }
 
 function BookingWidgetDemo() {
-  const [activeMode, setActiveMode] = useState<'booking' | 'checkin' | 'tracker'>('booking')
+  const getInitialMode = (): 'booking' | 'checkin' | 'tracker' => {
+    if (typeof window === 'undefined') return 'booking'
+    const query = new URLSearchParams(window.location.search)
+    const hash = window.location.hash
+    if (query.get('mode') === 'checkin' || hash.includes('mode=checkin')) return 'checkin'
+    if (query.get('mode') === 'tracker' || hash.includes('mode=tracker')) return 'tracker'
+    return 'booking'
+  }
+  const [activeMode, setActiveMode] = useState<'booking' | 'checkin' | 'tracker'>(getInitialMode)
   const [primaryColor, setPrimaryColor] = useState('#0891B2')
   const [borderRadius, setBorderRadius] = useState('8px')
   const [copiedSnippet, setCopiedSnippet] = useState(false)
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const query = new URLSearchParams(window.location.search)
+      const hash = window.location.hash
+      if (query.get('mode') === 'checkin' || hash.includes('mode=checkin')) {
+        setActiveMode('checkin')
+      }
+    }
+    window.addEventListener('hashchange', handleUrlChange)
+    window.addEventListener('popstate', handleUrlChange)
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange)
+      window.removeEventListener('popstate', handleUrlChange)
+    }
+  }, [])
 
   // Booking states
   const [bookingStep, setBookingStep] = useState<1 | 2 | 3 | 'success'>(1)
@@ -4442,8 +4860,8 @@ function BookingWidgetDemo() {
               className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${activeMode === 'checkin' ? 'bg-white text-cyan-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
             >
               <UsersIco s={15}/>
-              <span>Mode 2: Tiếp nhận sảnh</span>
-              <span className="rounded bg-emerald-100/70 px-1.5 py-0.2 font-mono text-[9px] text-emerald-800 font-semibold">QR Check-in</span>
+              <span>Mode 2: Tiếp nhận tại quầy</span>
+              <span className="rounded bg-emerald-100/70 px-1.5 py-0.2 font-mono text-[9px] text-emerald-800 font-semibold">Check-in</span>
             </button>
 
             <button
@@ -4507,13 +4925,13 @@ function BookingWidgetDemo() {
           <div className="mb-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">ĐIỂM CHẠM KHÁCH HÀNG</span>
             <h2 className="mt-1 text-sm font-bold text-slate-900">
-              {activeMode === 'booking' ? 'Nút bấm đặt lịch nổi (FAB)' : activeMode === 'checkin' ? 'Bảng in mã QR tại sảnh' : 'Pill thông báo hàng đợi nổi'}
+              {activeMode === 'booking' ? 'Nút bấm đặt lịch nổi (FAB)' : activeMode === 'checkin' ? 'Kiosk / Điểm tiếp nhận tại quầy' : 'Pill thông báo hàng đợi nổi'}
             </h2>
             <p className="mt-1 text-xs leading-relaxed text-slate-500">
               {activeMode === 'booking'
                 ? 'Nhúng góc màn hình website đối tác, khách bấm để mở cửa sổ đặt lịch.'
                 : activeMode === 'checkin'
-                  ? 'Bảng mã QR in tĩnh tại cửa ra vào, khách quét bằng camera điện thoại cá nhân.'
+                  ? 'Giao diện đặt tại quầy tiếp nhận để khách nhập mã đặt hẹn hoặc lấy số khám trực tiếp.'
                   : 'Nổi trên website hoặc link SMS/Zalo để khách theo dõi số thứ tự đang gọi.'}
             </p>
           </div>
@@ -4579,7 +4997,7 @@ function BookingWidgetDemo() {
                     {trackerStatus === 'called' ? (
                       <div className="widget-calling-pulse flex items-center gap-2.5 rounded-full border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-emerald-900 shadow-md">
                         <ArrowRIco s={18}/>
-                        <span className="text-xs font-bold">Mời Quầy 3: Số A-042!</span>
+                        <span className="text-xs font-bold">Mời vào quầy: Số A-042!</span>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2.5 rounded-full border border-blue-200 bg-white px-3.5 py-2 text-slate-800 shadow-md">
@@ -4616,7 +5034,7 @@ function BookingWidgetDemo() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-slate-900">Phòng khám St. Jude</p>
                 <p className="text-[10px] font-semibold text-slate-500">
-                  {activeMode === 'booking' ? 'Cổng đặt lịch hẹn trực tuyến' : activeMode === 'checkin' ? 'Cổng tiếp nhận tại cơ sở' : 'Vé điện tử thời gian thực'}
+                  {activeMode === 'booking' ? 'Cổng đặt lịch hẹn trực tuyến' : activeMode === 'checkin' ? 'Cổng tiếp nhận tại quầy' : 'Vé điện tử thời gian thực'}
                 </p>
               </div>
               <button
@@ -4857,38 +5275,74 @@ function BookingWidgetDemo() {
                   {checkInSubView === 'choice' && (
                     <div className="space-y-3 pt-2">
                       <div className="text-center mb-4">
-                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200/80">ĐÓN TIẾP TẠI CƠ SỞ</span>
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-700 border border-emerald-200/80">TIẾP NHẬN TẠI QUẦY</span>
                         <h3 className="mt-2 text-base font-bold text-slate-900">Chào mừng quý khách đến cơ sở</h3>
-                        <p className="mt-1 text-xs text-slate-500">Vui lòng chọn hình thức tiếp nhận bên dưới</p>
+                        <p className="mt-1 text-xs text-slate-500">Vui lòng nhập mã đặt hẹn hoặc chọn lấy số trực tiếp</p>
                       </div>
 
-                      {/* Card 1: Check in existing appointment */}
+                      {/* Card 1: Check in existing appointment with direct input for appointment code */}
                       <div className="rounded-2xl border-2 border-cyan-600/80 bg-white p-4 shadow-sm">
                         <div className="flex items-start gap-3">
                           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 border border-cyan-200">
                             <QrIcoLocal s={22}/>
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <span className="rounded bg-cyan-100 px-2 py-0.5 text-[9px] font-bold text-cyan-800 uppercase">ƯU TIÊN THEO LỊCH</span>
                             <h4 className="mt-1 text-sm font-bold text-slate-900">Tôi đã đặt lịch hẹn trước</h4>
-                            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">Quét mã QR tại cửa hoặc nhập mã hẹn/SĐT để xác nhận đã có mặt.</p>
+                            <p className="mt-1 text-[11px] leading-relaxed text-slate-500">Nhập mã hẹn hoặc SĐT đã đăng ký để check-in và nhận số ưu tiên.</p>
                           </div>
                         </div>
-                        <div className="mt-4 grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setCheckInSubView('qr_scan')}
-                            className="flex h-10 items-center justify-center gap-1.5 rounded-xl bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800 transition-colors"
-                          >
-                            <QrIcoLocal s={14}/>Quét mã QR
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setCheckInSubView('manual_code')}
-                            className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
-                          >
-                            Nhập mã hẹn
-                          </button>
+
+                        {/* Input field for appointment code */}
+                        <div className="mt-3.5 space-y-2">
+                          <label className="block text-[11px] font-semibold text-slate-700">
+                            Mã đặt hẹn hoặc Số điện thoại:
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={manualCode}
+                              onChange={e => setManualCode(e.target.value)}
+                              placeholder="Nhập mã hẹn (VD: APT-0042) hoặc SĐT..."
+                              className="h-10 flex-1 rounded-xl border border-slate-300 bg-slate-50 px-3 text-xs font-mono outline-none focus:bg-white focus:border-cyan-600 transition-colors shadow-2xs"
+                              onKeyDown={e => {
+                                if (e.key === 'Enter' && manualCode.trim()) {
+                                  setIssuedTicketNumber('A-012')
+                                  setIsPriority(true)
+                                  setCheckInSubView('ticket_issued')
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              disabled={!manualCode.trim()}
+                              onClick={() => {
+                                setIssuedTicketNumber('A-012')
+                                setIsPriority(true)
+                                setCheckInSubView('ticket_issued')
+                              }}
+                              className="h-10 px-4 rounded-xl bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0"
+                            >
+                              Tiếp nhận
+                            </button>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1 text-[11px]">
+                            <button
+                              type="button"
+                              onClick={() => setManualCode('APT-20261031-0042')}
+                              className="text-[10px] text-cyan-700 hover:underline font-medium"
+                            >
+                              Điền mã mẫu: APT-0042
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setCheckInSubView('qr_scan')}
+                              className="inline-flex items-center gap-1 font-semibold text-slate-600 hover:text-cyan-700"
+                            >
+                              <QrIcoLocal s={13}/> Quét mã QR
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -5026,7 +5480,7 @@ function BookingWidgetDemo() {
                       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600 space-y-1 text-left">
                         <p>▪ <strong>Vị trí hàng đợi:</strong> Còn 2 người phía trước</p>
                         <p>▪ <strong>Thời gian chờ ước tính:</strong> ≈ 6 phút</p>
-                        <p>▪ <strong>Quầy tiếp nhận:</strong> Quầy 1 hoặc Quầy 3</p>
+                        <p>▪ <strong>Quầy tiếp nhận:</strong> Quầy tiếp nhận chính</p>
                       </div>
 
                       <button
@@ -5063,7 +5517,7 @@ function BookingWidgetDemo() {
                           <p className="mt-1 font-mono text-4xl font-bold tracking-tight text-slate-900">A-042</p>
                           {trackerStatus === 'called' ? (
                             <div className="mt-3 rounded-xl border border-emerald-300 bg-emerald-50 p-2.5 text-xs font-bold text-emerald-800 animate-bounce">
-                              🔔 Mời bạn đến Quầy số 3 ngay bây giờ!
+                              🔔 Mời bạn đến quầy tiếp nhận ngay bây giờ!
                             </div>
                           ) : (
                             <p className="mt-2 text-xs font-semibold text-slate-600">
@@ -6002,6 +6456,9 @@ export default function App() {
   if (currentHash === '#csat-feedback-already') return <CsatFeedbackScreen initialState="already"/>
   if (currentHash === '#csat-feedback-invalid') return <CsatFeedbackScreen initialState="invalid"/>
   if (currentHash === '#csat-feedback') return <CsatFeedbackScreen/>
+  if (currentHash === '#kanban' || currentHash === '#counter' || currentHash === '#counter-staff') {
+    return <AppShell role="staff" onLogout={handleLogout}/>
+  }
 
   if (currentHash === '#superadmin-portal') {
     return <AppShell role="superadmin" onLogout={handleLogout}/>
