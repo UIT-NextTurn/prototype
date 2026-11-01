@@ -115,6 +115,7 @@ const SearchIco  = ({s=16}:{s?:number}) => <svg {...I0(s)}><circle cx="11" cy="1
 const QrIco      = ({s=16}:{s?:number}) => <svg {...I0(s)}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 14h2v7h-7v-2"/></svg>
 const CopyIco    = ({s=16}:{s?:number}) => <svg {...I0(s)}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
 const ExternalLinkIco = ({s=16}:{s?:number}) => <svg {...I0(s)}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+const HistoryIco = ({s=16}:{s?:number}) => <svg {...I0(s)}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg>
 
 /* ═══════════════════════════════════════════════════════════════════
    DYNAMIC CHECK-IN QR & ROTATING URL SYNC (ADMIN & COUNTER)
@@ -4697,35 +4698,91 @@ function FullscreenWidgetTicket() {
   )
 }
 
+interface BookingHistoryItem {
+  id: string
+  code: string
+  service: string
+  date: string
+  time: string
+  customerName: string
+  phone: string
+  status: 'confirmed' | 'completed' | 'cancelled'
+  location: string
+  doctor?: string
+  rating?: number
+  note?: string
+}
+
+const INITIAL_BOOKING_HISTORY: BookingHistoryItem[] = [
+  {
+    id: 'bh-1',
+    code: 'APT-20261031-0042',
+    service: 'Khám tổng quát',
+    date: 'Thứ Sáu, 02/10/2026',
+    time: '10:00',
+    customerName: 'Nguyễn Văn An',
+    phone: '0901234567',
+    status: 'confirmed',
+    location: 'Quầy tiếp nhận chính · Sảnh tầng trệt',
+    doctor: 'BS. Gia đình',
+    note: 'Đã xác nhận giữ chỗ qua web. Vui lòng check-in trước 10 phút.',
+  },
+  {
+    id: 'bh-2',
+    code: 'APT-20260915-0019',
+    service: 'Xét nghiệm máu',
+    date: '15/09/2026',
+    time: '08:30',
+    customerName: 'Nguyễn Văn An',
+    phone: '0901234567',
+    status: 'completed',
+    location: 'Quầy tiếp nhận chính · Sảnh tầng trệt',
+    doctor: 'BS. Trần Thị Bích Ngân',
+    rating: 5,
+    note: 'Kết quả xét nghiệm đã gửi qua Zalo / SMS.',
+  },
+  {
+    id: 'bh-3',
+    code: 'APT-20260810-0084',
+    service: 'Khám chuyên khoa',
+    date: '10/08/2026',
+    time: '14:15',
+    customerName: 'Nguyễn Văn An',
+    phone: '0901234567',
+    status: 'completed',
+    location: 'Quầy tiếp nhận chính · Sảnh tầng trệt',
+    doctor: 'BS. Hoàng Văn Minh',
+    rating: 5,
+    note: 'Đã hoàn tất kê đơn và tư vấn điều trị.',
+  },
+  {
+    id: 'bh-4',
+    code: 'APT-20260702-0031',
+    service: 'Tư vấn dinh dưỡng',
+    date: '02/07/2026',
+    time: '09:00',
+    customerName: 'Nguyễn Văn An',
+    phone: '0901234567',
+    status: 'cancelled',
+    location: 'Quầy tiếp nhận chính · Sảnh tầng trệt',
+    note: 'Khách hàng bận việc đột xuất nên đã hủy lịch.',
+  },
+]
+
 function BookingWidgetDemo() {
-  const getInitialMode = (): 'booking' | 'checkin' | 'tracker' => {
+  const getInitialMode = (): 'booking' | 'checkin' | 'tracker' | 'history' => {
     if (typeof window === 'undefined') return 'booking'
     const query = new URLSearchParams(window.location.search)
     const hash = window.location.hash
     if (query.get('mode') === 'checkin' || hash.includes('mode=checkin')) return 'checkin'
     if (query.get('mode') === 'tracker' || hash.includes('mode=tracker')) return 'tracker'
+    if (query.get('mode') === 'history' || hash.includes('mode=history')) return 'history'
     return 'booking'
   }
-  const [activeMode, setActiveMode] = useState<'booking' | 'checkin' | 'tracker'>(getInitialMode)
+  const [activeMode, setActiveMode] = useState<'booking' | 'checkin' | 'tracker' | 'history'>(getInitialMode)
   const [primaryColor, setPrimaryColor] = useState('#0891B2')
   const [borderRadius, setBorderRadius] = useState('8px')
   const [copiedSnippet, setCopiedSnippet] = useState(false)
-
-  useEffect(() => {
-    const handleUrlChange = () => {
-      const query = new URLSearchParams(window.location.search)
-      const hash = window.location.hash
-      if (query.get('mode') === 'checkin' || hash.includes('mode=checkin')) {
-        setActiveMode('checkin')
-      }
-    }
-    window.addEventListener('hashchange', handleUrlChange)
-    window.addEventListener('popstate', handleUrlChange)
-    return () => {
-      window.removeEventListener('hashchange', handleUrlChange)
-      window.removeEventListener('popstate', handleUrlChange)
-    }
-  }, [])
 
   // Booking states
   const [bookingStep, setBookingStep] = useState<1 | 2 | 3 | 'success'>(1)
@@ -4752,6 +4809,99 @@ function BookingWidgetDemo() {
   const [lookupOpen, setLookupOpen] = useState(false)
   const [lookupPhone, setLookupPhone] = useState('0901234567')
   const [lookupResult, setLookupResult] = useState<'active_found' | 'not_found' | null>(null)
+
+  // Booking History states
+  const [bookingHistory, setBookingHistory] = useState<BookingHistoryItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('nextturn_user_booking_history')
+      if (saved) {
+        try {
+          return JSON.parse(saved)
+        } catch {
+          // fallback
+        }
+      }
+    }
+    return INITIAL_BOOKING_HISTORY
+  })
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'confirmed' | 'completed' | 'cancelled'>('all')
+  const [historySearchPhone, setHistorySearchPhone] = useState('0901234567')
+  const [historyToast, setHistoryToast] = useState<string | null>(null)
+  const [cancelModalItem, setCancelModalItem] = useState<BookingHistoryItem | null>(null)
+
+  const showHistoryToast = (msg: string) => {
+    setHistoryToast(msg)
+    window.setTimeout(() => setHistoryToast(null), 3000)
+  }
+
+  const handleConfirmBooking = () => {
+    const code = 'APT-20261031-0042'
+    const newRecord: BookingHistoryItem = {
+      id: `bh-${Date.now()}`,
+      code,
+      service: selectedService,
+      date: 'Thứ Sáu, 02/10/2026',
+      time: selectedSlot,
+      customerName: bookingForm.name,
+      phone: bookingForm.phone,
+      status: 'confirmed',
+      location: 'Quầy tiếp nhận chính · Sảnh tầng trệt',
+      doctor: 'BS. Gia đình',
+      note: 'Lịch hẹn đặt mới thành công qua NextTurn Widget.',
+    }
+    setBookingHistory(prev => {
+      const exists = prev.some(item => item.code === code && item.status === 'confirmed')
+      const updated = exists ? prev : [newRecord, ...prev]
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('nextturn_user_booking_history', JSON.stringify(updated))
+      }
+      return updated
+    })
+    setBookingStep('success')
+  }
+
+  const cancelBooking = (id: string, code: string) => {
+    setBookingHistory(prev => {
+      const updated = prev.map(item => item.id === id ? { ...item, status:'cancelled' as const, note:'Khách hàng đã hủy lịch hẹn trên widget.' } : item)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('nextturn_user_booking_history', JSON.stringify(updated))
+      }
+      return updated
+    })
+    showHistoryToast(`Đã hủy lịch hẹn ${code} thành công`)
+  }
+
+  const visibleHistory = bookingHistory.filter(item => {
+    if (!historySearchPhone.trim()) return true
+    const searchClean = historySearchPhone.trim().replace(/\D/g, '')
+    const itemPhoneClean = item.phone.replace(/\D/g, '')
+    return itemPhoneClean.includes(searchClean) || item.code.toLowerCase().includes(historySearchPhone.trim().toLowerCase())
+  })
+
+  const filteredHistoryItems = visibleHistory.filter(item => {
+    if (historyFilter === 'all') return true
+    return item.status === historyFilter
+  })
+
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const query = new URLSearchParams(window.location.search)
+      const hash = window.location.hash
+      if (query.get('mode') === 'checkin' || hash.includes('mode=checkin')) {
+        setActiveMode('checkin')
+      } else if (query.get('mode') === 'tracker' || hash.includes('mode=tracker')) {
+        setActiveMode('tracker')
+      } else if (query.get('mode') === 'history' || hash.includes('mode=history')) {
+        setActiveMode('history')
+      }
+    }
+    window.addEventListener('hashchange', handleUrlChange)
+    window.addEventListener('popstate', handleUrlChange)
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange)
+      window.removeEventListener('popstate', handleUrlChange)
+    }
+  }, [])
 
   useEffect(() => {
     document.title = 'NextTurn - Embeddable Modular Widgets'
@@ -4790,6 +4940,7 @@ function BookingWidgetDemo() {
     booking: `<iframe\n  src="https://nextturn.vn/widget/st-jude?mode=booking&theme=light&primary=${encodeURIComponent(primaryColor)}&radius=${borderRadius}"\n  width="100%" height="680px" frameborder="0" loading="lazy">\n</iframe>`,
     checkin: `<iframe\n  src="https://nextturn.vn/widget/st-jude?mode=checkin&theme=light&primary=${encodeURIComponent(primaryColor)}&radius=${borderRadius}"\n  width="100%" height="100vh" frameborder="0" allow="camera">\n</iframe>`,
     tracker: `<script\n  src="https://nextturn.vn/widget.js"\n  data-tenant="st-jude"\n  data-mode="tracker"\n  data-primary="${primaryColor}">\n</script>`,
+    history: `<iframe\n  src="https://nextturn.vn/widget/st-jude?mode=history&theme=light&primary=${encodeURIComponent(primaryColor)}&radius=${borderRadius}"\n  width="100%" height="680px" frameborder="0">\n</iframe>`,
   }
 
   const QrIcoLocal = ({s=16}:{s?:number}) => (
@@ -4813,11 +4964,15 @@ function BookingWidgetDemo() {
   )
 
   const PoweredBy = () => (
-    <div className="border-t border-slate-100 bg-white px-5 py-2.5 text-center text-[11px] font-medium leading-relaxed text-slate-400">
-      Bảo mật bởi <span className="font-bold text-slate-600">NextTurn Platform</span>
-      <span className="px-1.5">•</span>
-      <button type="button" onClick={() => { setLookupOpen(true); setLookupResult('active_found') }} className="font-semibold text-cyan-700 hover:underline">
-        🔍 Tìm lại vé của tôi (Khôi phục phiên)
+    <div className="border-t border-slate-100 bg-white px-3 py-2 text-center text-[11px] font-medium leading-relaxed text-slate-400 flex items-center justify-center gap-1.5 flex-wrap">
+      <span>Bảo mật bởi <strong className="text-slate-600">NextTurn</strong></span>
+      <span>•</span>
+      <button type="button" onClick={() => setActiveMode('history')} className="font-semibold text-cyan-700 hover:underline flex items-center gap-1">
+        <HistoryIco s={11}/> Lịch sử đặt hẹn
+      </button>
+      <span>•</span>
+      <button type="button" onClick={() => { setLookupOpen(true); setLookupResult('active_found') }} className="font-semibold text-slate-600 hover:underline">
+        🔍 Khôi phục vé
       </button>
     </div>
   )
@@ -4837,13 +4992,13 @@ function BookingWidgetDemo() {
           <div>
             <div className="flex items-center gap-2">
               <span className="rounded-md bg-cyan-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-800 border border-cyan-200/80">MODULAR WIDGET SYSTEM</span>
-              <span className="text-[11px] font-medium text-slate-400">1 Codebase · 3 Chế độ chuyên biệt theo ngữ cảnh · 100% Web</span>
+              <span className="text-[11px] font-medium text-slate-400">1 Codebase · 4 Chế độ chuyên biệt theo ngữ cảnh · 100% Web</span>
             </div>
             <h1 className="mt-1 text-lg font-bold text-slate-900">NextTurn Embeddable Widget Suite</h1>
           </div>
 
           {/* Mode Switcher Tabs */}
-          <div className="flex items-center rounded-xl border border-slate-200 bg-slate-100/80 p-1">
+          <div className="flex items-center rounded-xl border border-slate-200 bg-slate-100/80 p-1 flex-wrap gap-1">
             <button
               type="button"
               onClick={() => { setActiveMode('booking'); setBookingStep(1) }}
@@ -4872,6 +5027,16 @@ function BookingWidgetDemo() {
               <TicketIco s={15}/>
               <span>Mode 3: Vé điện tử thời gian thực</span>
               <span className="rounded bg-indigo-100/70 px-1.5 py-0.2 font-mono text-[9px] text-indigo-800 font-semibold">Live SSE</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setActiveMode('history'); setHistoryFilter('all') }}
+              className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-bold transition-all ${activeMode === 'history' ? 'bg-white text-cyan-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}
+            >
+              <HistoryIco s={15}/>
+              <span>Mode 4: Lịch sử đặt hẹn</span>
+              <span className="rounded bg-amber-100/70 px-1.5 py-0.2 font-mono text-[9px] text-amber-800 font-semibold">History</span>
             </button>
           </div>
 
@@ -4925,14 +5090,22 @@ function BookingWidgetDemo() {
           <div className="mb-4">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">ĐIỂM CHẠM KHÁCH HÀNG</span>
             <h2 className="mt-1 text-sm font-bold text-slate-900">
-              {activeMode === 'booking' ? 'Nút bấm đặt lịch nổi (FAB)' : activeMode === 'checkin' ? 'Kiosk / Điểm tiếp nhận tại quầy' : 'Pill thông báo hàng đợi nổi'}
+              {activeMode === 'booking'
+                ? 'Nút bấm đặt lịch nổi (FAB)'
+                : activeMode === 'checkin'
+                  ? 'Kiosk / Điểm tiếp nhận tại quầy'
+                  : activeMode === 'tracker'
+                    ? 'Pill thông báo hàng đợi nổi'
+                    : 'Quản lý lịch sử cuộc hẹn cá nhân'}
             </h2>
             <p className="mt-1 text-xs leading-relaxed text-slate-500">
               {activeMode === 'booking'
                 ? 'Nhúng góc màn hình website đối tác, khách bấm để mở cửa sổ đặt lịch.'
                 : activeMode === 'checkin'
                   ? 'Giao diện đặt tại quầy tiếp nhận để khách nhập mã đặt hẹn hoặc lấy số khám trực tiếp.'
-                  : 'Nổi trên website hoặc link SMS/Zalo để khách theo dõi số thứ tự đang gọi.'}
+                  : activeMode === 'tracker'
+                    ? 'Nổi trên website hoặc link SMS/Zalo để khách theo dõi số thứ tự đang gọi.'
+                    : 'Khách hàng tra cứu và xem lại các cuộc hẹn sắp tới, đã hoàn thành hoặc đã hủy, hỗ trợ check-in và đặt lại một chạm.'}
             </p>
           </div>
 
@@ -5021,6 +5194,44 @@ function BookingWidgetDemo() {
                 </div>
               </div>
             )}
+
+            {activeMode === 'history' && (
+              <div className="space-y-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Quản lý lịch hẹn cá nhân</p>
+                  <p className="mt-1 text-xs text-slate-600">Khách hàng tra cứu nhanh danh sách các cuộc hẹn của mình qua số điện thoại.</p>
+                  
+                  <div className="mt-3 space-y-2">
+                    <label className="block text-[11px] font-semibold text-slate-600">Lọc theo số điện thoại:</label>
+                    <div className="flex gap-1.5">
+                      <input
+                        type="tel"
+                        value={historySearchPhone}
+                        onChange={e => setHistorySearchPhone(e.target.value)}
+                        placeholder="0901234567"
+                        className="h-9 flex-1 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-tabular outline-none focus:border-cyan-600"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => showHistoryToast(`Đã lọc danh sách theo SĐT ${historySearchPhone}`)}
+                        className="h-9 px-3 rounded-lg bg-cyan-700 text-xs font-bold text-white hover:bg-cyan-800"
+                      >
+                        Lọc
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Hành động một chạm</p>
+                  <ul className="mt-2 space-y-2 text-xs text-slate-600">
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span><strong>Check-in ngay:</strong> Tự động điền mã hẹn vào cổng quầy tiếp nhận</span></li>
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span><strong>Hủy lịch:</strong> Giải phóng slot ngay lập tức cho khách khác</span></li>
+                    <li className="flex items-center gap-2"><CheckIco s={13}/><span><strong>Đặt lại:</strong> Tái sử dụng thông tin dịch vụ đã khám trước đây</span></li>
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -5029,23 +5240,47 @@ function BookingWidgetDemo() {
           <div className="relative flex h-[740px] w-full max-w-[410px] flex-col overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200/90">
             
             {/* Widget Header */}
-            <header className="flex items-center gap-3 border-b border-slate-100 bg-white px-4 py-3.5">
-              <BrandMark size={34}/>
+            <header className="flex items-center gap-2.5 border-b border-slate-100 bg-white px-3.5 py-3">
+              <BrandMark size={32}/>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-slate-900">Phòng khám St. Jude</p>
-                <p className="text-[10px] font-semibold text-slate-500">
-                  {activeMode === 'booking' ? 'Cổng đặt lịch hẹn trực tuyến' : activeMode === 'checkin' ? 'Cổng tiếp nhận tại quầy' : 'Vé điện tử thời gian thực'}
+                <p className="truncate text-xs font-bold text-slate-900">Phòng khám St. Jude</p>
+                <p className="text-[10px] font-semibold text-slate-500 truncate">
+                  {activeMode === 'booking'
+                    ? 'Cổng đặt lịch hẹn trực tuyến'
+                    : activeMode === 'checkin'
+                      ? 'Cổng tiếp nhận tại quầy'
+                      : activeMode === 'tracker'
+                        ? 'Vé điện tử thời gian thực'
+                        : 'Lịch sử đặt hẹn & khám'}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
-                title="Tra cứu & Khôi phục vé bằng SĐT"
-                className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 hover:text-cyan-800 transition-colors"
-              >
-                <SearchIco s={13}/>
-                <span>Tìm vé</span>
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveMode(activeMode === 'history' ? 'booking' : 'history')}
+                  title="Xem lịch sử đặt hẹn của tôi"
+                  className={`flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-bold transition-colors ${
+                    activeMode === 'history'
+                      ? 'border-cyan-600 bg-cyan-50 text-cyan-900 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-cyan-800'
+                  }`}
+                >
+                  <HistoryIco s={12}/>
+                  <span>Lịch sử</span>
+                  {bookingHistory.filter(b => b.status === 'confirmed').length > 0 && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-600"/>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setLookupOpen(true); setLookupResult('active_found') }}
+                  title="Tra cứu & Khôi phục vé bằng SĐT"
+                  className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-100 hover:text-cyan-800 transition-colors"
+                >
+                  <SearchIco s={12}/>
+                  <span>Tìm vé</span>
+                </button>
+              </div>
             </header>
 
             {/* Quick Recovery Notice Banner for Returning Users */}
@@ -5224,7 +5459,7 @@ function BookingWidgetDemo() {
 
                       <button
                         type="button"
-                        onClick={() => setBookingStep('success')}
+                        onClick={handleConfirmBooking}
                         className="h-11 w-full rounded-xl text-xs font-bold text-white shadow-xs transition-colors"
                         style={{ backgroundColor: primaryColor }}
                       >
@@ -5240,7 +5475,7 @@ function BookingWidgetDemo() {
                         <CheckIco s={28}/>
                       </div>
                       <h3 className="mt-4 text-base font-bold text-slate-900">Đặt lịch hẹn thành công!</h3>
-                      <p className="mt-1 text-xs text-slate-500">Mã lịch hẹn đã được bảo lưu an toàn</p>
+                      <p className="mt-1 text-xs text-slate-500">Mã lịch hẹn đã được lưu vào lịch sử của bạn</p>
 
                       <div className="mt-4 w-full rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">MÃ CUỘC HẸN</p>
@@ -5257,13 +5492,23 @@ function BookingWidgetDemo() {
                         <p className="mt-1 text-[11px] text-blue-800">Khi đến cơ sở, bạn chỉ cần mở camera điện thoại quét mã QR tại sảnh hoặc đưa mã số <code>APT-0042</code> cho nhân viên quầy tiếp đón để nhận số thứ tự ưu tiên.</p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => { setActiveMode('tracker'); setTrackerStatus('waiting') }}
-                        className="mt-4 h-10 w-full rounded-xl bg-slate-900 text-xs font-bold text-white hover:bg-slate-800"
-                      >
-                        Chuyển sang xem Vé điện tử
-                      </button>
+                      <div className="mt-4 w-full space-y-2">
+                        <button
+                          type="button"
+                          onClick={() => { setActiveMode('tracker'); setTrackerStatus('waiting') }}
+                          className="h-10 w-full rounded-xl bg-slate-900 text-xs font-bold text-white hover:bg-slate-800 transition-colors shadow-2xs"
+                        >
+                          Chuyển sang xem Vé điện tử
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveMode('history')}
+                          className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl border border-cyan-200 bg-cyan-50 text-xs font-bold text-cyan-800 hover:bg-cyan-100 transition-colors"
+                        >
+                          <HistoryIco s={14}/>
+                          <span>Xem trong Lịch sử đặt hẹn</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -5589,10 +5834,284 @@ function BookingWidgetDemo() {
                 </div>
               )}
 
+              {/* ════════════ MODE 4: BOOKING HISTORY ════════════ */}
+              {activeMode === 'history' && (
+                <div className="space-y-3.5 pb-2">
+                  {/* Summary & Identity Card */}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                          <HistoryIco s={18}/>
+                        </span>
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-900">Lịch sử đặt hẹn & khám</h3>
+                          <p className="text-[11px] text-slate-500 font-medium">
+                            {historySearchPhone ? `Hồ sơ: Nguyễn Văn An (${historySearchPhone})` : 'Tất cả cuộc hẹn'}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => { setSelectedService('Khám tổng quát'); setBookingStep(1); setActiveMode('booking') }}
+                        className="flex items-center gap-1 rounded-xl bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-cyan-800 transition-colors shadow-2xs shrink-0"
+                      >
+                        + Đặt mới
+                      </button>
+                    </div>
+
+                    {/* Quick Phone Search / Switcher */}
+                    <div className="mt-3 flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 p-1">
+                      <span className="pl-2 text-slate-400"><PhoneIco s={13}/></span>
+                      <input
+                        type="tel"
+                        value={historySearchPhone}
+                        onChange={e => setHistorySearchPhone(e.target.value)}
+                        placeholder="Lọc theo SĐT..."
+                        className="h-8 flex-1 bg-transparent px-1.5 text-xs font-tabular text-slate-800 outline-none"
+                      />
+                      {historySearchPhone && (
+                        <button
+                          type="button"
+                          onClick={() => setHistorySearchPhone('')}
+                          className="px-2 text-[10px] font-semibold text-slate-400 hover:text-slate-700"
+                        >
+                          Xóa
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Filter Tabs */}
+                  <div className="flex gap-1.5 overflow-x-auto pb-1">
+                    {[
+                      { id:'all', label:'Tất cả', count: visibleHistory.length },
+                      { id:'confirmed', label:'Sắp tới', count: visibleHistory.filter(b => b.status === 'confirmed').length },
+                      { id:'completed', label:'Đã khám', count: visibleHistory.filter(b => b.status === 'completed').length },
+                      { id:'cancelled', label:'Đã hủy', count: visibleHistory.filter(b => b.status === 'cancelled').length },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setHistoryFilter(tab.id as typeof historyFilter)}
+                        className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all whitespace-nowrap ${historyFilter === tab.id ? 'bg-slate-900 text-white shadow-2xs' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                      >
+                        <span>{tab.label}</span>
+                        <span className={`rounded-full px-1.5 py-0.2 text-[10px] font-mono ${historyFilter === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                          {tab.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* History Items List */}
+                  {filteredHistoryItems.length === 0 ? (
+                    <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-3">
+                        <HistoryIco s={24}/>
+                      </div>
+                      <h4 className="text-xs font-bold text-slate-800">Không tìm thấy cuộc hẹn</h4>
+                      <p className="mt-1 text-[11px] text-slate-500">Không có dữ liệu trong mục này cho số điện thoại đang lọc.</p>
+                      <button
+                        type="button"
+                        onClick={() => { setSelectedService('Khám tổng quát'); setBookingStep(1); setActiveMode('booking') }}
+                        className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-cyan-700 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-800 transition-colors shadow-2xs"
+                      >
+                        <CalIco s={14}/>
+                        <span>Đặt lịch hẹn ngay</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredHistoryItems.map(item => (
+                        <div key={item.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs space-y-2.5 transition-all hover:border-slate-300">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono text-xs font-bold text-slate-900">{item.code}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard?.writeText(item.code)
+                                    showHistoryToast(`Đã sao chép mã ${item.code}`)
+                                  }}
+                                  title="Sao chép mã hẹn"
+                                  className="text-slate-400 hover:text-cyan-700 transition-colors"
+                                >
+                                  <CopyIco s={12}/>
+                                </button>
+                              </div>
+                              <h4 className="mt-0.5 text-sm font-bold text-slate-900">{item.service}</h4>
+                            </div>
+                            <span className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase shrink-0 ${
+                              item.status === 'confirmed'
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                : item.status === 'completed'
+                                  ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                                  : 'bg-rose-50 text-rose-800 border border-rose-200'
+                            }`}>
+                              {item.status === 'confirmed' ? 'Đã xác nhận' : item.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}
+                            </span>
+                          </div>
+
+                          <div className="rounded-xl bg-slate-50/80 p-2.5 text-[11px] space-y-1.5 text-slate-600 border border-slate-100">
+                            <p className="flex items-center gap-1.5 font-medium">
+                              <CalIco s={13}/>
+                              <span className="font-semibold text-slate-800">{item.date}</span> lúc <span className="font-mono font-bold text-slate-900">{item.time}</span>
+                            </p>
+                            <p className="flex items-center gap-1.5 text-slate-500">
+                              <MonitorIco s={13}/>
+                              <span>{item.location}</span>
+                            </p>
+                            {item.doctor && (
+                              <p className="flex items-center gap-1.5 text-slate-500">
+                                <UsersIco s={13}/>
+                                <span>Bác sĩ phụ trách: <strong className="text-slate-700 font-medium">{item.doctor}</strong></span>
+                              </p>
+                            )}
+                            {item.note && (
+                              <p className="text-[10px] text-slate-500 italic pt-0.5 border-t border-slate-200/60 mt-1">
+                                {item.note}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Contextual actions */}
+                          <div className="flex items-center gap-2 pt-0.5">
+                            {item.status === 'confirmed' && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setManualCode(item.code)
+                                    setCheckInSubView('choice')
+                                    setActiveMode('checkin')
+                                    showHistoryToast(`Đã chuyển tới quầy tiếp nhận với mã ${item.code}`)
+                                  }}
+                                  className="flex-1 flex items-center justify-center gap-1.5 h-8.5 rounded-xl bg-cyan-700 text-white text-xs font-bold hover:bg-cyan-800 transition-colors shadow-2xs"
+                                >
+                                  <QrIcoLocal s={13}/>
+                                  <span>Check-in quầy</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveMode('tracker')
+                                    setTrackerStatus('waiting')
+                                  }}
+                                  className="flex items-center justify-center gap-1 h-8.5 px-3 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors"
+                                >
+                                  <TicketIco s={13}/>
+                                  <span>Vé live</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setCancelModalItem(item)}
+                                  title="Hủy lịch hẹn"
+                                  className="h-8.5 px-2.5 rounded-xl border border-rose-200 bg-rose-50/50 text-rose-700 text-xs font-semibold hover:bg-rose-100 transition-colors"
+                                >
+                                  Hủy
+                                </button>
+                              </>
+                            )}
+
+                            {item.status === 'completed' && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedService(item.service)
+                                    setBookingStep(2)
+                                    setActiveMode('booking')
+                                    showHistoryToast(`Đang đặt lại lịch cho dịch vụ ${item.service}`)
+                                  }}
+                                  className="flex-1 flex items-center justify-center gap-1.5 h-8.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors shadow-2xs"
+                                >
+                                  <RefreshIco s={13}/>
+                                  <span>Đặt lại dịch vụ này</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActiveMode('tracker')
+                                    setTrackerStatus('completed')
+                                  }}
+                                  className="flex items-center justify-center gap-1 h-8.5 px-3 rounded-xl border border-purple-200 bg-purple-50 text-purple-700 text-xs font-semibold hover:bg-purple-100 transition-colors"
+                                >
+                                  <StarIco s={13} fill/>
+                                  <span>{item.rating ? `${item.rating}★` : 'Đánh giá'}</span>
+                                </button>
+                              </>
+                            )}
+
+                            {item.status === 'cancelled' && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedService(item.service)
+                                  setBookingStep(1)
+                                  setActiveMode('booking')
+                                }}
+                                className="flex-1 flex items-center justify-center gap-1.5 h-8.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors"
+                              >
+                                <CalIco s={13}/>
+                                <span>Đặt lại dịch vụ {item.service}</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
 
             {/* Widget Footer */}
             <PoweredBy/>
+
+            {/* History Toast Feedback */}
+            {historyToast && (
+              <div role="status" className="overlay-enter absolute bottom-14 left-4 right-4 z-50 flex items-center justify-center gap-2 rounded-xl bg-slate-900/95 px-3 py-2 text-xs font-medium text-white shadow-xl backdrop-blur-xs">
+                <CheckIco s={13}/>
+                <span>{historyToast}</span>
+              </div>
+            )}
+
+            {/* Cancel Appointment Modal */}
+            {cancelModalItem && (
+              <div className="dialog-enter absolute inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-2xs">
+                <div className="w-full max-w-xs rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-rose-50 text-rose-600 mb-3">
+                    <AlertIco s={20}/>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900">Xác nhận hủy lịch hẹn?</h4>
+                  <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                    Bạn sắp hủy cuộc hẹn mã <strong className="font-mono text-slate-900">{cancelModalItem.code}</strong> dịch vụ <strong>{cancelModalItem.service}</strong> lúc {cancelModalItem.time}.
+                  </p>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCancelModalItem(null)}
+                      className="flex-1 h-9 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      Giữ lại
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        cancelBooking(cancelModalItem.id, cancelModalItem.code)
+                        setCancelModalItem(null)
+                      }}
+                      className="flex-1 h-9 rounded-xl bg-rose-600 text-xs font-bold text-white hover:bg-rose-700 transition-colors shadow-2xs"
+                    >
+                      Xác nhận hủy
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ════════════ REQ-TICKET-04: TICKET LOOKUP & RECOVERY MODAL ════════════ */}
             {lookupOpen && (
@@ -5729,7 +6248,7 @@ function BookingWidgetDemo() {
 
           {/* Operational Benefits Matrix */}
           <div className="mt-5 flex-1 space-y-3">
-            <p className="text-xs font-bold text-slate-900">Lợi ích của kiến trúc 3 chế độ chuyên biệt:</p>
+            <p className="text-xs font-bold text-slate-900">Lợi ích của kiến trúc 4 chế độ chuyên biệt:</p>
             
             <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
               <p className="font-bold text-slate-800 flex items-center gap-1.5"><ShieldIco s={14}/>Bảo vệ tính toàn vẹn hàng đợi (Queue Integrity)</p>
@@ -5742,8 +6261,13 @@ function BookingWidgetDemo() {
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
+              <p className="font-bold text-slate-800 flex items-center gap-1.5"><HistoryIco s={14}/>Lịch sử đặt hẹn &amp; tái khám tiện lợi</p>
+              <p className="text-[11px] text-slate-500">Người dùng dễ dàng tra cứu các cuộc hẹn, mã đặt hẹn, check-in ngay bằng 1 chạm hoặc đặt lại dịch vụ cũ nhanh chóng.</p>
+            </div>
+
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
               <p className="font-bold text-slate-800 flex items-center gap-1.5"><RefreshIco s={14}/>Tái sử dụng 100% logic Backend</p>
-              <p className="text-[11px] text-slate-500">Cùng chung các API REST Spring Boot, phân quyền Keycloak realm và hàng đợi Valkey. Không tốn công bảo trì 3 hệ thống riêng.</p>
+              <p className="text-[11px] text-slate-500">Cùng chung các API REST Spring Boot, phân quyền Keycloak realm và hàng đợi Valkey. Không tốn công bảo trì 4 hệ thống riêng.</p>
             </div>
 
             <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs space-y-1.5 text-slate-600">
